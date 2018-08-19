@@ -1,0 +1,339 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxopt_field_gradient</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxopt_field_gradient.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxopt_field_gradient</h1><p>Calculate structural gradients for the E-field of a simulation.</p><pre class="codeinput"><span class="keyword">function</span> [param_grad, eps_grad] = maxopt_field_gradient(grid, E, fitness_fun, <span class="keyword">...</span>
+                                                        params0, create_eps, <span class="keyword">...</span>
+                                                        varargin)
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Validate and parse inputs.</span>
+        <span class="comment">%</span>
+
+    my_validate_grid(grid, mfilename);
+    my_validate_field(E, grid.shape, <span class="string">'E'</span>, mfilename);
+    validateattributes(params0, {<span class="string">'numeric'</span>}, {<span class="string">'real'</span>, <span class="string">'nonnan'</span>}, <span class="string">'params0'</span>, mfilename);
+    validateattributes(create_eps, {<span class="string">'function_handle'</span>}, {}, <span class="string">'create_eps'</span>, mfilename);
+
+    <span class="comment">% Check fitness_fun.</span>
+    validateattributes(fitness_fun, {<span class="string">'function_handle'</span>}, {}, <span class="string">'fitness_fun'</span>, mfilename);
+    [fval, grad_E] = fitness_fun(E);
+    validateattributes(fval, {<span class="string">'numeric'</span>}, {<span class="string">'scalar'</span>, <span class="string">'real'</span>}, <span class="keyword">...</span>
+                        <span class="string">'fval (from fitness_fun)'</span>, mfilename);
+    my_validate_field(grad_E, grid.shape, <span class="string">'grad_Efval (from fitness_fun)'</span>, mfilename);
+
+    <span class="comment">% Check fitness_fun's gradient.</span>
+    [vec, unvec] = my_vec(grid.shape); <span class="comment">% Helper function.</span>
+    err = my_gradient_test(@(x) fitness_fun(unvec(x)), vec(grad_E), vec(E), <span class="string">'real_with_imag'</span>, <span class="string">''</span>);
+    <span class="keyword">if</span> err &gt; 1e-3
+        warning(<span class="string">'Error in fitness_fun gradient is large (%e).'</span>, err);
+    <span class="keyword">end</span>
+
+
+    <span class="comment">% Optional arguments.</span>
+    options = my_parse_options(struct(  <span class="string">'delta_p'</span>, 1e-6, <span class="keyword">...</span>
+                                        <span class="string">'solver_args'</span>, {{}}, <span class="keyword">...</span>
+                                        <span class="string">'solver_fun'</span>, [], <span class="keyword">...</span>
+                                        <span class="string">'check_gradients'</span>, false), <span class="keyword">...</span>
+                                varargin, mfilename);
+
+    validateattributes(options.delta_p, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                        {<span class="string">'nonnan'</span>, <span class="string">'finite'</span>, <span class="string">'real'</span>}, <span class="keyword">...</span>
+                        <span class="string">'delta_p'</span>, mfilename);
+
+    validateattributes(options.solver_args, {<span class="string">'cell'</span>}, {}, <span class="keyword">...</span>
+                        <span class="string">'solver_args'</span>, mfilename);
+
+    validateattributes(options.check_gradients, {<span class="string">'logical'</span>}, {<span class="string">'scalar'</span>}, <span class="keyword">...</span>
+                        <span class="string">'check_gradients'</span>, mfilename);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Convert to linear algebra language.</span>
+        <span class="comment">%</span>
+
+    [vec, unvec] = my_vec(grid.shape); <span class="comment">% Helper functions.</span>
+    N = 3 * prod(grid.shape);
+
+    params0 = params0(:);
+
+    x0 = vec(E);
+    grad_x0 = vec(grad_E);
+
+    p2z = @(p) vec(create_eps(p));
+    z0 = p2z(params0);
+
+    solve_A_dagger = @(z, b) maxopt_solve_adjoint(grid, unvec(z), <span class="keyword">...</span>
+                                            unvec(b ./ (-i * grid.omega)), <span class="keyword">...</span>
+                                            options.solver_args{:});
+
+    B = spdiags(-grid.omega^2 * vec(E), 0, N, N);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Compute the adjoint and the dz/dp derivative while waiting.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Initiate adjoint solve.</span>
+    fprintf(<span class="string">'[start adjoint solve] '</span>);
+    cb = solve_A_dagger(z0, grad_x0);
+
+    <span class="comment">% Find the dz/dp derivative.</span>
+    dz_dp = my_parameter_gradient(p2z, params0, options.delta_p);
+
+    <span class="comment">% Complete adjoint solve.</span>
+    <span class="keyword">while</span> ~cb(); <span class="keyword">end</span>
+    [~, y] = cb();
+    y = vec(y);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Form the derivative.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Form the df/dz derivative.</span>
+    df_dz = -y' * B;
+
+    <span class="comment">% Form df/dp the parameter derivative.</span>
+    df_dp = df_dz * dz_dp;
+
+    <span class="comment">% Output parameters.</span>
+    param_grad = real(df_dp');
+    eps_grad = df_dz';
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Check gradients, if desired.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">if</span> options.check_gradients
+        <span class="comment">% Check result of the dagger solve.</span>
+        A = maxwell_axb(grid, unvec(z0), E, E);
+        fprintf(<span class="string">'Error from A_dagger solve: %e\n'</span>, norm(A'*y - grad_x0));
+
+        <span class="comment">% Test dz/dp.</span>
+        my_gradient_test(p2z, dz_dp.', params0, <span class="string">'real'</span>, <span class="string">'dz/dp'</span>, <span class="keyword">...</span>
+                        options.delta_p);
+
+        <span class="keyword">if</span> ~isempty(options.solver_fun)
+            my_gradient_test(@(z) fitness_fun(options.solver_fun(unvec(z))), df_dz', z0, <span class="string">'real'</span>, <span class="string">'df/dz'</span>);
+
+            my_gradient_test(@(p) fitness_fun(options.solver_fun(unvec(p2z(p)))), df_dp', params0, <span class="string">'real'</span>, <span class="string">'df/dp'</span>);
+        <span class="keyword">end</span>
+
+<span class="comment">%             % Check equivalence of Ax-b and Bz-d.</span>
+<span class="comment">%             z0 = p2z(params0);</span>
+<span class="comment">%             x0 = vec(E);</span>
+<span class="comment">%             multA = maxwell_axb(grid, unvec(z0), E, E, 'functional', true);</span>
+<span class="comment">%             b = randn(N, 1);</span>
+<span class="comment">%             d = b - (multA(x0) + grid.omega^2 * (z0 .* x0));</span>
+<span class="comment">%</span>
+<span class="comment">%             res1 = multA(x0) - b;</span>
+<span class="comment">%             res2 = B * z0 - d;</span>
+<span class="comment">%</span>
+<span class="comment">%             fprintf('Error between Ax-b and Bz-d: %e\n', norm(res1 - res2)/norm(res1));</span>
+    <span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxopt_field_gradient
+% Calculate structural gradients for the E-field of a simulation.
+
+function [param_grad, eps_grad] = maxopt_field_gradient(grid, E, fitness_fun, ...
+                                                        params0, create_eps, ...
+                                                        varargin)
+                                                        
+
+        %
+        % Validate and parse inputs.
+        %
+
+    my_validate_grid(grid, mfilename);
+    my_validate_field(E, grid.shape, 'E', mfilename);
+    validateattributes(params0, {'numeric'}, {'real', 'nonnan'}, 'params0', mfilename);
+    validateattributes(create_eps, {'function_handle'}, {}, 'create_eps', mfilename);
+
+    % Check fitness_fun.
+    validateattributes(fitness_fun, {'function_handle'}, {}, 'fitness_fun', mfilename);
+    [fval, grad_E] = fitness_fun(E);
+    validateattributes(fval, {'numeric'}, {'scalar', 'real'}, ...
+                        'fval (from fitness_fun)', mfilename);
+    my_validate_field(grad_E, grid.shape, 'grad_Efval (from fitness_fun)', mfilename);
+
+    % Check fitness_fun's gradient.
+    [vec, unvec] = my_vec(grid.shape); % Helper function.
+    err = my_gradient_test(@(x) fitness_fun(unvec(x)), vec(grad_E), vec(E), 'real_with_imag', '');
+    if err > 1e-3
+        warning('Error in fitness_fun gradient is large (%e).', err);
+    end
+
+
+    % Optional arguments.
+    options = my_parse_options(struct(  'delta_p', 1e-6, ...
+                                        'solver_args', {{}}, ...
+                                        'solver_fun', [], ...
+                                        'check_gradients', false), ...
+                                varargin, mfilename);
+
+    validateattributes(options.delta_p, {'numeric'}, ...
+                        {'nonnan', 'finite', 'real'}, ...
+                        'delta_p', mfilename);
+
+    validateattributes(options.solver_args, {'cell'}, {}, ...
+                        'solver_args', mfilename);
+
+    validateattributes(options.check_gradients, {'logical'}, {'scalar'}, ...
+                        'check_gradients', mfilename);
+
+
+        %
+        % Convert to linear algebra language.
+        %
+
+    [vec, unvec] = my_vec(grid.shape); % Helper functions.
+    N = 3 * prod(grid.shape);
+
+    params0 = params0(:);
+
+    x0 = vec(E);
+    grad_x0 = vec(grad_E); 
+
+    p2z = @(p) vec(create_eps(p));
+    z0 = p2z(params0);
+
+    solve_A_dagger = @(z, b) maxopt_solve_adjoint(grid, unvec(z), ...
+                                            unvec(b ./ (-i * grid.omega)), ...
+                                            options.solver_args{:});
+
+    B = spdiags(-grid.omega^2 * vec(E), 0, N, N);
+
+
+        %
+        % Compute the adjoint and the dz/dp derivative while waiting.
+        %
+
+    % Initiate adjoint solve.
+    fprintf('[start adjoint solve] '); 
+    cb = solve_A_dagger(z0, grad_x0);
+
+    % Find the dz/dp derivative.
+    dz_dp = my_parameter_gradient(p2z, params0, options.delta_p); 
+
+    % Complete adjoint solve.
+    while ~cb(); end 
+    [~, y] = cb();
+    y = vec(y);
+
+
+        %
+        % Form the derivative.
+        %
+    
+    % Form the df/dz derivative.
+    df_dz = -y' * B; 
+
+    % Form df/dp the parameter derivative.
+    df_dp = df_dz * dz_dp; 
+
+    % Output parameters.
+    param_grad = real(df_dp');
+    eps_grad = df_dz';
+
+
+        %
+        % Check gradients, if desired.
+        %
+
+    if options.check_gradients
+        % Check result of the dagger solve.
+        A = maxwell_axb(grid, unvec(z0), E, E);
+        fprintf('Error from A_dagger solve: %e\n', norm(A'*y - grad_x0));
+
+        % Test dz/dp.
+        my_gradient_test(p2z, dz_dp.', params0, 'real', 'dz/dp', ...
+                        options.delta_p); 
+
+        if ~isempty(options.solver_fun)
+            my_gradient_test(@(z) fitness_fun(options.solver_fun(unvec(z))), df_dz', z0, 'real', 'df/dz');
+
+            my_gradient_test(@(p) fitness_fun(options.solver_fun(unvec(p2z(p)))), df_dp', params0, 'real', 'df/dp');
+        end
+
+%             % Check equivalence of Ax-b and Bz-d.
+%             z0 = p2z(params0);
+%             x0 = vec(E);
+%             multA = maxwell_axb(grid, unvec(z0), E, E, 'functional', true);
+%             b = randn(N, 1);
+%             d = b - (multA(x0) + grid.omega^2 * (z0 .* x0));
+%     
+%             res1 = multA(x0) - b;
+%             res2 = B * z0 - d;
+%     
+%             fprintf('Error between Ax-b and Bz-d: %e\n', norm(res1 - res2)/norm(res1));
+    end
+
+##### SOURCE END #####
+--></body></html>

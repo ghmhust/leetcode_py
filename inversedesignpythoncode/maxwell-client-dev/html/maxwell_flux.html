@@ -1,0 +1,419 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxwell_flux</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxwell_flux.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxwell_flux</h1><!--introduction--><p>Electromagnetic power passing through a finite plane of the simulation.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Source code</a></li></ul></div><h2>Syntax<a name="1"></a></h2><div><ul><li><tt>P = maxwell_flux(grid, [E H], plane_pos, plane_size)</tt>   returns the integral of the Poynting vector over a plane   in the simulation domain.</li></ul></div><div><ul><li><tt>P = maxwell_flux(grid, [E H], [E1 H1])</tt>   uses <tt>[E1 H1]</tt>, which is assumed to be the output from   the <tt>maxwell_wgmode</tt> function (or something equivalent),   in order to define the plane and also filter <tt>[E H]</tt>.   This is useful for computing the amount of power in   only a single mode.   Note that this may fail if large evanescent fields are present.</li></ul></div><h2>Description<a name="2"></a></h2><p><tt>maxwell_flux</tt> calculates the integrated Poynting vector across a simulation plane. It can alternatively be used to calculate the power in a single waveguide mode, while filtering out the power in other modes.</p><h2>Source code<a name="3"></a></h2><pre class="codeinput"><span class="keyword">function</span> [P] = maxwell_flux(grid, E_H, varargin)
+
+        <span class="comment">%</span>
+        <span class="comment">% Validate and parse inputs.</span>
+        <span class="comment">%</span>
+
+
+    my_validate_grid(grid, mfilename);
+
+    [E, H] = my_split(E_H, grid.shape, {<span class="string">'E'</span>, <span class="string">'H'</span>}, mfilename);
+    my_validate_field(E, grid.shape, <span class="string">'E'</span>, mfilename);
+    my_validate_field(H, grid.shape, <span class="string">'H'</span>, mfilename);
+
+    <span class="keyword">switch</span> length(varargin)
+        <span class="keyword">case</span> 1
+            E1_H1 = varargin{1};
+            [E1, H1] = my_split(E1_H1, grid.shape, {<span class="string">'E1'</span>, <span class="string">'H1'</span>}, mfilename);
+            my_validate_field(E1, grid.shape, <span class="string">'E1'</span>, mfilename);
+            my_validate_field(H1, grid.shape, <span class="string">'H1'</span>, mfilename);
+
+            [plane_pos, plane_size] = deal([], []);
+        <span class="keyword">case</span> 2
+            plane_pos = varargin{1};
+            plane_size = varargin{2};
+            validateattributes(plane_pos, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                    {<span class="string">'nonnan'</span>, <span class="string">'finite'</span>, <span class="string">'numel'</span>, 3}, mfilename, <span class="string">'plane_pos'</span>);
+            validateattributes(plane_size, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                    {<span class="string">'nonnan'</span>, <span class="string">'numel'</span>, 3}, mfilename, <span class="string">'plane_size'</span>);
+
+            [E1, H1] = deal([], []);
+        <span class="keyword">otherwise</span>
+            error(<span class="string">'Invalid number of input parameters.'</span>);
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Determine prop_dir, plane_pos, and plane_size.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">if</span> ~isempty(E1) <span class="comment">% Find prop_dir for filtered case.</span>
+        <span class="comment">% First find the ranges of non-zero E1 values in every direction.</span>
+        <span class="keyword">for</span> k = 1 : 3
+            [ind{k}{1}, ind{k}{2}, ind{k}{3}] = <span class="keyword">...</span>
+                    ind2sub(size(E1{k}), find(E1{k}(:) ~= 0));
+        <span class="keyword">end</span>
+        <span class="keyword">for</span> k = 1 : 3
+            ind1{k} = [ind{1}{k}(:); ind{2}{k}(:); ind{3}{k}(:)];
+            ind_range(k) = max(ind1{k}) - min(ind1{k});
+        <span class="keyword">end</span>
+        ind_range(find(grid.shape == 1)) = inf; <span class="comment">% Can't propagate out of 2D.</span>
+
+        <span class="comment">% Deduce the propagation direction.</span>
+        [~, prop_ind] = min(ind_range);
+
+        <span class="comment">% Obtain the position of the plane.</span>
+        pos = my_s2pos(grid);
+        perp_ind = mod(prop_ind, 3) + 1;
+        prop_pos = pos{perp_ind}{prop_ind}(mode(ind1{prop_ind}));
+
+        <span class="comment">% Construct plane_pos and plane_size vectors.</span>
+        <span class="keyword">for</span> k = 1 : 3
+            grid_extent(k) = sum(real(grid.s_prim{k}));
+            <span class="keyword">if</span> isinf(grid_extent(k))
+                grid_extent = realmax;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+        grid_center = grid.origin + grid_extent;
+
+        plane_pos = grid_center;
+        plane_pos(prop_ind) = prop_pos;
+
+        plane_size = 2 * grid_extent;
+        plane_size(prop_ind) = +inf;
+    <span class="keyword">end</span>
+
+    [p0, p1, prop_dir, prop_in_pos_dir] = my_find_plane(grid, plane_pos, plane_size);
+
+    <span class="keyword">if</span> ~isempty(E1) <span class="comment">% For filtering case, take the whole plane.</span>
+        <span class="keyword">for</span> k = 1 : 3
+            <span class="keyword">if</span> k ~= prop_dir
+                p0(k) = 1;
+                p1(k) = grid.shape(k);
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Filter, if needed.</span>
+        <span class="comment">%</span>
+
+    [vec, unvec] = my_vec(grid.shape);
+
+    <span class="keyword">function</span> [F] = my_project(F1, F2)
+    <span class="comment">% Project z1 onto (normalized) z2.</span>
+        F = unvec(vec(F2) * dot(vec(F1), vec(F2)) / norm(vec(F2))^2);
+    <span class="keyword">end</span>
+
+    <span class="comment">% Filter.</span>
+    <span class="keyword">if</span> ~isempty(E1)
+        E1{prop_dir} = 0 * E1{prop_dir};
+        H1{prop_dir} = 0 * H1{prop_dir};
+        E = my_project(E, E1);
+        H = my_project(H, H1);
+        <span class="comment">% [E, H] = deal(E1, H1); % Debugging purposes only.</span>
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Cut out slice.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Cut out the plane.</span>
+    <span class="keyword">for</span> k = 1 : 3
+        sp{k} = grid.s_prim{k}(p0(k):p1(k));
+        sd{k} = grid.s_dual{k}(p0(k):p1(k));
+        E{k} = E{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+        H{k} = H{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Calculate the power.</span>
+        <span class="comment">%</span>
+
+    P = my_calc_power(prop_dir, sp, sd, E, H);
+
+    <span class="keyword">if</span> ~prop_in_pos_dir
+        P = -P;
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> ~isempty(E1)
+        <span class="keyword">for</span> k = 1 : 3
+            E1{k} = E1{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+            H1{k} = H1{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+        <span class="keyword">end</span>
+        <span class="keyword">if</span> my_calc_power(prop_dir, sp, sd, E1, H1) &lt; 0
+            P = -P;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [P] = my_calc_power(prop_dir, sp, sd, E, H)
+
+    <span class="comment">% Always need to ignore the field in the direction of propagation.</span>
+    a_dir = mod(prop_dir, 3) + 1;
+    b_dir = mod(prop_dir+1, 3) + 1;
+    [xa, ya, Ea, Ha] = deal(my_s2d(sd{a_dir}), <span class="keyword">...</span>
+                            my_s2d(sp{b_dir}), <span class="keyword">...</span>
+                            E{a_dir}, <span class="keyword">...</span>
+                            H{b_dir});
+
+    [xb, yb, Eb, Hb] = deal(my_s2d(sp{b_dir}), <span class="keyword">...</span>
+                            my_s2d(sd{a_dir}), <span class="keyword">...</span>
+                            E{b_dir}, <span class="keyword">...</span>
+                            -H{a_dir});
+    [xa, ya] = ndgrid(xa, ya);
+    [xb, yb] = ndgrid(xb, yb);
+    P = 0.5 * real( dot(xa(:) .* ya(:) .* Ea(:), Ha(:)) + <span class="keyword">...</span>
+                    dot(xb(:) .* yb(:) .* Eb(:), Hb(:)));
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxwell_flux
+% Electromagnetic power passing through a finite plane of the simulation.
+
+%%% Syntax
+%
+% * |P = maxwell_flux(grid, [E H], plane_pos, plane_size)|
+%   returns the integral of the Poynting vector over a plane
+%   in the simulation domain.
+%
+% * |P = maxwell_flux(grid, [E H], [E1 H1])|
+%   uses |[E1 H1]|, which is assumed to be the output from 
+%   the |maxwell_wgmode| function (or something equivalent),
+%   in order to define the plane and also filter |[E H]|.
+%   This is useful for computing the amount of power in
+%   only a single mode.
+%   Note that this may fail if large evanescent fields are present.
+
+%%% Description
+% |maxwell_flux| calculates the integrated Poynting vector across
+% a simulation plane. 
+% It can alternatively be used to calculate the power in a single 
+% waveguide mode, while filtering out the power in other modes.
+%
+
+%%% Source code
+function [P] = maxwell_flux(grid, E_H, varargin)
+
+        %
+        % Validate and parse inputs.
+        %
+
+    
+    my_validate_grid(grid, mfilename);
+
+    [E, H] = my_split(E_H, grid.shape, {'E', 'H'}, mfilename);
+    my_validate_field(E, grid.shape, 'E', mfilename);
+    my_validate_field(H, grid.shape, 'H', mfilename);
+
+    switch length(varargin)
+        case 1
+            E1_H1 = varargin{1};
+            [E1, H1] = my_split(E1_H1, grid.shape, {'E1', 'H1'}, mfilename);
+            my_validate_field(E1, grid.shape, 'E1', mfilename);
+            my_validate_field(H1, grid.shape, 'H1', mfilename);
+
+            [plane_pos, plane_size] = deal([], []);
+        case 2
+            plane_pos = varargin{1};
+            plane_size = varargin{2};
+            validateattributes(plane_pos, {'numeric'}, ...
+                    {'nonnan', 'finite', 'numel', 3}, mfilename, 'plane_pos');
+            validateattributes(plane_size, {'numeric'}, ...
+                    {'nonnan', 'numel', 3}, mfilename, 'plane_size');
+
+            [E1, H1] = deal([], []);
+        otherwise
+            error('Invalid number of input parameters.');
+    end
+
+
+        %
+        % Determine prop_dir, plane_pos, and plane_size.
+        %
+
+    if ~isempty(E1) % Find prop_dir for filtered case.
+        % First find the ranges of non-zero E1 values in every direction.
+        for k = 1 : 3
+            [ind{k}{1}, ind{k}{2}, ind{k}{3}] = ...
+                    ind2sub(size(E1{k}), find(E1{k}(:) ~= 0)); 
+        end
+        for k = 1 : 3
+            ind1{k} = [ind{1}{k}(:); ind{2}{k}(:); ind{3}{k}(:)];
+            ind_range(k) = max(ind1{k}) - min(ind1{k});
+        end
+        ind_range(find(grid.shape == 1)) = inf; % Can't propagate out of 2D.
+
+        % Deduce the propagation direction. 
+        [~, prop_ind] = min(ind_range);
+
+        % Obtain the position of the plane.
+        pos = my_s2pos(grid); 
+        perp_ind = mod(prop_ind, 3) + 1;
+        prop_pos = pos{perp_ind}{prop_ind}(mode(ind1{prop_ind}));
+
+        % Construct plane_pos and plane_size vectors.
+        for k = 1 : 3
+            grid_extent(k) = sum(real(grid.s_prim{k}));
+            if isinf(grid_extent(k))
+                grid_extent = realmax;
+            end
+        end
+        grid_center = grid.origin + grid_extent;
+
+        plane_pos = grid_center;
+        plane_pos(prop_ind) = prop_pos;
+
+        plane_size = 2 * grid_extent;
+        plane_size(prop_ind) = +inf;
+    end
+     
+    [p0, p1, prop_dir, prop_in_pos_dir] = my_find_plane(grid, plane_pos, plane_size);
+
+    if ~isempty(E1) % For filtering case, take the whole plane.
+        for k = 1 : 3
+            if k ~= prop_dir
+                p0(k) = 1;
+                p1(k) = grid.shape(k);
+            end
+        end
+    end
+
+
+        %
+        % Filter, if needed.
+        %
+
+    [vec, unvec] = my_vec(grid.shape);
+
+    function [F] = my_project(F1, F2)
+    % Project z1 onto (normalized) z2.
+        F = unvec(vec(F2) * dot(vec(F1), vec(F2)) / norm(vec(F2))^2);
+    end
+
+    % Filter.
+    if ~isempty(E1)
+        E1{prop_dir} = 0 * E1{prop_dir};
+        H1{prop_dir} = 0 * H1{prop_dir};
+        E = my_project(E, E1);
+        H = my_project(H, H1);
+        % [E, H] = deal(E1, H1); % Debugging purposes only.
+    end
+
+
+        %
+        % Cut out slice.
+        %
+
+    % Cut out the plane.
+    for k = 1 : 3
+        sp{k} = grid.s_prim{k}(p0(k):p1(k));
+        sd{k} = grid.s_dual{k}(p0(k):p1(k));
+        E{k} = E{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+        H{k} = H{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+    end
+
+
+        %
+        % Calculate the power.
+        %
+
+    P = my_calc_power(prop_dir, sp, sd, E, H);
+
+    if ~prop_in_pos_dir
+        P = -P;
+    end
+
+    if ~isempty(E1)
+        for k = 1 : 3
+            E1{k} = E1{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+            H1{k} = H1{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+        end
+        if my_calc_power(prop_dir, sp, sd, E1, H1) < 0
+            P = -P;
+        end
+    end
+end
+
+function [P] = my_calc_power(prop_dir, sp, sd, E, H)
+
+    % Always need to ignore the field in the direction of propagation.
+    a_dir = mod(prop_dir, 3) + 1;
+    b_dir = mod(prop_dir+1, 3) + 1;
+    [xa, ya, Ea, Ha] = deal(my_s2d(sd{a_dir}), ...
+                            my_s2d(sp{b_dir}), ...
+                            E{a_dir}, ...
+                            H{b_dir});
+
+    [xb, yb, Eb, Hb] = deal(my_s2d(sp{b_dir}), ...
+                            my_s2d(sd{a_dir}), ...
+                            E{b_dir}, ...
+                            -H{a_dir});
+    [xa, ya] = ndgrid(xa, ya);
+    [xb, yb] = ndgrid(xb, yb);
+    P = 0.5 * real( dot(xa(:) .* ya(:) .* Ea(:), Ha(:)) + ...
+                    dot(xb(:) .* yb(:) .* Eb(:), Hb(:)));
+end
+
+##### SOURCE END #####
+--></body></html>

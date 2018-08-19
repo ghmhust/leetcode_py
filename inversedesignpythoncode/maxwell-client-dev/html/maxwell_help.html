@@ -1,0 +1,183 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxwell_help</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxwell_help.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxwell_help</h1><!--introduction--><p>Welcome to Maxwell's documentation! If anything is unclear or needs to be updated please don't hesitate to open an issue at <a href="https://github.com/JesseLu/maxwell-client/issues">https://github.com/JesseLu/maxwell-client/issues</a>, or to contact me at <a href="jesselu@stanford.edu">jesselu@stanford.edu</a>. Enjoy!</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Introduction to Maxwell</a></li><li><a href="#2">Maxwell functions</a></li><li><a href="#3">Examples</a></li><li><a href="#4">Introduction to Maxopt</a></li><li><a href="#5">Maxopt functions</a></li><li><a href="#6">Maxopt examples</a></li><li><a href="#7">Maxopt cases</a></li></ul></div><h2>Introduction to Maxwell<a name="1"></a></h2><p>Along with the functionality of Maxwell, this library includes various examples which are useful in familiarizing oneself with Maxwell.</p><h2>Maxwell functions<a name="2"></a></h2><div><ul><li><a href="maxwell_axb.html">maxwell_axb</a> - Matrices and vectors associated with the electromagnetic wave equation.</li></ul></div><div><ul><li><a href="maxwell_box.html">maxwell_box</a> - Box of constant epsilon/mu within the simulation grid.</li></ul></div><div><ul><li><a href="maxwell_box_smooth.html">maxwell_box_smooth</a> - Box of constant epsilon/mu within the simulation grid with smoothed boundaries.</li></ul></div><div><ul><li><a href="maxwell_cyl.html">maxwell_cyl</a> - Cylinder of constant epsilon/mu within the simulation grid.</li></ul></div><div><ul><li><a href="maxwell_cyl_smooth.html">maxwell_cyl_smooth</a> - Cylinder of constant epsilon/mu within the simulation grid with smoothed boundaries.</li></ul></div><div><ul><li><a href="maxwell_flux.html">maxwell_flux</a> - Electromagnetic power passing through a finite plane of the simulation.</li></ul></div><div><ul><li><a href="maxwell_fsmode.html">maxwell_fsmode</a> - Excitation source for arbitrary free-space modes.</li></ul></div><div><ul><li><a href="maxwell_gaussian.html">maxwell_gaussian</a> - Excitation source for free-space Gaussian modes.</li></ul></div><div><ul><li><a href="maxwell_grid.html">maxwell_grid</a> - Initialize a simulation domain.</li></ul></div><div><ul><li><a href="maxwell_pos2ind.html">maxwell_pos2ind</a> - Translate from position to array indices.</li></ul></div><div><ul><li><a href="maxwell_shape.html">maxwell_shape</a> - Add shapes of constant material to the simulation domain.</li></ul></div><div><ul><li><a href="maxwell_solve.html">maxwell_solve</a> - Solve the electromagnetic wave equation.</li></ul></div><div><ul><li><a href="maxwell_solve_async.html">maxwell_solve_async</a> - Electromagnetic solve without waiting for completion.</li></ul></div><div><ul><li><a href="maxwell_solve_eigenmode.html">maxwell_solve_eigenmode</a> - Eigenmode based on an initial guess for E.</li></ul></div><div><ul><li><a href="maxwell_view.html">maxwell_view</a> - View a slice of the field and/or structure.</li></ul></div><div><ul><li><a href="maxwell_wgmode.html">maxwell_wgmode</a> - Excite a waveguide mode. Can also used to filter for a particular mode.</li></ul></div><h2>Examples<a name="3"></a></h2><div><ul><li><a href="example0_waveguide.html">example0_waveguide</a> - Excite the fundamental mode of a waveguide and measure output power.</li></ul></div><div><ul><li><a href="example1_ring.html">example1_ring</a> - Excite the clock-wise mode of a ring resonator.</li></ul></div><div><ul><li><a href="example2_metalmode.html">example2_metalmode</a> - Solve for the resonant mode of a metallic resonator.</li></ul></div><div><ul><li><a href="example3_cavitymode.html">example3_cavitymode</a> - Solve for the eigenmodes of dielectric resonators.</li></ul></div><div><ul><li><a href="example4_focusedbeam.html">example4_focusedbeam</a> - Excite Gaussian or donut free-space modes.</li></ul></div><div><ul><li><a href="example5_hiresmetal.html">example5_hiresmetal</a> - Solve for the resonant mode of a metallic resonator.</li></ul></div><h2>Introduction to Maxopt<a name="4"></a></h2><p>The <tt>maxopt</tt> family of functions, examples, and cases lives on top of the <tt>maxwell</tt> functions and implements basic structural optimization functions and examples.</p><h2>Maxopt functions<a name="5"></a></h2><p>These functions enable gradient-based optimization schemes.</p><div><ul><li><a href="maxopt_field_gradient.html">maxopt_field_gradient</a> - Calculate structural gradients for the E-field of a simulation.</li></ul></div><div><ul><li><a href="maxopt_freq_gradient.html">maxopt_freq_gradient</a> - Calculate structural gradients for frequency of the eigenmode.</li></ul></div><div><ul><li><a href="maxopt_gradient_descent.html">maxopt_gradient_descent</a> - Simple gradient descent optimization algorithm.</li></ul></div><div><ul><li><a href="maxopt_solve_adjoint.html">maxopt_solve_adjoint</a> - Asynchronously solve for the adjoint of the operator.</li></ul></div><h2>Maxopt examples<a name="6"></a></h2><p>Various optimization examples. The various optimization methods showcased include brute-force parameter sweep, derivative-free search, and gradient-descent.</p><div><ul><li><a href="maxopt_example0_sweep.html">maxopt_example0_sweep</a> - Sweep the parameters of a waveguide-coupled disk resonator structure.</li></ul></div><div><ul><li><a href="maxopt_example1_search.html">maxopt_example1_search</a> - Derivative-free optimization of a nanophotonic grating coupler.</li></ul></div><div><ul><li><a href="maxopt_example2_adjoint.html">maxopt_example2_adjoint</a> - Form a cavity out of a square lattice using gradient optimization.</li></ul></div><div><ul><li><a href="maxopt_example3_eigenmode.html">maxopt_example3_eigenmode</a> - Derivative-based optimization of an L3 cavity mode.</li></ul></div><h2>Maxopt cases<a name="7"></a></h2><p>These cases are used in the Maxopt examples and show how structures can be set up for optimization.</p><div><ul><li><a href="maxopt_case_2wbeam.html">maxopt_case_2wbeam</a> - Sets up a frequency-doubling cavity optimization.</li></ul></div><div><ul><li><a href="maxopt_case_L3.html">maxopt_case_L3</a> - Sets up the optimization for an L3 photonic crystal resonator.</li></ul></div><div><ul><li><a href="maxopt_case_grating.html">maxopt_case_grating</a> - Sets up a grating coupler optimization problem.</li></ul></div><div><ul><li><a href="maxopt_case_metalfocus.html">maxopt_case_metalfocus</a> - Used to optimize a metal focusing structure.</li></ul></div><div><ul><li><a href="maxopt_case_squarepc.html">maxopt_case_squarepc</a> - Sets up optimization problem for a square photonic crystal array.</li></ul></div><div><ul><li><a href="maxopt_case_wdmgrating.html">maxopt_case_wdmgrating</a> - Used to optimize a wavelength-splitting grating coupler.</li></ul></div><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxwell_help
+% Welcome to Maxwell's documentation!
+% If anything is unclear or needs to be updated please don't hesitate to
+% open an issue at <https://github.com/JesseLu/maxwell-client/issues>, 
+% or to contact me at <jesselu@stanford.edu>.
+% Enjoy!
+
+%%% Introduction to Maxwell
+% Along with the functionality of Maxwell, this library includes various
+% examples which are useful in familiarizing oneself with Maxwell.
+
+%%% Maxwell functions
+%
+% * <maxwell_axb.html maxwell_axb> - Matrices and vectors associated with the electromagnetic wave equation.
+%
+% * <maxwell_box.html maxwell_box> - Box of constant epsilon/mu within the simulation grid.
+%
+% * <maxwell_box_smooth.html maxwell_box_smooth> - Box of constant epsilon/mu within the simulation grid with smoothed boundaries.
+%
+% * <maxwell_cyl.html maxwell_cyl> - Cylinder of constant epsilon/mu within the simulation grid.
+%
+% * <maxwell_cyl_smooth.html maxwell_cyl_smooth> - Cylinder of constant epsilon/mu within the simulation grid with smoothed boundaries.
+%
+% * <maxwell_flux.html maxwell_flux> - Electromagnetic power passing through a finite plane of the simulation.
+%
+% * <maxwell_fsmode.html maxwell_fsmode> - Excitation source for arbitrary free-space modes.
+%
+% * <maxwell_gaussian.html maxwell_gaussian> - Excitation source for free-space Gaussian modes.
+%
+% * <maxwell_grid.html maxwell_grid> - Initialize a simulation domain.
+%
+% * <maxwell_pos2ind.html maxwell_pos2ind> - Translate from position to array indices.
+%
+% * <maxwell_shape.html maxwell_shape> - Add shapes of constant material to the simulation domain.
+%
+% * <maxwell_solve.html maxwell_solve> - Solve the electromagnetic wave equation.
+%
+% * <maxwell_solve_async.html maxwell_solve_async> - Electromagnetic solve without waiting for completion.
+%
+% * <maxwell_solve_eigenmode.html maxwell_solve_eigenmode> - Eigenmode based on an initial guess for E.
+%
+% * <maxwell_view.html maxwell_view> - View a slice of the field and/or structure.
+%
+% * <maxwell_wgmode.html maxwell_wgmode> - Excite a waveguide mode. Can also used to filter for a particular mode.
+
+
+%%% Examples
+%
+% * <example0_waveguide.html example0_waveguide> - Excite the fundamental mode of a waveguide and measure output power.
+%
+% * <example1_ring.html example1_ring> - Excite the clock-wise mode of a ring resonator.
+%
+% * <example2_metalmode.html example2_metalmode> - Solve for the resonant mode of a metallic resonator.
+%
+% * <example3_cavitymode.html example3_cavitymode> - Solve for the eigenmodes of dielectric resonators.
+%
+% * <example4_focusedbeam.html example4_focusedbeam> - Excite Gaussian or donut free-space modes.
+%
+% * <example5_hiresmetal.html example5_hiresmetal> - Solve for the resonant mode of a metallic resonator.
+
+
+%%% Introduction to Maxopt
+% The |maxopt| family of functions, examples, and cases lives on top of 
+% the |maxwell| functions 
+% and implements basic structural optimization functions and examples.
+
+%%% Maxopt functions
+% These functions enable gradient-based optimization schemes.
+%
+% * <maxopt_field_gradient.html maxopt_field_gradient> - Calculate structural gradients for the E-field of a simulation.
+%
+% * <maxopt_freq_gradient.html maxopt_freq_gradient> - Calculate structural gradients for frequency of the eigenmode.
+%
+% * <maxopt_gradient_descent.html maxopt_gradient_descent> - Simple gradient descent optimization algorithm.
+%
+% * <maxopt_solve_adjoint.html maxopt_solve_adjoint> - Asynchronously solve for the adjoint of the operator.
+
+
+%%% Maxopt examples
+% Various optimization examples. 
+% The various optimization methods showcased include 
+% brute-force parameter sweep, derivative-free search, and gradient-descent.
+%
+% * <maxopt_example0_sweep.html maxopt_example0_sweep> - Sweep the parameters of a waveguide-coupled disk resonator structure.
+%
+% * <maxopt_example1_search.html maxopt_example1_search> - Derivative-free optimization of a nanophotonic grating coupler.
+%
+% * <maxopt_example2_adjoint.html maxopt_example2_adjoint> - Form a cavity out of a square lattice using gradient optimization.
+%
+% * <maxopt_example3_eigenmode.html maxopt_example3_eigenmode> - Derivative-based optimization of an L3 cavity mode.
+
+
+%%% Maxopt cases 
+% These cases are used in the Maxopt examples and show how structures can be
+% set up for optimization.
+%
+% * <maxopt_case_2wbeam.html maxopt_case_2wbeam> - Sets up a frequency-doubling cavity optimization.
+%
+% * <maxopt_case_L3.html maxopt_case_L3> - Sets up the optimization for an L3 photonic crystal resonator.
+%
+% * <maxopt_case_grating.html maxopt_case_grating> - Sets up a grating coupler optimization problem.
+%
+% * <maxopt_case_metalfocus.html maxopt_case_metalfocus> - Used to optimize a metal focusing structure.
+%
+% * <maxopt_case_squarepc.html maxopt_case_squarepc> - Sets up optimization problem for a square photonic crystal array.
+%
+% * <maxopt_case_wdmgrating.html maxopt_case_wdmgrating> - Used to optimize a wavelength-splitting grating coupler.
+
+
+% Allows the user to get here just by typing 'maxwell_help' in the command line.
+showdemo maxwell_help
+
+##### SOURCE END #####
+--></body></html>

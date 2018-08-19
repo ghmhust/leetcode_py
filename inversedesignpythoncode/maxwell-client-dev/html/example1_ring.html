@@ -1,0 +1,213 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>example1_ring.m</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="example1_ring.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>example1_ring.m</h1><!--introduction--><p>Excite the clock-wise mode of a ring resonator.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Source code</a></li></ul></div><h2>Syntax<a name="1"></a></h2><div><ul><li><tt>[E, H, grid, eps] = example1_ring()</tt>   runs the example in 3D and   returns the E- and H-field (<tt>E</tt>, <tt>H</tt>),   as well as <tt>grid</tt> and <tt>eps</tt> which are useful for visualizing   the result with <tt>maxwell_view</tt>.</li></ul></div><div><ul><li><tt>... = example1_ring('flatten', true)</tt>   runs the example in 2D.   This is very useful for quick tests.</li></ul></div><h2>Source code<a name="2"></a></h2><pre class="codeinput"><span class="keyword">function</span> [E, H, grid, eps] = example1_ring(varargin)
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Parse inputs.</span>
+        <span class="comment">%</span>
+
+    options = my_parse_options(struct(<span class="string">'flatten'</span>, false), <span class="keyword">...</span>
+                                varargin, mfilename);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Create grid.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Make a grid for a wavelength of 1550 nm.</span>
+    <span class="keyword">if</span> options.flatten
+        [grid, eps] = maxwell_grid(2*pi/1.55, -3:0.05:3, -3:0.05:3, 0); <span class="comment">% Use this for 2D.</span>
+        m = 2;
+    <span class="keyword">else</span>
+        [grid, eps] = maxwell_grid(2*pi/1.55, -3:0.05:3, -3:0.05:3, -1.5:0.05:1.5);
+        m = 1;
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Setup the ring.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Structure constants.</span>
+    height = 0.2;
+    ring_radii = [1.4 1.0];
+    si_eps = 13;
+    air_eps = 1;
+
+    <span class="comment">% Draw ring.</span>
+    <span class="keyword">function</span> [out] = custom_ring(x, y, z)
+        r = sqrt(x.^2 + y.^2);
+        out = (r &lt; ring_radii(1) &amp; r &gt; ring_radii(2)) &amp; (abs(z) &lt; height/2);
+    <span class="keyword">end</span>
+
+    eps = maxwell_shape(grid, eps, si_eps, @custom_ring); <span class="comment">% Insert ring.</span>
+
+<span class="comment">%     % Alternatively, use two cylinders</span>
+<span class="comment">%     eps = maxwell_shape(grid, eps, si_eps, ...</span>
+<span class="comment">%                         maxwell_cyl([0 0 0], ring_radii(1), height));</span>
+<span class="comment">%     eps = maxwell_shape(grid, eps, air_eps, ...</span>
+<span class="comment">%                         maxwell_cyl([0 0 0], ring_radii(2), height));</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Solve for initial excitation.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Excitation for the fundamental mode (of the ring's waveguide).</span>
+    J = maxwell_wgmode(grid, eps, [0 mean(ring_radii) 0], [+inf 2 2], <span class="string">'mode_number'</span>, m);
+
+    fprintf(<span class="string">'Initial excitation -- '</span>);
+    [E, H] =  maxwell_solve(grid, eps, J);
+
+    maxwell_view(grid, eps, E, <span class="string">'y'</span>, [nan nan 0], <span class="string">'field_phase'</span>, inf); <span class="comment">% Visualize the excited waveguide.</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% example1_ring.m
+% Excite the clock-wise mode of a ring resonator.
+
+%%% Syntax
+%
+% * |[E, H, grid, eps] = example1_ring()| 
+%   runs the example in 3D and
+%   returns the E- and H-field (|E|, |H|),
+%   as well as |grid| and |eps| which are useful for visualizing 
+%   the result with |maxwell_view|.
+%
+% * |... = example1_ring('flatten', true)| 
+%   runs the example in 2D.
+%   This is very useful for quick tests.
+%
+
+%%% Source code
+function [E, H, grid, eps] = example1_ring(varargin)
+
+
+        %
+        % Parse inputs.
+        %
+
+    options = my_parse_options(struct('flatten', false), ...
+                                varargin, mfilename);
+
+
+        %
+        % Create grid.
+        %
+
+    % Make a grid for a wavelength of 1550 nm.
+    if options.flatten
+        [grid, eps] = maxwell_grid(2*pi/1.55, -3:0.05:3, -3:0.05:3, 0); % Use this for 2D.
+        m = 2;
+    else
+        [grid, eps] = maxwell_grid(2*pi/1.55, -3:0.05:3, -3:0.05:3, -1.5:0.05:1.5);
+        m = 1;
+    end
+
+
+        %
+        % Setup the ring.
+        %
+
+    % Structure constants.
+    height = 0.2;
+    ring_radii = [1.4 1.0];
+    si_eps = 13;
+    air_eps = 1;
+
+    % Draw ring.
+    function [out] = custom_ring(x, y, z)
+        r = sqrt(x.^2 + y.^2);
+        out = (r < ring_radii(1) & r > ring_radii(2)) & (abs(z) < height/2);
+    end
+
+    eps = maxwell_shape(grid, eps, si_eps, @custom_ring); % Insert ring.
+
+%     % Alternatively, use two cylinders
+%     eps = maxwell_shape(grid, eps, si_eps, ...
+%                         maxwell_cyl([0 0 0], ring_radii(1), height));
+%     eps = maxwell_shape(grid, eps, air_eps, ...
+%                         maxwell_cyl([0 0 0], ring_radii(2), height));
+
+
+        %
+        % Solve for initial excitation.
+        %
+
+    % Excitation for the fundamental mode (of the ring's waveguide).
+    J = maxwell_wgmode(grid, eps, [0 mean(ring_radii) 0], [+inf 2 2], 'mode_number', m);
+
+    fprintf('Initial excitation REPLACE_WITH_DASH_DASH ');
+    [E, H] =  maxwell_solve(grid, eps, J);
+
+    maxwell_view(grid, eps, E, 'y', [nan nan 0], 'field_phase', inf); % Visualize the excited waveguide.
+end
+
+##### SOURCE END #####
+--></body></html>

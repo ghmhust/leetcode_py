@@ -1,0 +1,650 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxopt_case_wdmgrating</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxopt_case_wdmgrating.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxopt_case_wdmgrating</h1><p>Used to optimize a wavelength-splitting grating coupler.</p><pre class="codeinput"><span class="keyword">function</span> [fun, x0] = maxopt_case_wdmgrating(type, varargin)
+
+        <span class="comment">%</span>
+        <span class="comment">% Parse inputs.</span>
+        <span class="comment">%</span>
+
+    validateattributes(type, {<span class="string">'char'</span>}, {<span class="string">'vector'</span>}, <span class="string">'type'</span>, mfilename);
+
+    options = my_parse_options(struct(  <span class="string">'flatten'</span>, false), <span class="keyword">...</span>
+                                varargin, mfilename);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Return recommended starting parameters.</span>
+        <span class="comment">%</span>
+
+    x0 = zeros(49, 2);
+    <span class="keyword">if</span> options.flatten
+        x0 = zeros(7, 2);
+    <span class="keyword">end</span>
+    wvlens = [1300 1500];
+    N = length(wvlens);
+
+<span class="comment">%     [~, ~, E, H, grid, eps] = ...</span>
+<span class="comment">%                 solve_structure(wvlens, ones(N, 1), x0, options.flatten, false);</span>
+
+        <span class="comment">%</span>
+        <span class="comment">% Calculate input powers.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">if</span> ~strcmp(type, <span class="string">'get_fields'</span>)
+        fprintf(<span class="string">'Calculating input powers...\n'</span>);
+        [~, ~, E, H, grid, eps] = <span class="keyword">...</span>
+                    solve_structure(wvlens, ones(N, 1), [], options.flatten, false);
+        <span class="keyword">for</span> k = 1 : N
+            P_in(k) = maxwell_flux(grid{k}, [E{k} H{k}], [0 0 0], [1e9 1e9 -inf]);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Return appropriate function handle.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">function</span> [E, H, grid, eps] = get_fields(varargin)
+        [~, ~, E, H, grid, eps] = solve_structure(varargin{:});
+    <span class="keyword">end</span>
+
+    <span class="keyword">switch</span> type
+        <span class="keyword">case</span> <span class="string">'get_fields'</span>
+            fun = @(x) get_fields(wvlens, ones(1, N), x, options.flatten, false);
+        <span class="keyword">case</span> <span class="string">'fval'</span>
+            fun = @(x) solve_structure(wvlens, P_in, x, options.flatten, false);
+        <span class="keyword">case</span> <span class="string">'grad_f'</span>
+            fun = @(x) solve_structure(wvlens, P_in, x, options.flatten, true);
+        <span class="keyword">otherwise</span>
+            error(<span class="string">'Invalid type.'</span>);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+<span class="keyword">function</span> [Fval, grad_F, E, H, grid, eps] = <span class="keyword">...</span>
+            solve_structure(wvlens, P_in, params, flatten, calc_grad)
+
+    N = length(wvlens);
+
+    <span class="keyword">if</span> flatten
+        my_plane = [nan 0 nan];
+    <span class="keyword">else</span>
+        my_plane = [nan nan 0];
+    <span class="keyword">end</span>
+
+    <span class="comment">% Initiate solves.</span>
+    <span class="keyword">for</span> k = 1 : N
+        subplot(1, N, k);
+        [cb{k}, grid{k}, eps{k}, E_out{k}, J{k}] = <span class="keyword">...</span>
+            start_structure_solve(wvlens(k), params, flatten);
+    <span class="keyword">end</span>
+
+    <span class="comment">% Wait for solves to finish.</span>
+    <span class="keyword">for</span> k = 1 : N
+        <span class="keyword">while</span> ~cb{k}(); <span class="keyword">end</span>
+        [~, E{k}, H{k}] = cb{k}();
+
+        <span class="comment">% Visualize.</span>
+        subplot(1, N, k);
+        maxwell_view(grid{k}, eps{k}, E{k}, <span class="string">'y'</span>, my_plane);
+    <span class="keyword">end</span>
+
+<span class="comment">%     done = false * ones(N, 1);</span>
+<span class="comment">%     while ~all(done)</span>
+<span class="comment">%         for k = 1 : N</span>
+<span class="comment">%             [done(k), E{k}, H{k}] = cb{k}();</span>
+<span class="comment">%         end</span>
+<span class="comment">%     end</span>
+
+    <span class="keyword">if</span> isempty(params)
+        [Fval, grad_F] = deal(nan);
+        <span class="keyword">return</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% General fitness function.</span>
+    [vec, unvec] = my_vec(grid{1}.shape);
+    <span class="keyword">function</span> [fval, grad_E] = fitness(E, E_ref, P_in)
+        P_in = sqrt(abs(P_in) * norm(vec(E_ref))^2);
+        overlap = vec(E_ref)' * vec(E);
+        fval = (-1/P_in) * abs(overlap);
+        grad_E = unvec((-1/P_in) * ((overlap)/abs(overlap)) * vec(E_ref));
+    <span class="keyword">end</span>
+
+    <span class="comment">% Compute fitness functions.</span>
+    fprintf(<span class="string">'['</span>);
+    <span class="keyword">for</span> k = 1 : N
+        fitness_fun{k} = @(E) fitness(E, E_out{k}{k}, P_in(k));
+        [fval(k), grad_E{k}] = fitness_fun{k}(E{k});
+<span class="comment">%         my_gradient_test(@(x) fitness_fun{k}(unvec(x)), ...</span>
+<span class="comment">%                             vec(grad_E{k}), vec(E{k}), ...</span>
+<span class="comment">%                             'real_with_imag', 'd');</span>
+        fprintf(<span class="string">'%e '</span>, fval(k));
+    <span class="keyword">end</span>
+    [Fval, ind] = max(fval); <span class="comment">% Find the worst performing wavelength.</span>
+    fprintf(<span class="string">'\b]: %e\n'</span>, Fval);
+
+    <span class="keyword">function</span> [eps] = make_eps(params)
+        [~, eps] = make_structure(wvlens(ind), params, flatten);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> calc_grad
+        <span class="comment">% Calculate gradient (if needed).</span>
+        grad_F = maxopt_field_gradient(grid{ind}, E{ind}, fitness_fun{ind}, <span class="keyword">...</span>
+                    params, @make_eps, <span class="keyword">...</span>
+                    <span class="string">'delta_p'</span>, 1e-3, <span class="keyword">...</span>
+                    <span class="string">'solver_fun'</span>, <span class="keyword">...</span>
+                            @(eps) maxwell_solve(grid{ind}, eps, J{ind}), <span class="keyword">...</span>
+                    <span class="string">'check_gradients'</span>, false);
+    <span class="keyword">else</span>
+        grad_F = nan;
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+
+
+<span class="keyword">function</span> [cb, grid, eps, E_out, J] = <span class="keyword">...</span>
+                start_structure_solve(wvlen, params, flatten)
+<span class="comment">% Simulate the structure for the specific parameters.</span>
+
+    [grid, eps, J, wg_pos] = make_structure(wvlen, params, flatten);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Initiate solve.</span>
+        <span class="comment">%</span>
+
+    cb = maxwell_solve_async(grid, eps, J);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Calculate output modes.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">for</span> k = 1 : 2
+        <span class="keyword">if</span> ~isempty(params)
+            [J_wg{k}, E_out{k}, H_out{k}] = <span class="keyword">...</span>
+                maxwell_wgmode(grid, eps, [2100 wg_pos(k) 0], [+inf 1e3 1e3]);
+        <span class="keyword">else</span>
+            [J_wg{k}, E_out{k}, H_out{k}] = deal(nan);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+<span class="comment">%     subplot 121;</span>
+<span class="comment">%     maxwell_view(grid, eps, E, 'y', [nan -500 nan], 'field_phase', nan);</span>
+<span class="comment">%     subplot 122;</span>
+<span class="comment">%     maxwell_view(grid, eps, E, 'y', [nan nan 0], 'field_phase', nan);</span>
+<span class="comment">%     pause</span>
+
+<span class="keyword">end</span>
+
+
+
+<span class="keyword">function</span> [grid, eps, J, wg_pos] = make_structure(wvlen, params, flatten)
+
+        <span class="comment">%</span>
+        <span class="comment">% Get the structural parameters.</span>
+        <span class="comment">%</span>
+
+    n = numel(params)/2;
+    <span class="keyword">if</span> n == 0 <span class="comment">% Used to measure input power.</span>
+        no_struct = true;
+    <span class="keyword">else</span>
+        no_struct = false;
+        x_shift = params(1:n);
+        y_shift = params(n+1:end);
+        r_shift = zeros(n, 1); <span class="comment">% No radius shift.</span>
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Create grid.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Make a grid for a wavelength of 900 nm.</span>
+    delta = 40;
+    omega = 2*pi/wvlen;
+
+    my_size = 2500;
+    x = -my_size : delta : my_size+500;
+    y = -my_size : delta : my_size;
+    z = -1000 : delta : 1000;
+
+    <span class="keyword">if</span> flatten
+        y = -500;
+    <span class="keyword">end</span>
+
+    [grid, eps] = maxwell_grid(omega, x, y, z);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Setup the structure.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Material permittivities.</span>
+    si = 13;
+    ox = 2.25;
+    air = 1;
+
+    <span class="comment">% Structural constants.</span>
+    wg_pos = [-500 500];
+    wg_width = 220;
+    height = 440;
+    radius = 150;
+    a = 500;
+
+    <span class="keyword">if</span> ~no_struct
+        <span class="comment">% Draw the silicon slab.</span>
+        eps = maxwell_shape(grid, eps, si, <span class="keyword">...</span>
+                            maxwell_box([0 0 0], [4e3 4e3 height]));
+
+        <span class="comment">% Draw the silicon waveguides.</span>
+        eps = maxwell_shape(grid, eps, si, <span class="keyword">...</span>
+                maxwell_box([max(x) wg_pos(1) 0], [2*max(x) wg_width height]));
+        eps = maxwell_shape(grid, eps, si, <span class="keyword">...</span>
+                maxwell_box([max(x) wg_pos(2) 0], [2*max(x) wg_width height]));
+
+        <span class="comment">% Draw the holes.</span>
+        k = 1;
+        j_range = -3 : 3;
+        <span class="keyword">if</span> flatten
+            j_range = -1;
+        <span class="keyword">end</span>
+        <span class="keyword">for</span> i = -3 : 3
+            <span class="keyword">for</span> j = j_range
+                pos = a * [i, j] + [x_shift(k), y_shift(k)];
+                r = (radius + r_shift(k));
+                <span class="keyword">if</span> r &gt; 0
+                    my_cyl = maxwell_cyl_smooth([pos 0], r, 2*height, <span class="keyword">...</span>
+                                                <span class="string">'smooth_dist'</span>, delta);
+                    eps = maxwell_shape(grid, eps, air, my_cyl);
+                <span class="keyword">end</span>
+                k = k + 1;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+
+        <span class="comment">% Draw oxide slab.</span>
+        eps = maxwell_shape(grid, eps, ox, <span class="keyword">...</span>
+                    maxwell_box([0 0 min(z)-height/2+delta], <span class="keyword">...</span>
+                                [inf inf 2*abs(min(z))]));
+    <span class="keyword">end</span>
+
+<span class="comment">%     subplot 121; maxwell_view(grid, eps, [], 'y', [nan wg_pos(1) nan]);</span>
+<span class="comment">%     subplot 122; maxwell_view(grid, eps, [], 'y', [nan nan 0]);</span>
+<span class="comment">%     pause</span>
+
+    <span class="keyword">if</span> flatten
+        my_plane = [nan 0 nan];
+    <span class="keyword">else</span>
+        my_plane = [nan nan 0];
+    <span class="keyword">end</span>
+    maxwell_view(grid, eps, [], <span class="string">'y'</span>, my_plane);
+
+        <span class="comment">%</span>
+        <span class="comment">% Excite with a Gaussian wave.</span>
+        <span class="comment">%</span>
+
+    J = maxwell_gaussian(grid, eps, [0 0 500], [2*my_size 2*my_size -inf], <span class="keyword">...</span>
+                        <span class="string">'y'</span>, 500, 2000);
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxopt_case_wdmgrating
+% Used to optimize a wavelength-splitting grating coupler.
+
+
+function [fun, x0] = maxopt_case_wdmgrating(type, varargin)
+
+        %
+        % Parse inputs.
+        %
+
+    validateattributes(type, {'char'}, {'vector'}, 'type', mfilename);
+
+    options = my_parse_options(struct(  'flatten', false), ...
+                                varargin, mfilename);
+
+
+        %
+        % Return recommended starting parameters.
+        %
+
+    x0 = zeros(49, 2);
+    if options.flatten
+        x0 = zeros(7, 2);
+    end
+    wvlens = [1300 1500];
+    N = length(wvlens);
+
+%     [~, ~, E, H, grid, eps] = ...
+%                 solve_structure(wvlens, ones(N, 1), x0, options.flatten, false);
+
+        %
+        % Calculate input powers.
+        %
+
+    if ~strcmp(type, 'get_fields')
+        fprintf('Calculating input powers...\n');
+        [~, ~, E, H, grid, eps] = ...
+                    solve_structure(wvlens, ones(N, 1), [], options.flatten, false);
+        for k = 1 : N
+            P_in(k) = maxwell_flux(grid{k}, [E{k} H{k}], [0 0 0], [1e9 1e9 -inf]);
+        end
+    end
+
+
+        %
+        % Return appropriate function handle.
+        %
+        
+    function [E, H, grid, eps] = get_fields(varargin)
+        [~, ~, E, H, grid, eps] = solve_structure(varargin{:});
+    end
+
+    switch type
+        case 'get_fields'
+            fun = @(x) get_fields(wvlens, ones(1, N), x, options.flatten, false);
+        case 'fval'
+            fun = @(x) solve_structure(wvlens, P_in, x, options.flatten, false);
+        case 'grad_f'
+            fun = @(x) solve_structure(wvlens, P_in, x, options.flatten, true);
+        otherwise
+            error('Invalid type.');
+    end
+end
+
+
+function [Fval, grad_F, E, H, grid, eps] = ...
+            solve_structure(wvlens, P_in, params, flatten, calc_grad)
+
+    N = length(wvlens);
+
+    if flatten
+        my_plane = [nan 0 nan];
+    else
+        my_plane = [nan nan 0];
+    end
+
+    % Initiate solves.
+    for k = 1 : N
+        subplot(1, N, k);
+        [cb{k}, grid{k}, eps{k}, E_out{k}, J{k}] = ...
+            start_structure_solve(wvlens(k), params, flatten);
+    end
+
+    % Wait for solves to finish.
+    for k = 1 : N
+        while ~cb{k}(); end
+        [~, E{k}, H{k}] = cb{k}();
+
+        % Visualize.
+        subplot(1, N, k);
+        maxwell_view(grid{k}, eps{k}, E{k}, 'y', my_plane);
+    end
+
+%     done = false * ones(N, 1);
+%     while ~all(done)
+%         for k = 1 : N
+%             [done(k), E{k}, H{k}] = cb{k}();
+%         end
+%     end
+
+    if isempty(params)
+        [Fval, grad_F] = deal(nan);
+        return
+    end
+
+    % General fitness function.
+    [vec, unvec] = my_vec(grid{1}.shape);
+    function [fval, grad_E] = fitness(E, E_ref, P_in)
+        P_in = sqrt(abs(P_in) * norm(vec(E_ref))^2);
+        overlap = vec(E_ref)' * vec(E);
+        fval = (-1/P_in) * abs(overlap);
+        grad_E = unvec((-1/P_in) * ((overlap)/abs(overlap)) * vec(E_ref));
+    end
+    
+    % Compute fitness functions.
+    fprintf('[');
+    for k = 1 : N
+        fitness_fun{k} = @(E) fitness(E, E_out{k}{k}, P_in(k));
+        [fval(k), grad_E{k}] = fitness_fun{k}(E{k});
+%         my_gradient_test(@(x) fitness_fun{k}(unvec(x)), ...
+%                             vec(grad_E{k}), vec(E{k}), ...
+%                             'real_with_imag', 'd');
+        fprintf('%e ', fval(k));
+    end
+    [Fval, ind] = max(fval); % Find the worst performing wavelength.
+    fprintf('\b]: %e\n', Fval);
+
+    function [eps] = make_eps(params)
+        [~, eps] = make_structure(wvlens(ind), params, flatten);
+    end
+
+    if calc_grad
+        % Calculate gradient (if needed).
+        grad_F = maxopt_field_gradient(grid{ind}, E{ind}, fitness_fun{ind}, ...
+                    params, @make_eps, ...
+                    'delta_p', 1e-3, ...
+                    'solver_fun', ...
+                            @(eps) maxwell_solve(grid{ind}, eps, J{ind}), ...
+                    'check_gradients', false);
+    else
+        grad_F = nan;
+    end
+
+end
+    
+    
+
+function [cb, grid, eps, E_out, J] = ...
+                start_structure_solve(wvlen, params, flatten)
+% Simulate the structure for the specific parameters.
+
+    [grid, eps, J, wg_pos] = make_structure(wvlen, params, flatten);
+
+
+        %
+        % Initiate solve.
+        %
+    
+    cb = maxwell_solve_async(grid, eps, J);
+
+
+        %
+        % Calculate output modes.
+        %
+
+    for k = 1 : 2
+        if ~isempty(params)
+            [J_wg{k}, E_out{k}, H_out{k}] = ...
+                maxwell_wgmode(grid, eps, [2100 wg_pos(k) 0], [+inf 1e3 1e3]);
+        else
+            [J_wg{k}, E_out{k}, H_out{k}] = deal(nan);
+        end
+    end
+    
+%     subplot 121; 
+%     maxwell_view(grid, eps, E, 'y', [nan -500 nan], 'field_phase', nan); 
+%     subplot 122; 
+%     maxwell_view(grid, eps, E, 'y', [nan nan 0], 'field_phase', nan); 
+%     pause
+
+end
+
+
+
+function [grid, eps, J, wg_pos] = make_structure(wvlen, params, flatten)
+
+        %
+        % Get the structural parameters.
+        %
+
+    n = numel(params)/2;
+    if n == 0 % Used to measure input power.
+        no_struct = true;
+    else
+        no_struct = false;
+        x_shift = params(1:n);
+        y_shift = params(n+1:end);
+        r_shift = zeros(n, 1); % No radius shift.
+    end
+
+
+        %
+        % Create grid.
+        %
+
+    % Make a grid for a wavelength of 900 nm.
+    delta = 40;
+    omega = 2*pi/wvlen;
+
+    my_size = 2500;
+    x = -my_size : delta : my_size+500;
+    y = -my_size : delta : my_size;
+    z = -1000 : delta : 1000;
+
+    if flatten
+        y = -500;
+    end
+
+    [grid, eps] = maxwell_grid(omega, x, y, z); 
+
+
+        %
+        % Setup the structure.
+        %
+
+    % Material permittivities.
+    si = 13;
+    ox = 2.25;
+    air = 1;
+
+    % Structural constants.
+    wg_pos = [-500 500];
+    wg_width = 220;
+    height = 440;
+    radius = 150;
+    a = 500;
+
+    if ~no_struct
+        % Draw the silicon slab. 
+        eps = maxwell_shape(grid, eps, si, ...
+                            maxwell_box([0 0 0], [4e3 4e3 height]));
+
+        % Draw the silicon waveguides. 
+        eps = maxwell_shape(grid, eps, si, ...
+                maxwell_box([max(x) wg_pos(1) 0], [2*max(x) wg_width height]));
+        eps = maxwell_shape(grid, eps, si, ...
+                maxwell_box([max(x) wg_pos(2) 0], [2*max(x) wg_width height]));
+
+        % Draw the holes.
+        k = 1;
+        j_range = -3 : 3;
+        if flatten 
+            j_range = -1;
+        end
+        for i = -3 : 3 
+            for j = j_range
+                pos = a * [i, j] + [x_shift(k), y_shift(k)];
+                r = (radius + r_shift(k));
+                if r > 0
+                    my_cyl = maxwell_cyl_smooth([pos 0], r, 2*height, ...
+                                                'smooth_dist', delta);
+                    eps = maxwell_shape(grid, eps, air, my_cyl);
+                end
+                k = k + 1;
+            end
+        end
+
+        % Draw oxide slab.
+        eps = maxwell_shape(grid, eps, ox, ...
+                    maxwell_box([0 0 min(z)-height/2+delta], ...
+                                [inf inf 2*abs(min(z))]));
+    end
+
+%     subplot 121; maxwell_view(grid, eps, [], 'y', [nan wg_pos(1) nan]);
+%     subplot 122; maxwell_view(grid, eps, [], 'y', [nan nan 0]);
+%     pause
+
+    if flatten
+        my_plane = [nan 0 nan];
+    else
+        my_plane = [nan nan 0];
+    end
+    maxwell_view(grid, eps, [], 'y', my_plane);
+
+        %
+        % Excite with a Gaussian wave.
+        %
+
+    J = maxwell_gaussian(grid, eps, [0 0 500], [2*my_size 2*my_size -inf], ...
+                        'y', 500, 2000);
+end
+
+##### SOURCE END #####
+--></body></html>

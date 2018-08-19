@@ -1,0 +1,431 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxwell_shape</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxwell_shape.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxwell_shape</h1><!--introduction--><p>Add shapes of constant material to the simulation domain.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Source code</a></li></ul></div><h2>Syntax<a name="1"></a></h2><div><ul><li><tt>eps = maxwell_shape(grid, eps, eps_val, shape_fun)</tt>   modifies the shape structure <tt>eps</tt> by inserting <tt>eps_val</tt>   in the volume described by <tt>shape_fun</tt>.</li></ul></div><div><ul><li><tt>[eps, mu] = maxwell_shape(grid, [eps, mu], [eps_val mu_val], shape_fun)</tt>   modifies both <tt>eps</tt> and <tt>mu</tt>.</li></ul></div><div><ul><li><tt>... = maxwell_shape(..., 'upsample_ratio', ratio)</tt>   allows for an upsampling ratio of <tt>ratio</tt>, defaults to <tt>ratio = 1</tt>.</li></ul></div><div><ul><li><tt>... = maxwell_shape(..., 'f_avg', f_avg, 'f_rep', f_rep)</tt>   allows for custom functions which determine the averaging function   for a grid point (<tt>f_avg</tt>) and how values of <tt>eps</tt> (and <tt>mu</tt>)   are replaced (<tt>f_rep</tt>).</li></ul></div><h2>Description<a name="2"></a></h2><p><tt>maxwell_shape</tt> modifies the permittivity (and permeability, if desired) of the simulation domain. It does so by computing the approximate fill-fraction of a shape for every grid cell, and then inserting the appropriately scaled material value in that cell. As such, only shapes with constant epsilon and mu are supported.</p><p><tt>maxwell_shape</tt> is designed to be both simple and extensible at the same time. This is achieved in the following way:</p><div><ul><li><tt>shape_fun</tt> is a relatively simple function handle that   only has to determine whether a point is inside or outside a shape.   This is to enable the user to easily define arbitrary shapes   without having to worry about grids, grid offsets, etc...   Please use <tt>maxwell_box</tt> and <tt>maxwell_cyl</tt> as templates for creating   your own <tt>shape_fun</tt>.</li></ul></div><div><ul><li>The <tt>'f_avg'</tt> and <tt>'f_rep'</tt> functions are provided so that the user   can customize how the average material parameter of the cell should   be calculated.   This level of extensibility is provided because the averaging of   material parameters is still largely an unsolved problem.   By default, <tt>'f_avg'</tt> is a simple averaging function and   <tt>'f_rep'</tt> weights the new material value against the existing one   according to a cell's fill-fraction.   Since these functions are somewhat involved, the advanced user is   directed to the source code for additional information.</li></ul></div><p>As a last note, one of the disadvantages to this approach is that the removal of shapes is imperfect, meaning that writing the same shape twice, with different material values, will not be exactly equivalent to simply writing it once with the second material value only. There will be slight differences at the edge of the shape.</p><h2>Source code<a name="3"></a></h2><pre class="codeinput"><span class="keyword">function</span> [eps, mu] = maxwell_shape(grid, eps_mu, val, f, varargin)
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Validate and parse inputs.</span>
+        <span class="comment">%</span>
+
+    my_validate_grid(grid, mfilename);
+
+    [eps, mu] = my_split(eps_mu, grid.shape, {<span class="string">'eps'</span>, <span class="string">'mu'</span>}, mfilename);
+    my_validate_field(eps, grid.shape, <span class="string">'eps'</span>, mfilename);
+
+    <span class="keyword">if</span> isempty(mu)
+        validateattributes(val, {<span class="string">'double'</span>}, {<span class="string">'scalar'</span>, <span class="string">'nonnan'</span>, <span class="string">'finite'</span>}, <span class="keyword">...</span>
+                           mfilename, <span class="string">'eps_val'</span>);
+    <span class="keyword">else</span>
+        my_validate_field(mu, grid.shape, <span class="string">'mu'</span>, mfilename);
+        validateattributes(val, {<span class="string">'double'</span>}, {<span class="string">'numel'</span>, 2, <span class="string">'nonnan'</span>, <span class="string">'finite'</span>}, <span class="keyword">...</span>
+                           mfilename, <span class="string">'[eps_val mu_val]'</span>);
+    <span class="keyword">end</span>
+
+    validateattributes(f, {<span class="string">'function_handle'</span>}, {}, mfilename, <span class="string">'f'</span>);
+
+    <span class="comment">% Optional arguments.</span>
+    options = my_parse_options(struct(  <span class="string">'upsample_ratio'</span>, 1, <span class="keyword">...</span>
+                                        <span class="string">'f_avg'</span>, @default_f_avg, <span class="keyword">...</span>
+                                        <span class="string">'f_rep'</span>, @default_f_rep), <span class="keyword">...</span>
+                                varargin, mfilename);
+    validateattributes(options.upsample_ratio, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+        {<span class="string">'positive'</span>, <span class="string">'integer'</span>, <span class="string">'scalar'</span>}, mfilename, <span class="string">'upsample_ratio'</span>);
+    validateattributes(options.f_avg, {<span class="string">'function_handle'</span>}, {}, <span class="keyword">...</span>
+                        mfilename, <span class="string">'f_avg'</span>);
+    validateattributes(options.f_rep, {<span class="string">'function_handle'</span>}, {}, <span class="keyword">...</span>
+                        mfilename, <span class="string">'f_rep'</span>);
+
+    <span class="comment">% Test if we can get a bounding box.</span>
+    <span class="comment">% TODO: Check bounding box has non-zero (positive) volume.</span>
+    <span class="keyword">try</span>
+        [~, bnd_box] = f(0, 0, 0);
+        validateattributes(bnd_box, {<span class="string">'cell'</span>}, {<span class="string">'numel'</span>, 2});
+        validateattributes(bnd_box{1}, {<span class="string">'numeric'</span>}, {<span class="string">'numel'</span>, 3});
+        validateattributes(bnd_box{2}, {<span class="string">'numeric'</span>}, {<span class="string">'numel'</span>, 3});
+    <span class="keyword">catch</span>
+        bnd_box = {[-Inf -Inf -Inf], [Inf Inf Inf]};
+    <span class="keyword">end</span>
+
+    <span class="comment">% Test if we can give multiple points to f.</span>
+    <span class="keyword">try</span>
+        out = f([0 1], [2 3], [4 5]);
+        multipoint = true;
+    <span class="keyword">catch</span>
+        multipoint = false;
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Update material fields.</span>
+        <span class="comment">%</span>
+
+    [eps_grid_pos, mu_grid_pos] = my_s2pos(grid); <span class="comment">% Get grid positions.</span>
+
+    <span class="comment">% Update components of epsilon.</span>
+    params = {bnd_box, f, options.upsample_ratio, multipoint, <span class="keyword">...</span>
+                options.f_avg, options.f_rep};
+    <span class="keyword">for</span> k = 1 : 3
+        eps{k} = my_update(eps_grid_pos{k}, eps{k}, k, val(1), params{:});
+        <span class="keyword">if</span> ~isempty(mu)
+            mu{k} = my_update(mu_grid_pos{k}, mu{k}, k, val(2), params{:});
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+
+<span class="keyword">function</span> [mat] = my_update(pos, mat, dir, val, box, f, <span class="keyword">...</span>
+                            up_ratio, multipoint, f_avg, f_rep)
+<span class="comment">% Updates a single component of a field.</span>
+
+    <span class="comment">% Determine box on which to evaluate f.</span>
+    <span class="keyword">for</span> k = 1 : 3
+        <span class="keyword">if</span> box{1}(k) &lt;= pos{k}(1)
+            ind = 1;
+        <span class="keyword">elseif</span> box{1}(k) &gt; pos{k}(end) <span class="comment">% Not in the space.</span>
+            <span class="keyword">return</span>
+        <span class="keyword">else</span>
+            ind = max(find(pos{k} &lt;= box{1}(k)));
+        <span class="keyword">end</span>
+        s{1}(k) = ind;
+
+        <span class="keyword">if</span> box{2}(k) &gt;= pos{k}(end)
+            ind = length(pos{k});
+        <span class="keyword">elseif</span> box{2}(k) &lt; pos{k}(1) <span class="comment">% Not in the space.</span>
+            <span class="keyword">return</span>
+        <span class="keyword">else</span>
+            ind = min(find(pos{k} &gt;= box{2}(k)));
+        <span class="keyword">end</span>
+        s{2}(k) = ind;
+        <span class="keyword">if</span> s{1}(k) == s{2}(k) <span class="comment">% 2D special case.</span>
+            s{2}(k) = s{2}(k) + 1;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+
+    <span class="comment">% Produce upsampled grid.</span>
+    <span class="keyword">for</span> k = 1 : 3
+        c{k} = zeros(up_ratio * (s{2}(k) - s{1}(k)), 1);
+        cnt = 0;
+        <span class="keyword">for</span> l = s{1}(k) : s{2}(k)-1
+            c{k}(cnt*up_ratio+[1:up_ratio]) = pos{k}(l) + <span class="keyword">...</span>
+                (([0.5 : up_ratio] ./ up_ratio) .* (pos{k}(l+1)-pos{k}(l)));
+            cnt = cnt + 1;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+
+    <span class="comment">% Obtain upsampled values.</span>
+    [x, y, z] = ndgrid(c{1}, c{2}, c{3});
+    <span class="keyword">if</span> multipoint
+        inside_shape = f(x(:), y(:), z(:));
+    <span class="keyword">else</span>
+        <span class="keyword">for</span> k = 1 : numel(x)
+            inside_shape(k) = f(x(k), y(k), z(k));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    inside_shape = reshape(inside_shape, size(x));
+
+    <span class="keyword">if</span> up_ratio == 1
+        fill_fraction = inside_shape;
+    <span class="keyword">else</span>
+        <span class="comment">% Downsample results by averaging.</span>
+        <span class="keyword">for</span> i = 1 : (s{2}(1) - s{1}(1))
+            <span class="keyword">for</span> j = 1 : (s{2}(2) - s{1}(2))
+                <span class="keyword">for</span> k = 1 : (s{2}(3) - s{1}(3))
+                    fill_fraction(i, j, k) = f_avg(inside_shape(<span class="keyword">...</span>
+                                        (i-1)*up_ratio+[1:up_ratio], <span class="keyword">...</span>
+                                        (j-1)*up_ratio+[1:up_ratio], <span class="keyword">...</span>
+                                        (k-1)*up_ratio+[1:up_ratio]), dir);
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% Make changes to the material.</span>
+    m = mat(s{1}(1):s{2}(1)-1, s{1}(2):s{2}(2)-1, s{1}(3):s{2}(3)-1);
+    mat(s{1}(1):s{2}(1)-1, s{1}(2):s{2}(2)-1, s{1}(3):s{2}(3)-1) = <span class="keyword">...</span>
+        reshape(f_rep(val, fill_fraction(:), m(:), dir), size(m));
+
+
+<span class="keyword">function</span> [res] = default_f_avg(z, dir)
+    res = mean(z(:));
+
+<span class="keyword">function</span> [res] = default_f_rep(val, ff, m, dir)
+    res = ff * val + (1-ff) .* m;
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxwell_shape
+% Add shapes of constant material to the simulation domain.
+
+%%% Syntax
+%
+% * |eps = maxwell_shape(grid, eps, eps_val, shape_fun)|
+%   modifies the shape structure |eps| by inserting |eps_val| 
+%   in the volume described by |shape_fun|.
+%
+% * |[eps, mu] = maxwell_shape(grid, [eps, mu], [eps_val mu_val], shape_fun)|
+%   modifies both |eps| and |mu|.
+%
+% * |... = maxwell_shape(..., 'upsample_ratio', ratio)|
+%   allows for an upsampling ratio of |ratio|, defaults to |ratio = 1|.
+%
+% * |... = maxwell_shape(..., 'f_avg', f_avg, 'f_rep', f_rep)|
+%   allows for custom functions which determine the averaging function
+%   for a grid point (|f_avg|) and how values of |eps| (and |mu|) 
+%   are replaced (|f_rep|).
+
+%%% Description
+% |maxwell_shape| modifies the permittivity (and permeability, if desired)
+% of the simulation domain.
+% It does so by computing the approximate fill-fraction of a shape
+% for every grid cell, and then inserting the appropriately scaled
+% material value in that cell.
+% As such, only shapes with constant epsilon and mu are supported.
+%
+% |maxwell_shape| is designed to be both simple and extensible at the same time.
+% This is achieved in the following way:
+%
+% * |shape_fun| is a relatively simple function handle that 
+%   only has to determine whether a point is inside or outside a shape.
+%   This is to enable the user to easily define arbitrary shapes
+%   without having to worry about grids, grid offsets, etc...
+%   Please use |maxwell_box| and |maxwell_cyl| as templates for creating
+%   your own |shape_fun|.
+%
+% * The |'f_avg'| and |'f_rep'| functions are provided so that the user
+%   can customize how the average material parameter of the cell should
+%   be calculated.
+%   This level of extensibility is provided because the averaging of 
+%   material parameters is still largely an unsolved problem.
+%   By default, |'f_avg'| is a simple averaging function and
+%   |'f_rep'| weights the new material value against the existing one
+%   according to a cell's fill-fraction.
+%   Since these functions are somewhat involved, the advanced user is
+%   directed to the source code for additional information.
+%
+% As a last note, one of the disadvantages to this approach is that the removal
+% of shapes is imperfect, meaning that writing the same shape twice,
+% with different material values, will not be exactly equivalent
+% to simply writing it once with the second material value only.
+% There will be slight differences at the edge of the shape.
+% 
+
+%%% Source code
+function [eps, mu] = maxwell_shape(grid, eps_mu, val, f, varargin)
+
+
+        %
+        % Validate and parse inputs.
+        %
+
+    my_validate_grid(grid, mfilename);
+
+    [eps, mu] = my_split(eps_mu, grid.shape, {'eps', 'mu'}, mfilename);
+    my_validate_field(eps, grid.shape, 'eps', mfilename);
+
+    if isempty(mu)
+        validateattributes(val, {'double'}, {'scalar', 'nonnan', 'finite'}, ...
+                           mfilename, 'eps_val'); 
+    else
+        my_validate_field(mu, grid.shape, 'mu', mfilename);
+        validateattributes(val, {'double'}, {'numel', 2, 'nonnan', 'finite'}, ...
+                           mfilename, '[eps_val mu_val]'); 
+    end
+
+    validateattributes(f, {'function_handle'}, {}, mfilename, 'f');
+
+    % Optional arguments.
+    options = my_parse_options(struct(  'upsample_ratio', 1, ...
+                                        'f_avg', @default_f_avg, ...
+                                        'f_rep', @default_f_rep), ...
+                                varargin, mfilename);
+    validateattributes(options.upsample_ratio, {'numeric'}, ...
+        {'positive', 'integer', 'scalar'}, mfilename, 'upsample_ratio');
+    validateattributes(options.f_avg, {'function_handle'}, {}, ...
+                        mfilename, 'f_avg');
+    validateattributes(options.f_rep, {'function_handle'}, {}, ...
+                        mfilename, 'f_rep');
+
+    % Test if we can get a bounding box.
+    % TODO: Check bounding box has non-zero (positive) volume.
+    try 
+        [~, bnd_box] = f(0, 0, 0);
+        validateattributes(bnd_box, {'cell'}, {'numel', 2});
+        validateattributes(bnd_box{1}, {'numeric'}, {'numel', 3});
+        validateattributes(bnd_box{2}, {'numeric'}, {'numel', 3});
+    catch
+        bnd_box = {[-Inf -Inf -Inf], [Inf Inf Inf]};
+    end
+
+    % Test if we can give multiple points to f.
+    try 
+        out = f([0 1], [2 3], [4 5]);
+        multipoint = true;
+    catch
+        multipoint = false;
+    end
+
+
+        %
+        % Update material fields.
+        %
+
+    [eps_grid_pos, mu_grid_pos] = my_s2pos(grid); % Get grid positions.
+
+    % Update components of epsilon.
+    params = {bnd_box, f, options.upsample_ratio, multipoint, ...
+                options.f_avg, options.f_rep};
+    for k = 1 : 3
+        eps{k} = my_update(eps_grid_pos{k}, eps{k}, k, val(1), params{:}); 
+        if ~isempty(mu)
+            mu{k} = my_update(mu_grid_pos{k}, mu{k}, k, val(2), params{:});
+        end
+    end
+
+
+function [mat] = my_update(pos, mat, dir, val, box, f, ...
+                            up_ratio, multipoint, f_avg, f_rep)
+% Updates a single component of a field.
+
+    % Determine box on which to evaluate f.
+    for k = 1 : 3
+        if box{1}(k) <= pos{k}(1)
+            ind = 1;
+        elseif box{1}(k) > pos{k}(end) % Not in the space.
+            return
+        else
+            ind = max(find(pos{k} <= box{1}(k)));
+        end
+        s{1}(k) = ind;
+
+        if box{2}(k) >= pos{k}(end)
+            ind = length(pos{k});
+        elseif box{2}(k) < pos{k}(1) % Not in the space.
+            return
+        else
+            ind = min(find(pos{k} >= box{2}(k)));
+        end
+        s{2}(k) = ind;
+        if s{1}(k) == s{2}(k) % 2D special case.
+            s{2}(k) = s{2}(k) + 1;
+        end
+    end
+
+
+    % Produce upsampled grid.
+    for k = 1 : 3
+        c{k} = zeros(up_ratio * (s{2}(k) - s{1}(k)), 1);
+        cnt = 0;
+        for l = s{1}(k) : s{2}(k)-1
+            c{k}(cnt*up_ratio+[1:up_ratio]) = pos{k}(l) + ...
+                (([0.5 : up_ratio] ./ up_ratio) .* (pos{k}(l+1)-pos{k}(l)));
+            cnt = cnt + 1;
+        end
+    end
+
+
+    % Obtain upsampled values.
+    [x, y, z] = ndgrid(c{1}, c{2}, c{3});
+    if multipoint
+        inside_shape = f(x(:), y(:), z(:));
+    else
+        for k = 1 : numel(x)
+            inside_shape(k) = f(x(k), y(k), z(k));
+        end
+    end
+    inside_shape = reshape(inside_shape, size(x));
+
+    if up_ratio == 1
+        fill_fraction = inside_shape;
+    else
+        % Downsample results by averaging.
+        for i = 1 : (s{2}(1) - s{1}(1))
+            for j = 1 : (s{2}(2) - s{1}(2))
+                for k = 1 : (s{2}(3) - s{1}(3))
+                    fill_fraction(i, j, k) = f_avg(inside_shape(...
+                                        (i-1)*up_ratio+[1:up_ratio], ...
+                                        (j-1)*up_ratio+[1:up_ratio], ...
+                                        (k-1)*up_ratio+[1:up_ratio]), dir);
+                end
+            end
+        end
+    end
+
+    % Make changes to the material.
+    m = mat(s{1}(1):s{2}(1)-1, s{1}(2):s{2}(2)-1, s{1}(3):s{2}(3)-1);
+    mat(s{1}(1):s{2}(1)-1, s{1}(2):s{2}(2)-1, s{1}(3):s{2}(3)-1) = ...
+        reshape(f_rep(val, fill_fraction(:), m(:), dir), size(m));
+
+
+function [res] = default_f_avg(z, dir)
+    res = mean(z(:));
+
+function [res] = default_f_rep(val, ff, m, dir) 
+    res = ff * val + (1-ff) .* m;
+
+##### SOURCE END #####
+--></body></html>

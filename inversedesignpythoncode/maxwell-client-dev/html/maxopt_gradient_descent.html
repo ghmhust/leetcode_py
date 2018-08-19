@@ -1,0 +1,283 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxopt_gradient_descent</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxopt_gradient_descent.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxopt_gradient_descent</h1><!--introduction--><p>Simple gradient descent optimization algorithm.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li></ul></div><h2>Syntax<a name="1"></a></h2><div><ul><li><tt>maxopt_gradient_descent(fun, x0)</tt>   attempts to minimize the function <tt>fun</tt> via gradient-descent   starting at the point <tt>x0</tt>.   <tt>fun</tt> is a function handle that returns both   the value of the fitness function (figure of merit) and   the the gradient of said function with respect to <tt>x</tt>.</li></ul></div><div><ul><li><tt>[x, fval, hist] = maxopt_gradient_descent(...)</tt>   outputs <tt>x</tt>, the final</li></ul></div><h2>Description<a name="2"></a></h2><p><tt>maxopt_gradient_descent</tt> is a simple function that performs a simple gradient-descent optmization algorithm. <tt>maxopt_gradient_descent</tt> keeps a step even if it increases (instead of decreasing) the figure of merit. However, in this case, the step-length will be decreased.</p><pre class="codeinput"><span class="keyword">function</span> [x_opt, f_opt, hist] = maxopt_gradient_descent(fun, x0, varargin)
+
+        <span class="comment">%</span>
+        <span class="comment">% Validate and parse inputs.</span>
+        <span class="comment">%</span>
+
+    validateattributes(fun, {<span class="string">'function_handle'</span>}, {}, mfilename, <span class="string">'fun'</span>);
+
+    validateattributes(x0, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                        {<span class="string">'vector'</span>, <span class="string">'real'</span>, <span class="string">'finite'</span>, <span class="string">'nonnan'</span>}, <span class="keyword">...</span>
+                        mfilename, <span class="string">'x0'</span>);
+
+    <span class="comment">% Optional parameters.</span>
+    options = my_parse_options(struct(  <span class="string">'init_step'</span>, 1, <span class="keyword">...</span>
+                                        <span class="string">'max_delta'</span>, 1, <span class="keyword">...</span>
+                                        <span class="string">'step_shrink'</span>, 0.5, <span class="keyword">...</span>
+                                        <span class="string">'step_big_shrink'</span>, 0.1, <span class="keyword">...</span>
+                                        <span class="string">'step_grow'</span>, 1.1, <span class="keyword">...</span>
+                                        <span class="string">'min_step'</span>, 1e-3, <span class="keyword">...</span>
+                                        <span class="string">'max_iters'</span>, 100, <span class="keyword">...</span>
+        <span class="string">'vis_progress'</span>, @(hist) fprintf(<span class="string">'%d: %e\n'</span>, length(hist), hist(end))), <span class="keyword">...</span>
+                                varargin, mfilename);
+
+    simple_check = @(var, var_name) <span class="keyword">...</span>
+        validateattributes(var, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                        {<span class="string">'positive'</span>, <span class="string">'scalar'</span>, <span class="string">'finite'</span>, <span class="string">'nonnan'</span>}, <span class="keyword">...</span>
+                        mfilename, var_name);
+
+    simple_check(options.init_step, <span class="string">'init_step'</span>);
+    simple_check(options.max_delta, <span class="string">'max_delta'</span>);
+    simple_check(options.step_shrink, <span class="string">'step_shrink'</span>);
+    simple_check(options.step_shrink, <span class="string">'step_big_shrink'</span>);
+    simple_check(options.step_grow, <span class="string">'step_grow'</span>);
+    simple_check(options.max_iters, <span class="string">'max_iters'</span>);
+
+    validateattributes(options.vis_progress, {<span class="string">'function_handle'</span>}, {}, <span class="keyword">...</span>
+                        mfilename, <span class="string">'vis_progress'</span>);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Perform minimization.</span>
+        <span class="comment">%</span>
+
+    x = x0;
+    [f, dx] = fun(x);
+    step_size = options.init_step;
+    f_opt = f;
+    x_opt = x;
+    <span class="keyword">for</span> k = 1 : options.max_iters
+        hist(k) = f;
+        options.vis_progress(hist, step_size, x);
+
+<span class="comment">%         % fprintf('step size: %e\n', step_size);</span>
+<span class="comment">%         max_step = step_size * max(abs(dx));</span>
+<span class="comment">%         if max_step &gt; options.max_delta</span>
+<span class="comment">%             dx = dx ./ max_step;</span>
+<span class="comment">%         end</span>
+
+<span class="comment">%         dx_over = step_size * abs(dx) &gt; options.max_delta;</span>
+<span class="comment">%         dx = dx_over .* (dx ./ abs(dx)) * (options.max_delta * step_size) ...</span>
+<span class="comment">%             + ~dx_over .* dx;</span>
+
+        x_step = step_size * dx;
+        x_step = (abs(x_step) &lt; options.max_delta) .* x_step + <span class="keyword">...</span>
+                    (abs(x_step) &gt;= options.max_delta) .* options.max_delta;
+        x1 = x - x_step;
+        [f1, dx1] = fun(x1);
+
+        <span class="keyword">if</span> f1 &lt; f <span class="comment">% Grow.</span>
+            step_size = step_size * options.step_grow;
+        <span class="keyword">else</span> <span class="comment">% Shrink.</span>
+            step_size = step_size * options.step_shrink;
+        <span class="keyword">end</span>
+
+        <span class="keyword">if</span> (f1 &lt; f/2) || (any([f f1]) &gt; 0) <span class="comment">% Accept as long as we still have half of original fitness.</span>
+            f = f1;
+            x = x1;
+            dx = dx1;
+        <span class="keyword">else</span>
+            step_size = step_size * options.step_big_shrink;
+        <span class="keyword">end</span>
+
+        <span class="keyword">if</span> f1 &lt; f_opt <span class="comment">% Check if currently the best we got.</span>
+            f_opt = f1;
+            x_opt = x1;
+        <span class="keyword">end</span>
+
+        <span class="keyword">if</span> step_size &lt; options.min_step
+            step_size = options.min_step; <span class="comment">% Don't allow step_size below minimum.</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxopt_gradient_descent
+% Simple gradient descent optimization algorithm.
+
+%%% Syntax
+%
+% * |maxopt_gradient_descent(fun, x0)|
+%   attempts to minimize the function |fun| via gradient-descent
+%   starting at the point |x0|.
+%   |fun| is a function handle that returns both 
+%   the value of the fitness function (figure of merit) and
+%   the the gradient of said function with respect to |x|.
+%   
+% * |[x, fval, hist] = maxopt_gradient_descent(...)|
+%   outputs |x|, the final 
+%
+
+%%% Description
+% |maxopt_gradient_descent| is a simple function that performs a simple 
+% gradient-descent optmization algorithm.
+% |maxopt_gradient_descent| keeps a step even if it increases 
+% (instead of decreasing) the figure of merit.
+% However, in this case, the step-length will be decreased.
+%
+
+function [x_opt, f_opt, hist] = maxopt_gradient_descent(fun, x0, varargin)
+
+        %
+        % Validate and parse inputs.
+        %
+
+    validateattributes(fun, {'function_handle'}, {}, mfilename, 'fun');
+
+    validateattributes(x0, {'numeric'}, ...
+                        {'vector', 'real', 'finite', 'nonnan'}, ...
+                        mfilename, 'x0');
+        
+    % Optional parameters.
+    options = my_parse_options(struct(  'init_step', 1, ...
+                                        'max_delta', 1, ...
+                                        'step_shrink', 0.5, ...
+                                        'step_big_shrink', 0.1, ...
+                                        'step_grow', 1.1, ...
+                                        'min_step', 1e-3, ...
+                                        'max_iters', 100, ...
+        'vis_progress', @(hist) fprintf('%d: %e\n', length(hist), hist(end))), ...
+                                varargin, mfilename);
+
+    simple_check = @(var, var_name) ...
+        validateattributes(var, {'numeric'}, ...
+                        {'positive', 'scalar', 'finite', 'nonnan'}, ...
+                        mfilename, var_name);
+
+    simple_check(options.init_step, 'init_step');
+    simple_check(options.max_delta, 'max_delta');
+    simple_check(options.step_shrink, 'step_shrink');
+    simple_check(options.step_shrink, 'step_big_shrink');
+    simple_check(options.step_grow, 'step_grow');
+    simple_check(options.max_iters, 'max_iters');
+
+    validateattributes(options.vis_progress, {'function_handle'}, {}, ...
+                        mfilename, 'vis_progress');
+
+
+        %
+        % Perform minimization.
+        %
+
+    x = x0;
+    [f, dx] = fun(x);
+    step_size = options.init_step;
+    f_opt = f;
+    x_opt = x;
+    for k = 1 : options.max_iters
+        hist(k) = f;
+        options.vis_progress(hist, step_size, x);
+
+%         % fprintf('step size: %e\n', step_size);
+%         max_step = step_size * max(abs(dx));
+%         if max_step > options.max_delta
+%             dx = dx ./ max_step;
+%         end
+
+%         dx_over = step_size * abs(dx) > options.max_delta;
+%         dx = dx_over .* (dx ./ abs(dx)) * (options.max_delta * step_size) ...
+%             + ~dx_over .* dx;
+
+        x_step = step_size * dx;
+        x_step = (abs(x_step) < options.max_delta) .* x_step + ...
+                    (abs(x_step) >= options.max_delta) .* options.max_delta;
+        x1 = x - x_step;
+        [f1, dx1] = fun(x1);
+
+        if f1 < f % Grow.
+            step_size = step_size * options.step_grow;
+        else % Shrink.
+            step_size = step_size * options.step_shrink;
+        end
+
+        if (f1 < f/2) || (any([f f1]) > 0) % Accept as long as we still have half of original fitness.
+            f = f1;
+            x = x1;
+            dx = dx1;
+        else
+            step_size = step_size * options.step_big_shrink;
+        end
+
+        if f1 < f_opt % Check if currently the best we got.
+            f_opt = f1;
+            x_opt = x1;
+        end
+
+        if step_size < options.min_step
+            step_size = options.min_step; % Don't allow step_size below minimum.
+        end
+    end
+
+        
+
+
+
+
+##### SOURCE END #####
+--></body></html>

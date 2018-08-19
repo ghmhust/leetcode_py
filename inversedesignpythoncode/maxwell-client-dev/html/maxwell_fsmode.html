@@ -1,0 +1,436 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxwell_fsmode</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxwell_fsmode.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxwell_fsmode</h1><!--introduction--><p>Excitation source for arbitrary free-space modes.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Source code</a></li></ul></div><h2>Syntax<a name="1"></a></h2><div><ul><li><tt>J = maxwell_fsmode(grid, eps, plane_size, plane_pos, mode_fun)</tt>   computes the current source needed to excite an arbitrary free-space mode.   The mode is determined via the user-supplied function handle <tt>mode_fun</tt>.   <tt>mode_fun</tt> must be of the form <tt>E = mode_fun(w, x, y, z)</tt> where   <tt>E</tt> is the E-field of the desired mode for a polarization of <tt>w</tt>   (which can be <tt>1</tt>, <tt>2</tt>, or <tt>3</tt> for x-, y-, or z-components of the E-field)   at the position <tt>(x, y, z)</tt>.   Similar to the <tt>maxwell_wgmode</tt> function, the excitation is provided   at the finite plane located at <tt>plane_pos</tt>,   which is of size <tt>plane_size</tt>.   One of the elements of <tt>plane_size</tt> must be either <tt>+inf</tt> or <tt>-inf</tt>   in order to denote the directionality of the desired waveguide mode.</li></ul></div><div><ul><li><tt>... = maxwell_fsmode(grid, [eps mu], ...)</tt>   allows for <tt>mu</tt> not equal to 1.</li></ul></div><div><ul><li><tt>... = maxwell_fsmode(..., 'focal_length', flen)</tt>   will attempt to produce the desired mode at a distance <tt>flen</tt>   away from the original excitation plane.   If <tt>flen</tt> is non-zero, then the evanescent (non-propagating) components   are eliminated from the mode.   <tt>flen</tt> defaults to <tt>0</tt>.</li></ul></div><h2>Description<a name="2"></a></h2><p><tt>maxwell_fsmode</tt> allows the user to generate arbitrary free-space modes and even to produce them at a distance away from the excitation plane. It is able to do so by converting the mode into the plane-wave basis and back-propagating the mode by the appropriate distance.</p><p>Note that <tt>maxwell_fsmode</tt> requires that the material parameters be uniform across the excitation plane. Lastly, although the source is attempted to be made single-directional, this does not yet work quite as well as <tt>maxwell_wgmode</tt>, which is near perfect.</p><h2>Source code<a name="3"></a></h2><pre class="codeinput"><span class="keyword">function</span> [J] = maxwell_fsmode(grid, eps_mu, plane_pos, plane_size, mode_fun, <span class="keyword">...</span>
+                                varargin)
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Validate and parse inputs.</span>
+        <span class="comment">%</span>
+
+    my_validate_grid(grid, mfilename);
+
+    [eps, mu] = my_split(eps_mu, grid.shape, {<span class="string">'eps'</span>, <span class="string">'mu'</span>}, mfilename);
+    <span class="keyword">if</span> isempty(mu)
+        mu = my_default_field(grid.shape, 1);
+    <span class="keyword">end</span>
+    my_validate_field(eps, grid.shape, <span class="string">'eps'</span>, mfilename);
+    my_validate_field(mu, grid.shape, <span class="string">'mu'</span>, mfilename);
+
+    validateattributes(plane_pos, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                {<span class="string">'nonnan'</span>, <span class="string">'finite'</span>, <span class="string">'numel'</span>, 3}, mfilename, <span class="string">'plane_pos'</span>);
+
+    validateattributes(plane_size, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                {<span class="string">'nonnan'</span>, <span class="string">'numel'</span>, 3}, mfilename, <span class="string">'plane_size'</span>);
+    <span class="keyword">if</span> length(find(isinf(plane_size))) ~= 1
+        error(<span class="string">'plane_size must have exactly 1 element equal to either +inf or -inf.'</span>);
+    <span class="keyword">end</span>
+
+    <span class="comment">% Optional arguments.</span>
+    options = my_parse_options(struct(  <span class="string">'focal_length'</span>, 0, <span class="keyword">...</span>
+                                        <span class="string">'view'</span>, false), <span class="keyword">...</span>
+                                varargin, mfilename);
+    validateattributes(options.focal_length, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                        {<span class="string">'real'</span>, <span class="string">'nonnan'</span>}, mfilename, <span class="string">'focal_length'</span>);
+    validateattributes(options.view, {<span class="string">'logical'</span>}, <span class="keyword">...</span>
+                        {<span class="string">'binary'</span>}, mfilename, <span class="string">'view'</span>);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Find plane (sub-grid) on which to put the free-space mode.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Determine desired direction of propagation.</span>
+    [p0, p1, prop_dir, prop_in_pos_dir] = <span class="keyword">...</span>
+                                    my_find_plane(grid, plane_pos, plane_size);
+
+    <span class="comment">% Get position information.</span>
+    pos = my_s2pos(grid);
+
+    <span class="comment">% Cut out the bounded plane.</span>
+    sub_shape = p1 - p0 + 1;
+    <span class="keyword">for</span> k = 1 : 3
+        <span class="keyword">for</span> l = 1 : 3
+            pos{l}{k} = pos{l}{k}(p0(k):p1(k));
+        <span class="keyword">end</span>
+        e{k} = eps{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+        m{k} = mu{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+    <span class="keyword">end</span>
+
+    <span class="comment">% Get uniform values of epsilon and mu.</span>
+    eps = [e{1}(:); e{2}(:); e{3}(:)];
+    mu =  [m{1}(:); m{2}(:); m{3}(:)];
+    eps_val = mean(eps);
+    mu_val = mean(mu);
+
+    <span class="keyword">if</span> any(eps ~= eps_val) || any(mu ~= mu_val)
+        error(<span class="string">'Material parameters must not vary over excitation plane.'</span>);
+    <span class="keyword">end</span>
+
+    <span class="comment">% Step size in propagation direction.</span>
+    prop_step = real(grid.s_dual{prop_dir}(p0(prop_dir)));
+
+    <span class="comment">% Helps us decide direction related signs.</span>
+    coeff = + 1 * (prop_in_pos_dir == true) - 1 * (prop_in_pos_dir == false);
+    coeff = coeff * sign(options.focal_length);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Get the mode shape.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Test if we can give multiple points to f.</span>
+    <span class="keyword">try</span>
+        out = mode_fun(1, [0 1], [2 3], [4 5]);
+        multipoint = true;
+    <span class="keyword">catch</span>
+        multipoint = false;
+    <span class="keyword">end</span>
+
+    <span class="keyword">for</span> k = 1 : 3
+        [x, y, z] = ndgrid(pos{k}{1}, pos{k}{2}, pos{k}{3});
+        <span class="keyword">if</span> multipoint
+            E{k} = mode_fun(k, x, y, z);
+        <span class="keyword">else</span>
+            <span class="keyword">for</span> cnt = 1 : numel(x)
+                E{k}(cnt) = mode_fun(k, x(cnt), y(cnt), z(cnt));
+            <span class="keyword">end</span>
+            E{k} = reshape(E{k}, size(x));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Adjust to correct focal length.</span>
+        <span class="comment">%</span>
+
+    omega_eff = real(grid.omega) * sqrt(real(eps_val) * real(mu_val));
+    adj_prop_len = coeff * (abs(options.focal_length) + 0.5 * prop_step);
+    E = my_propagate_beam(omega_eff, prop_dir, -adj_prop_len, E, pos);
+
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Form current source.</span>
+        <span class="comment">%</span>
+
+    J = my_default_field(grid.shape, 0);
+
+    <span class="keyword">if</span> p0(prop_dir) ~= 1 &amp;&amp; p0(prop_dir) ~= grid.shape(prop_dir)
+        <span class="comment">% Shifted positions for directionality</span>
+        ps0 = p0;
+        ps1 = p1;
+        ps0(prop_dir) = ps0(prop_dir) - coeff;
+        ps1(prop_dir) = ps1(prop_dir) - coeff;
+
+        <span class="keyword">for</span> k = 1 : 3
+            J{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3)) = E{k};
+            <span class="keyword">if</span> coeff ~= 0
+                J{k}(ps0(1):ps1(1), ps0(2):ps1(2), ps0(3):ps1(3)) = -E{k} * <span class="keyword">...</span>
+                        exp(-1i * prop_step * omega_eff);
+            <span class="keyword">end</span>
+            J{k} = J{k} ./ (1i * prop_step); <span class="comment">% Scale with prop_step.</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Plot fields, if desired.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">if</span> options.view
+        f = {E{:}};
+        title_text = {<span class="string">'Ex'</span>, <span class="string">'Ey'</span>, <span class="string">'Ez'</span>};
+        <span class="keyword">for</span> k = 1 : 3
+            subplot(1, 3, k);
+            my_plot(reshape(real(f{k}), sub_shape));
+            title(title_text{k});
+        <span class="keyword">end</span>
+        drawnow;
+    <span class="keyword">end</span>
+
+
+<span class="keyword">function</span> my_plot(x)
+<span class="comment">% Helps with plotting.</span>
+    <span class="keyword">if</span> numel(find(size(x) ~= 1)) == 1 <span class="comment">% Detect 1D data.</span>
+        plot([real(x(:)), imag(x(:))], <span class="string">'.-'</span>);
+    <span class="keyword">else</span>
+        imagesc(squeeze(x).', (max(abs(x(:))) + eps) * [-1 1]);
+        colorbar
+        axis <span class="string">equal</span> <span class="string">tight</span>;
+        set(gca, <span class="string">'YDir'</span>, <span class="string">'normal'</span>);
+    <span class="keyword">end</span>
+    colormap(<span class="string">'jet'</span>);
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxwell_fsmode
+% Excitation source for arbitrary free-space modes.
+
+%%% Syntax
+%
+% * |J = maxwell_fsmode(grid, eps, plane_size, plane_pos, mode_fun)|
+%   computes the current source needed to excite an arbitrary free-space mode.
+%   The mode is determined via the user-supplied function handle |mode_fun|.
+%   |mode_fun| must be of the form |E = mode_fun(w, x, y, z)| where
+%   |E| is the E-field of the desired mode for a polarization of |w|
+%   (which can be |1|, |2|, or |3| for x-, y-, or z-components of the E-field)
+%   at the position |(x, y, z)|.
+%   Similar to the |maxwell_wgmode| function, the excitation is provided 
+%   at the finite plane located at |plane_pos|, 
+%   which is of size |plane_size|.
+%   One of the elements of |plane_size| must be either |+inf| or |-inf|
+%   in order to denote the directionality of the desired waveguide mode.
+%
+% * |... = maxwell_fsmode(grid, [eps mu], ...)|
+%   allows for |mu| not equal to 1.
+%
+% * |... = maxwell_fsmode(..., 'focal_length', flen)|
+%   will attempt to produce the desired mode at a distance |flen|
+%   away from the original excitation plane. 
+%   If |flen| is non-zero, then the evanescent (non-propagating) components
+%   are eliminated from the mode.
+%   |flen| defaults to |0|.
+%
+
+%%% Description
+% |maxwell_fsmode| allows the user to generate arbitrary free-space modes
+% and even to produce them at a distance away from the excitation plane.
+% It is able to do so by converting the mode into the plane-wave basis
+% and back-propagating the mode by the appropriate distance.
+% 
+% Note that |maxwell_fsmode| requires that the material parameters be uniform 
+% across the excitation plane. 
+% Lastly, although the source is attempted to be made single-directional,
+% this does not yet work quite as well as |maxwell_wgmode|, which is near perfect.
+%
+
+%%% Source code
+function [J] = maxwell_fsmode(grid, eps_mu, plane_pos, plane_size, mode_fun, ...
+                                varargin)
+
+
+        %
+        % Validate and parse inputs.
+        %
+
+    my_validate_grid(grid, mfilename);
+
+    [eps, mu] = my_split(eps_mu, grid.shape, {'eps', 'mu'}, mfilename);
+    if isempty(mu)
+        mu = my_default_field(grid.shape, 1); 
+    end
+    my_validate_field(eps, grid.shape, 'eps', mfilename);
+    my_validate_field(mu, grid.shape, 'mu', mfilename);
+
+    validateattributes(plane_pos, {'numeric'}, ...
+                {'nonnan', 'finite', 'numel', 3}, mfilename, 'plane_pos');
+
+    validateattributes(plane_size, {'numeric'}, ...
+                {'nonnan', 'numel', 3}, mfilename, 'plane_size');
+    if length(find(isinf(plane_size))) ~= 1
+        error('plane_size must have exactly 1 element equal to either +inf or -inf.');
+    end
+
+    % Optional arguments.
+    options = my_parse_options(struct(  'focal_length', 0, ...
+                                        'view', false), ...
+                                varargin, mfilename);
+    validateattributes(options.focal_length, {'numeric'}, ...
+                        {'real', 'nonnan'}, mfilename, 'focal_length');
+    validateattributes(options.view, {'logical'}, ...
+                        {'binary'}, mfilename, 'view');
+
+
+        %
+        % Find plane (sub-grid) on which to put the free-space mode.
+        %
+
+    % Determine desired direction of propagation.
+    [p0, p1, prop_dir, prop_in_pos_dir] = ...
+                                    my_find_plane(grid, plane_pos, plane_size);
+
+    % Get position information.
+    pos = my_s2pos(grid);
+
+    % Cut out the bounded plane.
+    sub_shape = p1 - p0 + 1;
+    for k = 1 : 3
+        for l = 1 : 3
+            pos{l}{k} = pos{l}{k}(p0(k):p1(k));
+        end
+        e{k} = eps{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+        m{k} = mu{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+    end
+
+    % Get uniform values of epsilon and mu.
+    eps = [e{1}(:); e{2}(:); e{3}(:)];
+    mu =  [m{1}(:); m{2}(:); m{3}(:)];
+    eps_val = mean(eps);
+    mu_val = mean(mu);
+
+    if any(eps ~= eps_val) || any(mu ~= mu_val)
+        error('Material parameters must not vary over excitation plane.');
+    end 
+    
+    % Step size in propagation direction.
+    prop_step = real(grid.s_dual{prop_dir}(p0(prop_dir))); 
+
+    % Helps us decide direction related signs.
+    coeff = + 1 * (prop_in_pos_dir == true) - 1 * (prop_in_pos_dir == false);
+    coeff = coeff * sign(options.focal_length);
+
+
+        %
+        % Get the mode shape.
+        %
+
+    % Test if we can give multiple points to f.
+    try 
+        out = mode_fun(1, [0 1], [2 3], [4 5]);
+        multipoint = true;
+    catch
+        multipoint = false;
+    end
+
+    for k = 1 : 3
+        [x, y, z] = ndgrid(pos{k}{1}, pos{k}{2}, pos{k}{3});
+        if multipoint
+            E{k} = mode_fun(k, x, y, z);
+        else
+            for cnt = 1 : numel(x)
+                E{k}(cnt) = mode_fun(k, x(cnt), y(cnt), z(cnt));
+            end
+            E{k} = reshape(E{k}, size(x));
+        end
+    end
+
+        
+        %
+        % Adjust to correct focal length.
+        %
+
+    omega_eff = real(grid.omega) * sqrt(real(eps_val) * real(mu_val));
+    adj_prop_len = coeff * (abs(options.focal_length) + 0.5 * prop_step);
+    E = my_propagate_beam(omega_eff, prop_dir, -adj_prop_len, E, pos);
+
+
+
+        %
+        % Form current source.
+        %
+
+    J = my_default_field(grid.shape, 0);
+
+    if p0(prop_dir) ~= 1 && p0(prop_dir) ~= grid.shape(prop_dir)
+        % Shifted positions for directionality
+        ps0 = p0;
+        ps1 = p1;
+        ps0(prop_dir) = ps0(prop_dir) - coeff;
+        ps1(prop_dir) = ps1(prop_dir) - coeff;
+
+        for k = 1 : 3
+            J{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3)) = E{k};
+            if coeff ~= 0
+                J{k}(ps0(1):ps1(1), ps0(2):ps1(2), ps0(3):ps1(3)) = -E{k} * ...
+                        exp(-1i * prop_step * omega_eff);
+            end 
+            J{k} = J{k} ./ (1i * prop_step); % Scale with prop_step.
+        end
+    end
+    
+
+        %
+        % Plot fields, if desired.
+        %
+
+    if options.view
+        f = {E{:}};
+        title_text = {'Ex', 'Ey', 'Ez'};
+        for k = 1 : 3
+            subplot(1, 3, k);
+            my_plot(reshape(real(f{k}), sub_shape));
+            title(title_text{k});
+        end
+        drawnow;
+    end
+
+
+function my_plot(x)
+% Helps with plotting.
+    if numel(find(size(x) ~= 1)) == 1 % Detect 1D data.
+        plot([real(x(:)), imag(x(:))], '.-');
+    else
+        imagesc(squeeze(x).', (max(abs(x(:))) + eps) * [-1 1]);
+        colorbar 
+        axis equal tight;
+        set(gca, 'YDir', 'normal');
+    end
+    colormap('jet');
+
+##### SOURCE END #####
+--></body></html>

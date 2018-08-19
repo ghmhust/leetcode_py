@@ -1,0 +1,3 @@
+[submodule "maxwell-solver"]
+	path = maxwell-solver
+	url = git@github.com:JesseLu/maxwell-solver

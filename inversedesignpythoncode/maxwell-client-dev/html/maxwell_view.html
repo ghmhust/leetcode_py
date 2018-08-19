@@ -1,0 +1,580 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxwell_view</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxwell_view.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxwell_view</h1><!--introduction--><p>View a slice of the field and/or structure.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Source code</a></li></ul></div><h2>Syntax<a name="1"></a></h2><div><ul><li><tt>maxwell_view(grid, eps, E, 'x', [nan 50 nan])</tt>   visualizes the <tt>y = 50</tt> slice of the x-components of <tt>eps</tt> and <tt>E</tt>.</li></ul></div><div><ul><li><tt>maxwell_view(grid, eps, [], 'x', [nan 50 nan])</tt>   visualizes only the structure.</li></ul></div><div><ul><li><tt>maxwell_view(grid, [], E, 'x', [nan 50 nan])</tt>   visualizes only the field.</li></ul></div><div><ul><li><tt>maxwell_view(grid, mu, H, 'x', [nan 50 nan], 'grid_type', 'dual')</tt>   allows for <tt>mu</tt> and <tt>H</tt> to be visualized in their correct locations,   accounting for the proper shift in the Yee cell.   <tt>'grid_type'</tt> defaults to <tt>'prim'</tt>, which assumes we are visualizing   E or eps.</li></ul></div><div><ul><li><tt>maxwell_view(..., 'field_phase', phase)</tt>   allows one to adjust the phase of the field,   where <tt>phase = 0</tt> is the real component,   <tt>phase = pi/2</tt> is the imaginary component,   <tt>phase = nan</tt> denotes the absolute value of the field,   and <tt>phase = inf</tt> will play a movie.   Defaults to 0.</li></ul></div><div><ul><li><tt>maxwell_view(..., 'clims', clims)</tt>   allows the user to determine the minimum and maximum values of   the colorbar.</li></ul></div><div><ul><li><tt>maxwell_view(..., 'hide_pml', true)</tt>   removes the pml region from the plot.</li></ul></div><div><ul><li><tt>maxwell_view(..., 'reverse_structure', true)</tt>   allows the user to reverse the grayscale/shading used to draw the structure.</li></ul></div><div><ul><li><tt>maxwell_view(..., 'show_grid', true)</tt>   overlays the grid on top of the plot.</li></ul></div><h2>Source code<a name="2"></a></h2><pre class="codeinput"><span class="keyword">function</span> maxwell_view(grid, mat, F, dir, slice_ind, varargin)
+
+        <span class="comment">%</span>
+        <span class="comment">% Validate and parse inputs.</span>
+        <span class="comment">%</span>
+
+    my_validate_grid(grid, mfilename);
+
+    <span class="keyword">if</span> isempty(mat) &amp;&amp; isempty(F)
+        error(<span class="string">'Either eps (mu) or E (H) must be non-empty.'</span>);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> ~isempty(mat)
+        my_validate_field(mat, grid.shape, <span class="string">'eps (or mu)'</span>, mfilename);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> ~isempty(F)
+        my_validate_field(F, grid.shape, <span class="string">'E (or H)'</span>, mfilename);
+    <span class="keyword">end</span>
+
+    validateattributes(dir, {<span class="string">'char'</span>}, {<span class="string">'scalar'</span>}, <span class="string">'dir'</span>, mfilename);
+    <span class="keyword">if</span> ~any(dir == <span class="string">'xyz'</span>)
+        error(<span class="string">'Input dir must be either ''x'', ''y'', or ''z''.'</span>);
+    <span class="keyword">end</span>
+
+    validateattributes(slice_ind, {<span class="string">'numeric'</span>}, {<span class="string">'numel'</span>, 3}, <span class="keyword">...</span>
+                        <span class="string">'slice_ind'</span>, mfilename);
+    <span class="keyword">if</span> sum(isnan(slice_ind)) ~= 2
+        error(<span class="string">'Exactly two elements of slice_ind must be nan.'</span>);
+    <span class="keyword">end</span>
+
+    <span class="comment">% Optional arguments.</span>
+    options = my_parse_options(struct(  <span class="string">'grid_type'</span>, <span class="string">'prim'</span>, <span class="keyword">...</span>
+                                        <span class="string">'clims'</span>, [], <span class="keyword">...</span>
+                                        <span class="string">'field_phase'</span>, 0, <span class="keyword">...</span>
+                                        <span class="string">'reverse_structure'</span>, false, <span class="keyword">...</span>
+                                        <span class="string">'hide_pml'</span>, false, <span class="keyword">...</span>
+                                        <span class="string">'show_grid'</span>, false), <span class="keyword">...</span>
+                                varargin, mfilename);
+
+    validateattributes(options.grid_type, {<span class="string">'char'</span>}, {}, <span class="string">'grid_type'</span>, mfilename);
+    <span class="keyword">if</span> ~strcmp(options.grid_type, <span class="string">'prim'</span>) &amp;&amp; ~strcmp(options.grid_type, <span class="string">'dual'</span>)
+        error(<span class="string">'grid_type option must be either ''prim'' or ''dual''.'</span>);
+    <span class="keyword">end</span>
+
+    validateattributes(options.field_phase, {<span class="string">'numeric'</span>}, {<span class="string">'scalar'</span>}, <span class="keyword">...</span>
+                        <span class="string">'field_phase'</span>, mfilename);
+
+    validateattributes(options.hide_pml, {<span class="string">'logical'</span>}, {<span class="string">'binary'</span>}, <span class="keyword">...</span>
+                        <span class="string">'hide_pml'</span>, mfilename);
+
+    validateattributes(options.reverse_structure, {<span class="string">'logical'</span>}, {<span class="string">'binary'</span>}, <span class="keyword">...</span>
+                        <span class="string">'reverse_structure'</span>, mfilename);
+
+    validateattributes(options.show_grid, {<span class="string">'logical'</span>}, {<span class="string">'binary'</span>}, <span class="keyword">...</span>
+                        <span class="string">'show_grid'</span>, mfilename);
+
+        <span class="comment">%</span>
+        <span class="comment">% Determine slice.</span>
+        <span class="comment">%</span>
+
+    slice_comp = find(~isnan(slice_ind));
+    field_comp = find(dir == <span class="string">'xyz'</span>);
+
+    [eps_grid_pos, mu_grid_pos] = my_s2pos(grid); <span class="comment">% Get grid positions.</span>
+
+    <span class="comment">% Determine the position grid for the specific field and field component</span>
+    <span class="comment">% that we wish to visualize.</span>
+    <span class="keyword">if</span> strcmp(options.grid_type, <span class="string">'prim'</span>)
+        pos = eps_grid_pos{field_comp};
+    <span class="keyword">else</span>
+        pos = mu_grid_pos{field_comp};
+    <span class="keyword">end</span>
+
+    <span class="comment">% Find index which is closest to the slice position.</span>
+    [~, ind] = min(abs(pos{slice_comp} - slice_ind(slice_comp)));
+    <span class="keyword">if</span> ind == length(pos{slice_comp}) <span class="comment">% Special case related to extra pos.</span>
+        ind = 1;
+    <span class="keyword">end</span>
+
+    <span class="comment">% Extract out the relevant slice.</span>
+    <span class="keyword">if</span> ~isempty(mat)
+        m_data = squeeze(real(my_slice(mat{field_comp}, slice_comp, ind)));
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> ~isempty(F)
+        F_data = squeeze(my_slice(F{field_comp}, slice_comp, ind));
+    <span class="keyword">end</span>
+
+    <span class="comment">% Determine grids which will be used for plotting the slice.</span>
+    perp_comp = find(isnan(slice_ind));
+    title_dir = find(~isnan(slice_ind));
+    xyz = <span class="string">'xyz'</span>;
+    xlabel = xyz(perp_comp(1));
+    ylabel = xyz(perp_comp(2));
+    titletext = [xyz(title_dir), <span class="string">' = '</span>, num2str(slice_ind(title_dir))];
+    x = pos{perp_comp(1)};
+    y = pos{perp_comp(2)};
+
+    <span class="keyword">if</span> options.hide_pml
+        <span class="keyword">for</span> k = 1 : 2
+            clip{k}(1) = max([min(find(imag(grid.s_prim{perp_comp(k)}) == 0)), <span class="keyword">...</span>
+                            min(find(imag(grid.s_dual{perp_comp(k)}) == 0))]);
+            clip{k}(2) = min([max(find(imag(grid.s_prim{perp_comp(k)}) == 0)), <span class="keyword">...</span>
+                            max(find(imag(grid.s_dual{perp_comp(k)}) == 0))]);
+        <span class="keyword">end</span>
+        x = x(clip{1}(1):clip{1}(2)+1);
+        y = y(clip{2}(1):clip{2}(2)+1);
+        m_data = m_data(clip{1}(1):clip{1}(2), clip{2}(1):clip{2}(2));
+        F_data = F_data(clip{1}(1):clip{1}(2), clip{2}(1):clip{2}(2));
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Plot.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">if</span> ~isempty(F) <span class="comment">% Just field.</span>
+
+        <span class="comment">% Prepare data.</span>
+        <span class="keyword">if</span> isnan(options.field_phase)
+            data = abs(F_data);
+            cmax = max(data(:));
+        <span class="keyword">elseif</span> isinf(options.field_phase)
+            num_frames = 24;
+            <span class="keyword">for</span> k = 1 : num_frames
+                data{k} = real(exp(i*2*pi*(k-1)/num_frames) .* F_data);
+            <span class="keyword">end</span>
+            cmax = max(abs(F_data(:)))/2;
+        <span class="keyword">else</span>
+            data = real(exp(i*options.field_phase) .* F_data);
+            cmax = max(abs(data(:)));
+        <span class="keyword">end</span>
+
+        <span class="comment">% Prepare alpha data.</span>
+        <span class="keyword">if</span> ~isempty(mat)
+            alpha_data = m_data - min(m_data(:));
+            <span class="keyword">if</span> options.reverse_structure
+                alpha_data = 1 - alpha_data;
+            <span class="keyword">end</span>
+            alpha_data = -alpha_data ./ max(alpha_data(:));
+        <span class="keyword">else</span>
+            alpha_data = [];
+        <span class="keyword">end</span>
+
+        <span class="comment">% Allow for user-override of cmax.</span>
+        <span class="keyword">if</span> ~isempty(options.clims)
+            clims = options.clims;
+        <span class="keyword">else</span>
+            clims = cmax * [-1 1];
+        <span class="keyword">end</span>
+
+        <span class="comment">% Prepare drawing function.</span>
+        my_plot = @(data) my_pcolor(x, y, data, alpha_data, <span class="keyword">...</span>
+                                    {titletext, xlabel, ylabel}, <span class="keyword">...</span>
+                                    clims, options.show_grid);
+
+        <span class="comment">% Plot.</span>
+        <span class="keyword">if</span> ~isinf(options.field_phase)
+            my_plot(data);
+            colormap(<span class="string">'jet'</span>);
+        <span class="keyword">else</span>
+            cnt = 0;
+            <span class="keyword">for</span> k = 1 : 3 * num_frames
+                frame_start = tic;
+                my_plot(data{mod(cnt, num_frames)+1})
+                colormap(<span class="string">'jet'</span>);
+                pause_time = toc(frame_start) - 2 / num_frames;
+                <span class="keyword">if</span> pause_time &gt; 0
+                    pause(pause_time);
+                <span class="keyword">end</span>
+                cnt = cnt + 1;
+                drawnow;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+
+    <span class="keyword">elseif</span> ~isempty(mat) &amp;&amp; isempty(F) <span class="comment">% Just material.</span>
+        my_pcolor(x, y, m_data, [], {titletext, xlabel, ylabel}, options.clims, <span class="keyword">...</span>
+                                                        options.show_grid);
+        cmap = colormap(<span class="string">'gray'</span>);
+        <span class="keyword">if</span> ~options.reverse_structure
+            colormap(cmap(end:-1:1,:)); <span class="comment">% Reversed grayscale colormap.</span>
+        <span class="keyword">end</span>
+    <span class="keyword">else</span>
+        error(<span class="string">'Could not figure out what to plot.'</span>); <span class="comment">% Should never get here.</span>
+    <span class="keyword">end</span>
+
+<span class="keyword">function</span> [data] = my_slice(arr, comp, ind)
+<span class="comment">% Take a slice out of arr.</span>
+    <span class="keyword">switch</span> comp
+        <span class="keyword">case</span> 1
+            data = arr(ind,:,:);
+        <span class="keyword">case</span> 2
+            data = arr(:,ind,:);
+        <span class="keyword">case</span> 3
+            data = arr(:,:,ind);
+        <span class="keyword">otherwise</span>
+            error(<span class="string">'comp needs to be either 1, 2, or 3.'</span>);
+    <span class="keyword">end</span>
+
+
+<span class="keyword">function</span> my_pcolor(x, y, data, alpha_data, labels, clims, show_grid)
+<span class="comment">% Plot that allows for variable grid spacing.</span>
+
+
+    expand_by_1 = @(z) [z, ones(size(z, 1), 1); ones(1, size(z, 2)+1)];
+    h = pcolor(x, y, expand_by_1(data).');
+
+    <span class="comment">% Add transparency effect if needed.</span>
+    <span class="keyword">if</span> ~isempty(alpha_data) &amp;&amp; ~any(isnan(alpha_data(:)))
+        alpha(expand_by_1(alpha_data(2:end, 2:end)).'); <span class="comment">% 2:end for weird pcolor function.</span>
+        set(gca, <span class="string">'Color'</span>, <span class="string">'black'</span>, <span class="string">'Alim'</span>, [-4 0]);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> show_grid
+       shading(<span class="string">'faceted'</span>);
+    <span class="keyword">else</span>
+        shading(<span class="string">'flat'</span>);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> ~isempty(clims)
+        caxis(clims);
+    <span class="keyword">end</span>
+
+    title(labels{1});
+    xlabel(labels{2});
+    ylabel(labels{3});
+    colorbar();
+    axis <span class="string">equal</span> <span class="string">tight</span>;
+    set(gca, <span class="string">'YDir'</span>, <span class="string">'normal'</span>);
+    drawnow;
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxwell_view
+% View a slice of the field and/or structure.
+
+%%% Syntax
+%
+% * |maxwell_view(grid, eps, E, 'x', [nan 50 nan])|
+%   visualizes the |y = 50| slice of the x-components of |eps| and |E|.
+%
+% * |maxwell_view(grid, eps, [], 'x', [nan 50 nan])|
+%   visualizes only the structure.
+%
+% * |maxwell_view(grid, [], E, 'x', [nan 50 nan])|
+%   visualizes only the field.
+%
+% * |maxwell_view(grid, mu, H, 'x', [nan 50 nan], 'grid_type', 'dual')|
+%   allows for |mu| and |H| to be visualized in their correct locations,
+%   accounting for the proper shift in the Yee cell.
+%   |'grid_type'| defaults to |'prim'|, which assumes we are visualizing
+%   E or eps.
+%
+% * |maxwell_view(..., 'field_phase', phase)|
+%   allows one to adjust the phase of the field, 
+%   where |phase = 0| is the real component,
+%   |phase = pi/2| is the imaginary component,
+%   |phase = nan| denotes the absolute value of the field,
+%   and |phase = inf| will play a movie.
+%   Defaults to 0.
+%
+% * |maxwell_view(..., 'clims', clims)|
+%   allows the user to determine the minimum and maximum values of 
+%   the colorbar.
+%
+% * |maxwell_view(..., 'hide_pml', true)|
+%   removes the pml region from the plot.
+%
+% * |maxwell_view(..., 'reverse_structure', true)|
+%   allows the user to reverse the grayscale/shading used to draw the structure.
+%
+% * |maxwell_view(..., 'show_grid', true)|
+%   overlays the grid on top of the plot.
+%
+
+
+%%% Source code
+function maxwell_view(grid, mat, F, dir, slice_ind, varargin)
+
+        %
+        % Validate and parse inputs.
+        %
+
+    my_validate_grid(grid, mfilename);
+
+    if isempty(mat) && isempty(F)
+        error('Either eps (mu) or E (H) must be non-empty.');
+    end
+
+    if ~isempty(mat)
+        my_validate_field(mat, grid.shape, 'eps (or mu)', mfilename);
+    end
+
+    if ~isempty(F)
+        my_validate_field(F, grid.shape, 'E (or H)', mfilename);
+    end
+
+    validateattributes(dir, {'char'}, {'scalar'}, 'dir', mfilename);
+    if ~any(dir == 'xyz')
+        error('Input dir must be either ''x'', ''y'', or ''z''.');
+    end
+
+    validateattributes(slice_ind, {'numeric'}, {'numel', 3}, ...
+                        'slice_ind', mfilename);
+    if sum(isnan(slice_ind)) ~= 2
+        error('Exactly two elements of slice_ind must be nan.');
+    end
+
+    % Optional arguments.
+    options = my_parse_options(struct(  'grid_type', 'prim', ...
+                                        'clims', [], ...
+                                        'field_phase', 0, ...
+                                        'reverse_structure', false, ...
+                                        'hide_pml', false, ...
+                                        'show_grid', false), ...
+                                varargin, mfilename);
+
+    validateattributes(options.grid_type, {'char'}, {}, 'grid_type', mfilename);
+    if ~strcmp(options.grid_type, 'prim') && ~strcmp(options.grid_type, 'dual')
+        error('grid_type option must be either ''prim'' or ''dual''.');
+    end
+
+    validateattributes(options.field_phase, {'numeric'}, {'scalar'}, ...
+                        'field_phase', mfilename);
+
+    validateattributes(options.hide_pml, {'logical'}, {'binary'}, ...
+                        'hide_pml', mfilename);
+
+    validateattributes(options.reverse_structure, {'logical'}, {'binary'}, ...
+                        'reverse_structure', mfilename);
+
+    validateattributes(options.show_grid, {'logical'}, {'binary'}, ...
+                        'show_grid', mfilename);
+
+        %
+        % Determine slice.
+        %
+
+    slice_comp = find(~isnan(slice_ind)); 
+    field_comp = find(dir == 'xyz');
+
+    [eps_grid_pos, mu_grid_pos] = my_s2pos(grid); % Get grid positions.
+    
+    % Determine the position grid for the specific field and field component
+    % that we wish to visualize.
+    if strcmp(options.grid_type, 'prim')
+        pos = eps_grid_pos{field_comp};
+    else
+        pos = mu_grid_pos{field_comp};
+    end
+
+    % Find index which is closest to the slice position.
+    [~, ind] = min(abs(pos{slice_comp} - slice_ind(slice_comp)));
+    if ind == length(pos{slice_comp}) % Special case related to extra pos.
+        ind = 1;
+    end
+
+    % Extract out the relevant slice.
+    if ~isempty(mat)
+        m_data = squeeze(real(my_slice(mat{field_comp}, slice_comp, ind)));
+    end
+
+    if ~isempty(F)
+        F_data = squeeze(my_slice(F{field_comp}, slice_comp, ind));
+    end
+
+    % Determine grids which will be used for plotting the slice.
+    perp_comp = find(isnan(slice_ind));
+    title_dir = find(~isnan(slice_ind));
+    xyz = 'xyz';
+    xlabel = xyz(perp_comp(1));
+    ylabel = xyz(perp_comp(2));
+    titletext = [xyz(title_dir), ' = ', num2str(slice_ind(title_dir))];
+    x = pos{perp_comp(1)};
+    y = pos{perp_comp(2)};
+
+    if options.hide_pml
+        for k = 1 : 2
+            clip{k}(1) = max([min(find(imag(grid.s_prim{perp_comp(k)}) == 0)), ...
+                            min(find(imag(grid.s_dual{perp_comp(k)}) == 0))]);
+            clip{k}(2) = min([max(find(imag(grid.s_prim{perp_comp(k)}) == 0)), ...
+                            max(find(imag(grid.s_dual{perp_comp(k)}) == 0))]);
+        end
+        x = x(clip{1}(1):clip{1}(2)+1);
+        y = y(clip{2}(1):clip{2}(2)+1);
+        m_data = m_data(clip{1}(1):clip{1}(2), clip{2}(1):clip{2}(2));
+        F_data = F_data(clip{1}(1):clip{1}(2), clip{2}(1):clip{2}(2));
+    end
+    
+
+        %
+        % Plot.
+        %
+
+    if ~isempty(F) % Just field.
+
+        % Prepare data.
+        if isnan(options.field_phase)
+            data = abs(F_data);
+            cmax = max(data(:));
+        elseif isinf(options.field_phase)
+            num_frames = 24;
+            for k = 1 : num_frames
+                data{k} = real(exp(i*2*pi*(k-1)/num_frames) .* F_data);
+            end
+            cmax = max(abs(F_data(:)))/2;
+        else
+            data = real(exp(i*options.field_phase) .* F_data);
+            cmax = max(abs(data(:)));
+        end
+
+        % Prepare alpha data.
+        if ~isempty(mat)
+            alpha_data = m_data - min(m_data(:));
+            if options.reverse_structure
+                alpha_data = 1 - alpha_data;
+            end
+            alpha_data = -alpha_data ./ max(alpha_data(:));
+        else
+            alpha_data = [];
+        end
+        
+        % Allow for user-override of cmax.
+        if ~isempty(options.clims)
+            clims = options.clims;
+        else 
+            clims = cmax * [-1 1];
+        end
+
+        % Prepare drawing function.
+        my_plot = @(data) my_pcolor(x, y, data, alpha_data, ...
+                                    {titletext, xlabel, ylabel}, ...
+                                    clims, options.show_grid);
+
+        % Plot.
+        if ~isinf(options.field_phase)
+            my_plot(data);
+            colormap('jet');
+        else
+            cnt = 0;
+            for k = 1 : 3 * num_frames
+                frame_start = tic;
+                my_plot(data{mod(cnt, num_frames)+1})
+                colormap('jet');
+                pause_time = toc(frame_start) - 2 / num_frames;
+                if pause_time > 0
+                    pause(pause_time);
+                end
+                cnt = cnt + 1;
+                drawnow;
+            end
+        end
+
+    elseif ~isempty(mat) && isempty(F) % Just material.
+        my_pcolor(x, y, m_data, [], {titletext, xlabel, ylabel}, options.clims, ...
+                                                        options.show_grid);
+        cmap = colormap('gray');
+        if ~options.reverse_structure
+            colormap(cmap(end:-1:1,:)); % Reversed grayscale colormap.
+        end
+    else
+        error('Could not figure out what to plot.'); % Should never get here.
+    end
+
+function [data] = my_slice(arr, comp, ind)
+% Take a slice out of arr.
+    switch comp
+        case 1
+            data = arr(ind,:,:);
+        case 2
+            data = arr(:,ind,:);
+        case 3
+            data = arr(:,:,ind);
+        otherwise
+            error('comp needs to be either 1, 2, or 3.');
+    end
+
+
+function my_pcolor(x, y, data, alpha_data, labels, clims, show_grid)
+% Plot that allows for variable grid spacing.
+
+    
+    expand_by_1 = @(z) [z, ones(size(z, 1), 1); ones(1, size(z, 2)+1)];
+    h = pcolor(x, y, expand_by_1(data).');
+
+    % Add transparency effect if needed.
+    if ~isempty(alpha_data) && ~any(isnan(alpha_data(:)))
+        alpha(expand_by_1(alpha_data(2:end, 2:end)).'); % 2:end for weird pcolor function.
+        set(gca, 'Color', 'black', 'Alim', [-4 0]);
+    end
+
+    if show_grid
+       shading('faceted');
+    else
+        shading('flat');
+    end
+
+    if ~isempty(clims)
+        caxis(clims);
+    end
+
+    title(labels{1});
+    xlabel(labels{2});
+    ylabel(labels{3});
+    colorbar();
+    axis equal tight;
+    set(gca, 'YDir', 'normal');
+    drawnow;
+
+
+
+##### SOURCE END #####
+--></body></html>

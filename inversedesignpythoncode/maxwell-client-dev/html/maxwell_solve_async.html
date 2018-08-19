@@ -1,0 +1,489 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxwell_solve_async</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxwell_solve_async.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxwell_solve_async</h1><!--introduction--><p>Electromagnetic solve without waiting for completion.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Source code</a></li></ul></div><h2>Syntax<a name="1"></a></h2><div><ul><li><tt>cb_fun = maxwell_solve_async(grid, eps, J)</tt>   uploads a simulation and returns a callback function <tt>cb_fun</tt>   which is used to query progress and return the results.   The callback function's syntax is <tt>[done, E, H] = cb_fun()</tt>   where <tt>done</tt> is a boolean variable that is set to true   only when <tt>E</tt> and <tt>H</tt> are the final solution fields.</li></ul></div><div><ul><li><tt>cb_fun = maxwell_solve_async(grid, [eps mu], J)</tt>   is the same as above except that it allows <tt>mu ~= 1</tt>.</li></ul></div><p>The optional input parameters for <tt>maxwell_solve</tt> are also valid here.</p><h2>Description<a name="2"></a></h2><p><tt>maxwell_solve_async</tt> is an asynchronous version of <tt>maxwell_solve</tt> in that it exits as soon as the simulation has been uploaded to the server, but before it is complete. For this reason, instead of returning the solution fields, a callback function is returned which is used to query the progress of the simulation and to obtain the solution fields. The callback function can be used in this simple way (<tt>maxwell_solve</tt> does this):</p><pre class="language-matlab"><span class="keyword">while</span> ~cb_fun(); <span class="keyword">end</span>; <span class="comment">% Wait until simulation finishes.</span>
+[~, E, H] = cb_fun(); <span class="comment">% Get solution fields.</span>
+</pre><p>The benefit of such a function is that it frees the local Matlab process to perform additional work.</p><h2>Source code<a name="3"></a></h2><pre class="codeinput"><span class="keyword">function</span> [cb, vis_progress] = maxwell_solve_async(grid, eps_mu, J, varargin)
+
+        <span class="comment">%</span>
+        <span class="comment">% Get current axis (for plotting) and start time (for timing).</span>
+        <span class="comment">%</span>
+
+    my_axis = gca;
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Validate and parse inputs.</span>
+        <span class="comment">%</span>
+
+    my_validate_grid(grid, mfilename);
+
+    [eps, mu] = my_split(eps_mu, grid.shape, {<span class="string">'eps'</span>, <span class="string">'mu'</span>}, mfilename);
+    <span class="keyword">if</span> isempty(mu)
+        mu = my_default_field(grid.shape, 1);
+    <span class="keyword">end</span>
+    my_validate_field(eps, grid.shape, <span class="string">'eps'</span>, mfilename);
+    my_validate_field(mu, grid.shape, <span class="string">'mu'</span>, mfilename);
+
+    my_validate_field(J, grid.shape, <span class="string">'J'</span>, mfilename);
+
+    <span class="comment">% Optional parameter-value pairs.</span>
+    options = my_parse_options(struct(  <span class="string">'E0'</span>, {my_default_field(grid.shape, 0)}, <span class="keyword">...</span>
+                                        <span class="string">'vis_progress'</span>, <span class="string">'both'</span>, <span class="keyword">...</span>
+                                        <span class="string">'max_iters'</span>, 1e5, <span class="keyword">...</span>
+                                        <span class="string">'err_thresh'</span>, 1e-6), <span class="keyword">...</span>
+                                varargin, mfilename);
+    my_validate_field(options.E0, grid.shape, <span class="string">'E0'</span>, mfilename);
+    validateattributes(options.vis_progress, {<span class="string">'char'</span>}, <span class="keyword">...</span>
+                {}, mfilename, <span class="string">'vis_progress'</span>);
+    validateattributes(options.max_iters, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+        {<span class="string">'integer'</span>, <span class="string">'positive'</span>, <span class="string">'scalar'</span>, <span class="string">'real'</span>}, mfilename, <span class="string">'max_iters'</span>);
+    validateattributes(options.err_thresh, {<span class="string">'double'</span>}, <span class="keyword">...</span>
+        {<span class="string">'positive'</span>, <span class="string">'scalar'</span>, <span class="string">'&lt;'</span>, 1}, mfilename, <span class="string">'err_thresh'</span>);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Check if the simulation is 2D (can be solved locally).</span>
+        <span class="comment">%</span>
+
+    no_print = false;
+    <span class="keyword">function</span> [varargout] = my_simple_callback(vis_progress, varargin)
+        <span class="keyword">if</span> strcmp(vis_progress, <span class="string">'text'</span>) || strcmp(vis_progress, <span class="string">'both'</span>) &amp;&amp; <span class="keyword">...</span>
+            ~no_print
+            progress_text = <span class="string">'[finished] 2D problem solved locally'</span>;
+            norm_p_text = [progress_text, <span class="keyword">...</span>
+                    repmat(<span class="string">' '</span>, 1, 60 - length(progress_text)), <span class="string">'\n'</span>];
+            fprintf(norm_p_text);
+            no_print = true;
+        <span class="keyword">end</span>
+        varargout = varargin;
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> any(grid.shape == 1)
+        <span class="comment">% Compute E-field.</span>
+        [A, ~, b] = maxwell_axb(grid, [eps mu], options.E0, J);
+        x = A \ b;
+        N = prod(grid.shape);
+        <span class="keyword">for</span> k = 1 : 3
+            E{k} = reshape(x((k-1)*N+1:k*N), grid.shape);
+        <span class="keyword">end</span>
+        err = norm(A*x-b)/norm(b);
+
+        <span class="comment">% Compute H-field.</span>
+        H = my_E2H(grid, mu, E);
+
+        <span class="comment">% Return solution.</span>
+        vis_progress = options.vis_progress;
+        cb = @() my_simple_callback(options.vis_progress, true, E, H, err);
+        <span class="keyword">return</span>
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Upload simulation.</span>
+        <span class="comment">%</span>
+
+    [server_url, prefix, vis_progress] = maxwell_upload(grid, eps, mu, J, <span class="keyword">...</span>
+                                    options.E0, options.max_iters, <span class="keyword">...</span>
+                                    options.err_thresh, options.vis_progress);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Set up callback function.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Persistent variables for the callback function.</span>
+    p_is_done = false;
+    first_time = true;
+    line_length = 60;
+    p_E = [];
+    p_H = [];
+    p_err = [];
+    p_state = [];
+    no_print = false;
+
+    start_time = tic;
+    <span class="keyword">function</span> [is_done, E, H, err] = maxwell_callback()
+    <span class="comment">% Queries server to inform user of the state of the simulation.</span>
+        <span class="keyword">if</span> ~p_is_done <span class="comment">% Not done, keep trying.</span>
+            [p_E, p_err, p_state, s] = maxwell_download(server_url, prefix);
+            <span class="keyword">if</span> strcmp(p_state, <span class="string">'finished'</span>)
+                p_is_done = true;
+                p_H = my_E2H(grid, mu, p_E);
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+
+        <span class="comment">% Update static variables.</span>
+        is_done = p_is_done;
+        E = p_E;
+        H = p_H;
+        err = p_err;
+        state = p_state;
+
+        <span class="comment">% Show the progress.</span>
+        last_print = false;
+        <span class="keyword">if</span> isempty(err) <span class="comment">% Simulation not yet started.</span>
+            progress_text = sprintf(<span class="string">'[%s] err: ----, iter: 0, seconds: %1.1f'</span>, <span class="keyword">...</span>
+                                    state, toc(start_time));
+        <span class="keyword">else</span>
+            <span class="keyword">if</span> is_done <span class="comment">% Simulation complete.</span>
+                progress_text = sprintf(<span class="string">'[%s] err: %e, iter: %d\n'</span>, <span class="keyword">...</span>
+                                        state, err(end), length(err));
+                last_print = true; <span class="comment">% Make this the last line we print.</span>
+
+
+            <span class="keyword">else</span> <span class="comment">% Simulation in progress.</span>
+                progress_text = sprintf(<span class="string">'[%s] err: %e, iter: %d, seconds: %1.1f'</span>, <span class="keyword">...</span>
+                                        state, err(end), length(err), toc(start_time));
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+
+        <span class="keyword">if</span> strcmp(vis_progress, <span class="string">'text'</span>) | strcmp(vis_progress, <span class="string">'both'</span>)
+            <span class="comment">% Normalized text progress output prints constant length of 60.</span>
+            norm_p_text = progress_text;
+            <span class="keyword">if</span> ~is_done
+                norm_p_text = [norm_p_text, <span class="keyword">...</span>
+                        repmat(<span class="string">' '</span>, 1, line_length - length(progress_text))];
+            <span class="keyword">end</span>
+
+            <span class="keyword">if</span> ~first_time <span class="comment">% If not first time, remove previous line.</span>
+                norm_p_text = [repmat(<span class="string">'\b'</span>, 1, line_length), norm_p_text];
+            <span class="keyword">end</span>
+
+            <span class="keyword">if</span> ~no_print <span class="comment">% Only print if this flag is false.</span>
+                fprintf(norm_p_text);
+            <span class="keyword">end</span>
+
+            <span class="keyword">if</span> last_print <span class="comment">% No more printing!</span>
+                no_print = true;
+            <span class="keyword">end</span>
+
+            first_time = false; <span class="comment">% Denote that we've definitely printed once.</span>
+        <span class="keyword">end</span>
+
+        <span class="keyword">if</span> strcmp(vis_progress, <span class="string">'plot'</span>) | strcmp(vis_progress, <span class="string">'both'</span>)
+            <span class="comment">% Plot the progress in log-scale.</span>
+            <span class="keyword">try</span>
+                axes(my_axis);
+            <span class="keyword">catch</span>
+                my_axis = gca;
+                axes(my_axis);
+            <span class="keyword">end</span>
+
+            <span class="keyword">if</span> isempty(err)
+                semilogy(1, <span class="string">'bx'</span>);
+            <span class="keyword">else</span>
+                semilogy(err, <span class="string">'b.-'</span>);
+            <span class="keyword">end</span>
+            title(progress_text);
+            xlabel(<span class="string">'iterations'</span>);
+            ylabel(<span class="string">'error'</span>);
+
+            <span class="comment">% Add a dotted line showing the error threshold.</span>
+            hold <span class="string">on</span>
+            a = axis;
+            semilogy(a(1:2), options.err_thresh * [1 1], <span class="string">'k--'</span>);
+            axis([a(1:2), options.err_thresh/10, a(4)]);
+            hold <span class="string">off</span>
+        <span class="keyword">end</span>
+
+        java.lang.System.gc(); <span class="comment">% Request garbage collection for Java.</span>
+        pause(0.1);
+    <span class="keyword">end</span>
+
+    cb = @maxwell_callback;
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxwell_solve_async
+% Electromagnetic solve without waiting for completion.
+
+%%% Syntax
+% * |cb_fun = maxwell_solve_async(grid, eps, J)|
+%   uploads a simulation and returns a callback function |cb_fun|
+%   which is used to query progress and return the results.
+%   The callback function's syntax is |[done, E, H] = cb_fun()|
+%   where |done| is a boolean variable that is set to true
+%   only when |E| and |H| are the final solution fields.
+%
+% * |cb_fun = maxwell_solve_async(grid, [eps mu], J)|
+%   is the same as above except that it allows |mu ~= 1|.
+%
+% The optional input parameters for |maxwell_solve| are also valid here.
+
+%%% Description
+% |maxwell_solve_async| is an asynchronous version of |maxwell_solve|
+% in that it exits as soon as the simulation has been uploaded to 
+% the server, but before it is complete.
+% For this reason, instead of returning the solution fields,
+% a callback function is returned which is used to query the
+% progress of the simulation and to obtain the solution fields.
+% The callback function can be used in this simple way (|maxwell_solve| does this):
+%
+%   while ~cb_fun(); end; % Wait until simulation finishes.
+%   [~, E, H] = cb_fun(); % Get solution fields.
+%
+% The benefit of such a function is that it frees the local Matlab process
+% to perform additional work.
+%
+
+%%% Source code
+function [cb, vis_progress] = maxwell_solve_async(grid, eps_mu, J, varargin)
+
+        %
+        % Get current axis (for plotting) and start time (for timing).
+        %
+
+    my_axis = gca;
+
+
+        %
+        % Validate and parse inputs.
+        %
+
+    my_validate_grid(grid, mfilename);
+
+    [eps, mu] = my_split(eps_mu, grid.shape, {'eps', 'mu'}, mfilename);
+    if isempty(mu)
+        mu = my_default_field(grid.shape, 1);
+    end
+    my_validate_field(eps, grid.shape, 'eps', mfilename);
+    my_validate_field(mu, grid.shape, 'mu', mfilename);
+
+    my_validate_field(J, grid.shape, 'J', mfilename);
+
+    % Optional parameter-value pairs.
+    options = my_parse_options(struct(  'E0', {my_default_field(grid.shape, 0)}, ...
+                                        'vis_progress', 'both', ...
+                                        'max_iters', 1e5, ...
+                                        'err_thresh', 1e-6), ...
+                                varargin, mfilename);
+    my_validate_field(options.E0, grid.shape, 'E0', mfilename);
+    validateattributes(options.vis_progress, {'char'}, ...
+                {}, mfilename, 'vis_progress');
+    validateattributes(options.max_iters, {'numeric'}, ...
+        {'integer', 'positive', 'scalar', 'real'}, mfilename, 'max_iters');
+    validateattributes(options.err_thresh, {'double'}, ...
+        {'positive', 'scalar', '<', 1}, mfilename, 'err_thresh');
+
+
+        %
+        % Check if the simulation is 2D (can be solved locally).
+        %
+     
+    no_print = false;
+    function [varargout] = my_simple_callback(vis_progress, varargin)
+        if strcmp(vis_progress, 'text') || strcmp(vis_progress, 'both') && ...
+            ~no_print
+            progress_text = '[finished] 2D problem solved locally';
+            norm_p_text = [progress_text, ...
+                    repmat(' ', 1, 60 - length(progress_text)), '\n'];
+            fprintf(norm_p_text);
+            no_print = true;
+        end
+        varargout = varargin;
+    end
+  
+    if any(grid.shape == 1)
+        % Compute E-field.
+        [A, ~, b] = maxwell_axb(grid, [eps mu], options.E0, J);
+        x = A \ b;
+        N = prod(grid.shape);
+        for k = 1 : 3
+            E{k} = reshape(x((k-1)*N+1:k*N), grid.shape);
+        end
+        err = norm(A*x-b)/norm(b);
+        
+        % Compute H-field.
+        H = my_E2H(grid, mu, E);
+
+        % Return solution.
+        vis_progress = options.vis_progress;
+        cb = @() my_simple_callback(options.vis_progress, true, E, H, err);
+        return
+    end
+
+
+        %
+        % Upload simulation.
+        %
+
+    [server_url, prefix, vis_progress] = maxwell_upload(grid, eps, mu, J, ...
+                                    options.E0, options.max_iters, ...
+                                    options.err_thresh, options.vis_progress);
+
+
+        %
+        % Set up callback function.
+        %
+
+    % Persistent variables for the callback function.
+    p_is_done = false;
+    first_time = true;
+    line_length = 60;
+    p_E = [];
+    p_H = [];
+    p_err = [];
+    p_state = [];
+    no_print = false;
+    
+    start_time = tic;
+    function [is_done, E, H, err] = maxwell_callback()
+    % Queries server to inform user of the state of the simulation.
+        if ~p_is_done % Not done, keep trying.
+            [p_E, p_err, p_state, s] = maxwell_download(server_url, prefix);
+            if strcmp(p_state, 'finished')
+                p_is_done = true;
+                p_H = my_E2H(grid, mu, p_E);
+            end
+        end
+
+        % Update static variables.
+        is_done = p_is_done;
+        E = p_E;
+        H = p_H;
+        err = p_err;
+        state = p_state;
+
+        % Show the progress.
+        last_print = false;
+        if isempty(err) % Simulation not yet started.
+            progress_text = sprintf('[%s] err: REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH, iter: 0, seconds: %1.1f', ...
+                                    state, toc(start_time));
+        else 
+            if is_done % Simulation complete.
+                progress_text = sprintf('[%s] err: %e, iter: %d\n', ...
+                                        state, err(end), length(err));
+                last_print = true; % Make this the last line we print.
+
+                
+            else % Simulation in progress.
+                progress_text = sprintf('[%s] err: %e, iter: %d, seconds: %1.1f', ...
+                                        state, err(end), length(err), toc(start_time));
+            end
+        end
+
+        if strcmp(vis_progress, 'text') | strcmp(vis_progress, 'both')
+            % Normalized text progress output prints constant length of 60.
+            norm_p_text = progress_text;
+            if ~is_done
+                norm_p_text = [norm_p_text, ...
+                        repmat(' ', 1, line_length - length(progress_text))];
+            end
+
+            if ~first_time % If not first time, remove previous line.
+                norm_p_text = [repmat('\b', 1, line_length), norm_p_text];
+            end
+
+            if ~no_print % Only print if this flag is false.
+                fprintf(norm_p_text);
+            end
+
+            if last_print % No more printing!
+                no_print = true;
+            end
+
+            first_time = false; % Denote that we've definitely printed once.
+        end
+
+        if strcmp(vis_progress, 'plot') | strcmp(vis_progress, 'both')
+            % Plot the progress in log-scale.
+            try
+                axes(my_axis);
+            catch 
+                my_axis = gca;
+                axes(my_axis);
+            end
+
+            if isempty(err)
+                semilogy(1, 'bx');
+            else 
+                semilogy(err, 'b.-');
+            end
+            title(progress_text);
+            xlabel('iterations');
+            ylabel('error');
+
+            % Add a dotted line showing the error threshold.
+            hold on
+            a = axis;
+            semilogy(a(1:2), options.err_thresh * [1 1], 'kREPLACE_WITH_DASH_DASH');
+            axis([a(1:2), options.err_thresh/10, a(4)]);
+            hold off
+        end
+
+        java.lang.System.gc(); % Request garbage collection for Java.
+        pause(0.1);
+    end
+
+    cb = @maxwell_callback;
+end
+
+
+
+##### SOURCE END #####
+--></body></html>

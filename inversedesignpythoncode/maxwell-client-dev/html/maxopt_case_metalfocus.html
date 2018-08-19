@@ -1,0 +1,357 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxopt_case_metalfocus</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxopt_case_metalfocus.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxopt_case_metalfocus</h1><p>Used to optimize a metal focusing structure.</p><pre class="codeinput"><span class="keyword">function</span> [fun, x0] = maxopt_case_metalfocus(type, varargin)
+
+        <span class="comment">%</span>
+        <span class="comment">% Parse inputs.</span>
+        <span class="comment">%</span>
+
+    validateattributes(type, {<span class="string">'char'</span>}, {<span class="string">'vector'</span>}, <span class="string">'type'</span>, mfilename);
+
+    options = my_parse_options(struct(  <span class="string">'flatten'</span>, false), <span class="keyword">...</span>
+                                varargin, mfilename);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Return recommended starting parameters.</span>
+        <span class="comment">%</span>
+
+    spacing0 = 10;
+    y_roc = 400;
+    z_roc = 400;
+    z_depth = 250;
+    x0 = [spacing0, y_roc, z_roc, z_depth];
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Return appropriate function handle.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">function</span> [E, H, grid, eps] = get_fields(varargin)
+        [~, E, H, grid, eps] = solve_structure(varargin{:});
+    <span class="keyword">end</span>
+
+    <span class="keyword">switch</span> type
+        <span class="keyword">case</span> <span class="string">'get_fields'</span>
+            fun = @(x) get_fields(x, options.flatten);
+        <span class="keyword">case</span> <span class="string">'fval'</span>
+            fun = @(x) solve_structure(x, options.flatten);
+        <span class="keyword">otherwise</span>
+            error(<span class="string">'Invalid type.'</span>);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+
+<span class="keyword">function</span> [fval, E, H, grid, eps] = solve_structure(params, flatten)
+<span class="comment">% Simulate the structure for the specific parameters..</span>
+
+        <span class="comment">%</span>
+        <span class="comment">% Get the structural parameters.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">if</span> isempty(params) <span class="comment">% Used to look at the input beam.</span>
+        no_struct = true;
+    <span class="keyword">else</span>
+        no_struct = false;
+        spacing = params(1); <span class="comment">% Minimum spacing between the leads.</span>
+        y_roc = 2/params(2); <span class="comment">% Radius of curvature in the y-direction.</span>
+        z_roc = 2/params(3); <span class="comment">% Radius of curvature in the z-direction.</span>
+        z_depth = params(4); <span class="comment">% How deep the silver penetrates the GaAs.</span>
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Create grid.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Make a grid for a wavelength of 900 nm.</span>
+    delta = 30;
+    wvlen = 900;
+    omega = 2*pi/wvlen;
+
+    my_size = 800;
+    x = -my_size : delta : my_size;
+    y = -my_size : delta : my_size;
+    z = -my_size : delta : my_size;
+
+    <span class="keyword">if</span> flatten
+        y = 0;
+    <span class="keyword">end</span>
+
+    hibox = {[0 0 -z_depth/2], [50 50 50], [1 2 2]};
+    [grid, eps, ~, J] = maxwell_grid(omega, x, y, z, <span class="string">'hires_box'</span>, hibox);
+<span class="comment">%     [grid, eps, ~, J] = maxwell_grid(omega, x, y, z);</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Setup the structure.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Material permittivities.</span>
+    gaas = 3.5^2;
+    silver = -40-4i;
+    air = 1;
+
+    <span class="comment">% Draw GaAs slab.</span>
+    eps = maxwell_shape(grid, eps, gaas, <span class="keyword">...</span>
+                        maxwell_box([0 0 min(z)], [inf inf 2*abs(min(z))]));
+
+    <span class="comment">% Draw hyperboloid leads.</span>
+    <span class="keyword">function</span> [is_in] = hyperboloid_leads(x, y, z)
+        is_in = (x.^2 - y_roc*y.^2 - z_roc*(z+z_depth/2).^2) &gt;= spacing^2 &amp; <span class="keyword">...</span>
+                z &lt;= 0 &amp; z &gt;= -z_depth;
+        is_in = abs(x)-spacing - y_roc*y.^2 - z_roc*(z+z_depth/2).^2 &gt;= 0 &amp; <span class="keyword">...</span>
+                z &lt;= 0 &amp; z &gt;= -z_depth;
+    <span class="keyword">end</span>
+    eps = maxwell_shape(grid, eps, silver, @hyperboloid_leads);
+
+    subplot <span class="string">121</span>; maxwell_view(grid, eps, [], <span class="string">'x'</span>, [nan 0 nan]);
+    subplot <span class="string">122</span>; maxwell_view(grid, eps, [], <span class="string">'x'</span>, [nan nan -z_depth/2]);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Excite with a plane wave.</span>
+        <span class="comment">%</span>
+
+    [~, ~, z] = maxwell_pos2ind(grid, <span class="string">'Ex'</span>, [0 0 300]);
+    J{1}(:,:,z) = 1;
+
+    <span class="comment">% Trick for 1-way plane-wave.</span>
+    J{1}(:,:,z) = 1 / grid.s_prim{3}(z);
+    J_delta = grid.s_dual{3}(z);
+    J{1}(:,:,z+1) = -exp(-1i * (2*pi/wvlen) * J_delta) / grid.s_prim{3}(z+1);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Solve.</span>
+        <span class="comment">%</span>
+
+    [E, H] = maxwell_solve(grid, eps, J);
+    subplot <span class="string">121</span>;
+    maxwell_view(grid, eps, E, <span class="string">'x'</span>, [nan 0 nan], <span class="string">'field_phase'</span>, nan);
+    subplot <span class="string">122</span>;
+    maxwell_view(grid, eps, E, <span class="string">'x'</span>, [nan nan -z_depth/2], <span class="string">'field_phase'</span>, nan);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Measure field strength near lead center.</span>
+        <span class="comment">%</span>
+
+    [x, y, z] = maxwell_pos2ind(grid, <span class="string">'Ex'</span>, [0 0 -z_depth/2]);
+    fval = abs(E{1}(x, y, z));
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxopt_case_metalfocus
+% Used to optimize a metal focusing structure.
+
+function [fun, x0] = maxopt_case_metalfocus(type, varargin)
+
+        %
+        % Parse inputs.
+        %
+
+    validateattributes(type, {'char'}, {'vector'}, 'type', mfilename);
+
+    options = my_parse_options(struct(  'flatten', false), ...
+                                varargin, mfilename);
+
+
+        %
+        % Return recommended starting parameters.
+        %
+
+    spacing0 = 10;
+    y_roc = 400;
+    z_roc = 400;
+    z_depth = 250;
+    x0 = [spacing0, y_roc, z_roc, z_depth];
+
+
+        %
+        % Return appropriate function handle.
+        %
+        
+    function [E, H, grid, eps] = get_fields(varargin)
+        [~, E, H, grid, eps] = solve_structure(varargin{:});
+    end
+
+    switch type
+        case 'get_fields'
+            fun = @(x) get_fields(x, options.flatten);
+        case 'fval'
+            fun = @(x) solve_structure(x, options.flatten);
+        otherwise
+            error('Invalid type.');
+    end
+end
+
+
+
+function [fval, E, H, grid, eps] = solve_structure(params, flatten)
+% Simulate the structure for the specific parameters..
+
+        %
+        % Get the structural parameters.
+        %
+
+    if isempty(params) % Used to look at the input beam.
+        no_struct = true; 
+    else
+        no_struct = false;
+        spacing = params(1); % Minimum spacing between the leads.
+        y_roc = 2/params(2); % Radius of curvature in the y-direction.
+        z_roc = 2/params(3); % Radius of curvature in the z-direction.
+        z_depth = params(4); % How deep the silver penetrates the GaAs.
+    end
+
+
+        %
+        % Create grid.
+        %
+
+    % Make a grid for a wavelength of 900 nm.
+    delta = 30;
+    wvlen = 900;
+    omega = 2*pi/wvlen;
+
+    my_size = 800;
+    x = -my_size : delta : my_size;
+    y = -my_size : delta : my_size;
+    z = -my_size : delta : my_size;
+
+    if flatten
+        y = 0;
+    end
+
+    hibox = {[0 0 -z_depth/2], [50 50 50], [1 2 2]};
+    [grid, eps, ~, J] = maxwell_grid(omega, x, y, z, 'hires_box', hibox);
+%     [grid, eps, ~, J] = maxwell_grid(omega, x, y, z); 
+
+
+        %
+        % Setup the structure.
+        %
+
+    % Material permittivities.
+    gaas = 3.5^2;
+    silver = -40-4i;
+    air = 1;
+
+    % Draw GaAs slab.
+    eps = maxwell_shape(grid, eps, gaas, ...
+                        maxwell_box([0 0 min(z)], [inf inf 2*abs(min(z))]));
+
+    % Draw hyperboloid leads.
+    function [is_in] = hyperboloid_leads(x, y, z)
+        is_in = (x.^2 - y_roc*y.^2 - z_roc*(z+z_depth/2).^2) >= spacing^2 & ...
+                z <= 0 & z >= -z_depth;
+        is_in = abs(x)-spacing - y_roc*y.^2 - z_roc*(z+z_depth/2).^2 >= 0 & ...
+                z <= 0 & z >= -z_depth;
+    end
+    eps = maxwell_shape(grid, eps, silver, @hyperboloid_leads);
+
+    subplot 121; maxwell_view(grid, eps, [], 'x', [nan 0 nan]);
+    subplot 122; maxwell_view(grid, eps, [], 'x', [nan nan -z_depth/2]);
+
+
+        %
+        % Excite with a plane wave.
+        %
+
+    [~, ~, z] = maxwell_pos2ind(grid, 'Ex', [0 0 300]);
+    J{1}(:,:,z) = 1;
+
+    % Trick for 1-way plane-wave.
+    J{1}(:,:,z) = 1 / grid.s_prim{3}(z);
+    J_delta = grid.s_dual{3}(z);
+    J{1}(:,:,z+1) = -exp(-1i * (2*pi/wvlen) * J_delta) / grid.s_prim{3}(z+1);
+        
+
+        %
+        % Solve.
+        %
+    
+    [E, H] = maxwell_solve(grid, eps, J);
+    subplot 121; 
+    maxwell_view(grid, eps, E, 'x', [nan 0 nan], 'field_phase', nan); 
+    subplot 122; 
+    maxwell_view(grid, eps, E, 'x', [nan nan -z_depth/2], 'field_phase', nan); 
+
+
+        % 
+        % Measure field strength near lead center.
+        %
+
+    [x, y, z] = maxwell_pos2ind(grid, 'Ex', [0 0 -z_depth/2]);
+    fval = abs(E{1}(x, y, z));
+end
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,727 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxopt_case_2wbeam</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxopt_case_2wbeam.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxopt_case_2wbeam</h1><p>Sets up a frequency-doubling cavity optimization.</p><pre class="codeinput"><span class="keyword">function</span> [fun, x0] = maxopt_case_2wbeam(type, varargin)
+
+        <span class="comment">%</span>
+        <span class="comment">% Parse inputs.</span>
+        <span class="comment">%</span>
+
+    validateattributes(type, {<span class="string">'char'</span>}, {<span class="string">'vector'</span>}, <span class="string">'type'</span>, mfilename);
+
+    options = my_parse_options(struct(  <span class="string">'wvlen'</span>, [1550, 775], <span class="keyword">...</span>
+                                        <span class="string">'eps_val'</span>, [3.2^2, 3.5^2], <span class="keyword">...</span>
+                                        <span class="string">'delta'</span>, 40, <span class="keyword">...</span>
+                                        <span class="string">'E'</span>, [], <span class="keyword">...</span>
+                                        <span class="string">'flatten'</span>, false), <span class="keyword">...</span>
+                                varargin, mfilename);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Return recommended starting parameters.</span>
+        <span class="comment">%</span>
+
+
+    N = 10;
+    beam_height = 220;
+    beam_width = 800;
+    hole_pos = 350 * ([1:N] - 0.5);
+    hole_xlen = 140 * ones(size(hole_pos));
+    hole_ylen = (240 + 20*[1:N]) .* ones(size(hole_pos));
+
+    hole_params = [hole_pos; hole_xlen; hole_ylen];
+    x0 = [beam_height; beam_width; hole_params(:)];
+
+    wvlen = options.wvlen;
+    eps_val = options.eps_val;
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Return appropriate function handle.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">function</span> [E, H, grid, eps] = get_fields(varargin)
+        [~, ~, E, H, grid, eps] = solve_structure(varargin{:});
+    <span class="keyword">end</span>
+
+
+    <span class="comment">% Save previously used values.</span>
+    E_cache = options.E;
+
+    <span class="keyword">function</span> [fval, grad_f, omega, E, H, grid, eps] = cached_solve(varargin)
+    <span class="comment">% This is a cached solve which uses the most recent omega and E values</span>
+    <span class="comment">% as initial guesses for the eigenmode solve.</span>
+        <span class="keyword">if</span> isempty(E_cache)
+            error(<span class="string">'Need an initial E-field guess.'</span>);
+        <span class="keyword">end</span>
+
+        [fval, grad_f, omega, E, H, grid, eps] = <span class="keyword">...</span>
+            solve_eigenmodes(E_cache, varargin{:}); <span class="comment">% Solve.</span>
+
+        <span class="comment">% Update cached values.</span>
+        E_cache = E;
+    <span class="keyword">end</span>
+
+    <span class="keyword">function</span> [omega, E, H, grid, eps] = get_modes(varargin)
+        [~, ~, omega, E, H, grid, eps] = cached_solve(varargin{:});
+    <span class="keyword">end</span>
+
+    flt = options.flatten;
+    <span class="keyword">switch</span> type
+        <span class="keyword">case</span> <span class="string">'get_fields'</span>
+            fun = @(x) get_fields(wvlen, eps_val, x, <span class="keyword">...</span>
+                                    options.delta, flt, false);
+        <span class="keyword">case</span> <span class="string">'fval'</span>
+            fun = @(x) solve_structure(wvlen, eps_val, x, <span class="keyword">...</span>
+                                        options.delta, flt, false);
+        <span class="keyword">case</span> <span class="string">'grad_f'</span>
+            fun = @(x) solve_structure(wvlen, eps_val, x, <span class="keyword">...</span>
+                                        options.delta, flt, true);
+        <span class="keyword">case</span> <span class="string">'get_fields_eig'</span>
+            fun = @(x) get_modes(wvlen, eps_val, x, <span class="keyword">...</span>
+                                    options.delta, flt, false);
+        <span class="keyword">case</span> <span class="string">'grad_f_eig'</span>
+            fun = @(x) cached_solve(wvlen, eps_val, x, <span class="keyword">...</span>
+                                        options.delta, flt, true);
+        <span class="keyword">otherwise</span>
+            error(<span class="string">'Invalid type.'</span>);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [Fval, grad_F, omega, E, H, grid, eps] = <span class="keyword">...</span>
+                solve_eigenmodes(E, wvlen, eps_val, varargin)
+<span class="comment">% Solve all eigenmodes.</span>
+
+    <span class="keyword">for</span> k = 1 : length(wvlen)
+        subplot(length(wvlen)+1, 1, k);
+        [fval(k), grad_f{k}, omega{k}, E{k}, H{k}, grid{k}, eps{k}] = <span class="keyword">...</span>
+                solve_one_eigenmode(E{k}, wvlen(k), eps_val(k), varargin{:});
+    <span class="keyword">end</span>
+    subplot(length(wvlen)+1, 1, length(wvlen)+1);
+
+
+    <span class="comment">% Optimize the lower-Q mode.</span>
+    [Fval, ind] = max(fval);
+    grad_F = grad_f{ind};
+
+    <span class="keyword">if</span> length(fval) &gt; 1 &amp;&amp; ind == 1
+        grad_F = grad_F * 1e3; <span class="comment">% This is a hack, 1w mode gradient boost.</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% Pretty print.</span>
+    fprintf(<span class="string">'fvals: '</span>);
+    <span class="keyword">for</span> k = 1 : length(wvlen)
+        <span class="keyword">if</span> k == ind
+            fprintf(<span class="string">'[%e] '</span>, fval(k));
+        <span class="keyword">else</span>
+            fprintf(<span class="string">'%e '</span>, fval(k));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    fprintf(<span class="string">'\n'</span>);
+<span class="keyword">end</span>
+
+
+<span class="comment">% Solve the resonance modes and return a gradient.</span>
+<span class="keyword">function</span> [fval, grad_f, omega, E, H, grid, eps] = <span class="keyword">...</span>
+                                solve_one_eigenmode(E, wvlen, eps_val, params, <span class="keyword">...</span>
+                                                delta, flatten, calc_grad)
+
+
+    [grid, eps, J] = make_structure(wvlen, eps_val, params, delta, flatten);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Solve for the eigenmode.</span>
+        <span class="comment">%</span>
+
+    [omega, E, H] = maxwell_solve_eigenmode(grid, eps, E, <span class="keyword">...</span>
+                        <span class="string">'eig_max_iters'</span>, 10, <span class="string">'vis_progress'</span>, <span class="string">'text'</span>);
+    maxwell_view(grid, eps, E, <span class="string">'y'</span>, [nan nan 0], <span class="string">'field_phase'</span>, 0); <span class="comment">% Visualize.</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Compose and evaluate fitness function (function to minimize).</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">function</span> [fval, grad_w] = fitness(w)
+    <span class="comment">% Calculates figure of merit (fitness function) and its derivative.</span>
+        real_w = real(pi^2/wvlen);
+        fval = -real_w / imag(w); <span class="comment">% Negative Q-factor.</span>
+        grad_w = 1i * real_w / imag(w)^2;
+    <span class="keyword">end</span>
+
+    [fval, grad_w] = fitness(omega);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Calculate structural gradient needed for gradient descent optimization.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">if</span> ~calc_grad <span class="comment">% Skip if not needed.</span>
+        grad_f = nan;
+        <span class="keyword">return</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">function</span> [eps] = make_eps(params)
+    <span class="comment">% Function handle for creating the structure.</span>
+        [~, eps] = make_structure(wvlen, eps_val, params, delta, flatten);
+    <span class="keyword">end</span>
+
+    <span class="keyword">function</span> [lambda] = solver(eps)
+    <span class="comment">% Function that evaluates the fitness based on eps.</span>
+    <span class="comment">% Only used for gradient checking.</span>
+        [omega_fit, E_fit, H_fit] = maxwell_solve_eigenmode(grid, eps, E, <span class="string">'err_thresh'</span>, 1e-2);
+        lambda = omega_fit^2;
+    <span class="keyword">end</span>
+
+    <span class="comment">% Calculate the structural gradient.</span>
+    grad_f = maxopt_freq_gradient(grid, E, omega, @fitness, params, @make_eps, <span class="keyword">...</span>
+                <span class="string">'solver'</span>, @solver, <span class="keyword">...</span>
+                <span class="string">'check_gradients'</span>, false);
+<span class="keyword">end</span>
+
+
+<span class="keyword">function</span> [Fval, grad_F, E, H, grid, eps] = <span class="keyword">...</span>
+                solve_structure(wvlen, eps_val, varargin)
+<span class="comment">% Simulate all structures.</span>
+    <span class="comment">% wvlen = wvlen(2);</span>
+    <span class="keyword">for</span> k = 1 : length(wvlen)
+        subplot(length(wvlen)+1, 1, k);
+        [fval(k), grad_f{k}, E{k}, H{k}, grid{k}, eps{k}] = <span class="keyword">...</span>
+                    solve_one_structure(wvlen(k), eps_val(k), varargin{:});
+    <span class="keyword">end</span>
+    subplot(length(wvlen)+1, 1, length(wvlen)+1);
+
+    <span class="comment">% Find the worst one.</span>
+    [Fval, ind] = max(fval);
+    grad_F = grad_f{ind};
+
+    <span class="comment">% Pretty print.</span>
+    fprintf(<span class="string">'fvals: '</span>);
+    <span class="keyword">for</span> k = 1 : length(wvlen)
+        <span class="keyword">if</span> k == ind
+            fprintf(<span class="string">'[%e] '</span>, fval(k));
+        <span class="keyword">else</span>
+            fprintf(<span class="string">'%e '</span>, fval(k));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    fprintf(<span class="string">'\n'</span>);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [fval, grad_f, E, H, grid, eps] = <span class="keyword">...</span>
+                solve_one_structure(wvlen, eps_val, params, <span class="keyword">...</span>
+                                    delta, flatten, calc_grad)
+<span class="comment">% Simulate a nanobeam structure.</span>
+
+
+    [grid, eps, J] = make_structure(wvlen, eps_val, params, delta, flatten);
+
+        <span class="comment">%</span>
+        <span class="comment">% Use central point source as the excitation.</span>
+        <span class="comment">%</span>
+
+    [x, y, z] = maxwell_pos2ind(grid, <span class="string">'Ey'</span>, [0 0 0]);
+    J{2}(x, y, z) = 1;
+    J{2}(x-1, y, z) = 1;
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Solve.</span>
+        <span class="comment">%</span>
+
+    [E, H] = maxwell_solve(grid, eps, J, <span class="string">'vis_progress'</span>, <span class="string">'text'</span>);
+    maxwell_view(grid, eps, E, <span class="string">'y'</span>, [nan nan 0], <span class="string">'field_phase'</span>, 0);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Measure power reflected back to the center (figure of merit).</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">function</span> [fval, grad_E] = fitness(E)
+    <span class="comment">% Calculates figure of merit and its derivative.</span>
+        <span class="comment">% Figure of merit.</span>
+        E_meas = [E{2}(x, y, z); E{2}(x-1, y, z)];
+        fval = mean((real(E_meas))); <span class="comment">% This is the figure of merit.</span>
+
+        <span class="comment">% Field gradient.</span>
+        grad_E = my_default_field(grid.shape, 0);
+        grad_E{2}(x, y, z) = 1/2;
+        grad_E{2}(x-1, y, z) = 1/2;
+    <span class="keyword">end</span>
+
+    [fval, grad_E] = fitness(E);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Calculate structural gradient.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">if</span> ~calc_grad <span class="comment">% Skip if not needed.</span>
+        grad_f = nan;
+        <span class="keyword">return</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">function</span> [eps] = make_eps(params)
+    <span class="comment">% Function handle for creating the structure.</span>
+        [~, eps] = make_structure(wvlen, eps_val, params, delta, flatten);
+    <span class="keyword">end</span>
+
+    <span class="comment">% Calculate the structural gradient.</span>
+    grad_f = maxopt_field_gradient(grid, E, @fitness, params, @make_eps, <span class="keyword">...</span>
+                <span class="string">'solver_fun'</span>, @(eps) maxwell_solve(grid, eps, J), <span class="keyword">...</span>
+                <span class="string">'check_gradients'</span>, false, <span class="keyword">...</span>
+                <span class="string">'solver_args'</span>, {<span class="string">'vis_progress'</span>, <span class="string">'text'</span>});
+<span class="keyword">end</span>
+
+
+<span class="keyword">function</span> [grid, eps, J] = make_structure(wvlen, eps_val, params, delta, flatten)
+
+    height = params(1);
+    width = params(2);
+    hole_xpos = abs(params(3:3:end));
+    hole_xlen = abs(params(4:3:end));
+    hole_ylen = abs(params(5:3:end));
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Create grid.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Make a grid for a wavelength of 1550 nm.</span>
+    omega = 2*pi / wvlen;
+    x = -4200 : delta : 4200;
+    y = -1200 : delta : 1200;
+    z = -1000 : delta : 1000;
+
+    <span class="keyword">if</span> flatten
+        z = 0;
+    <span class="keyword">end</span>
+
+    [grid, eps, ~, J] = maxwell_grid(omega, x, y, z);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Setup the structure.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Structure constants.</span>
+    air_eps = 1;
+
+    my_box = @(pos, siz) maxwell_box_smooth(pos, siz, <span class="string">'smooth_dist'</span>, delta);
+
+    <span class="comment">% Draw the beam.</span>
+    eps = maxwell_shape(grid, eps, eps_val, <span class="keyword">...</span>
+                        my_box([0 0 0], [1e9 width height]));
+
+    <span class="comment">% Draw rectangular holes.</span>
+    <span class="keyword">for</span> k = 1 : length(hole_xpos)
+        <span class="keyword">for</span> l = [-1, 1]
+            hole_pos = [l*hole_xpos(k) 0 0];
+            hole_size = [hole_xlen(k) hole_ylen(k) 2*height];
+            hole = my_box(hole_pos, hole_size);
+            eps = maxwell_shape(grid, eps, air_eps, hole);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% Draw a central non-hole to make sure we don't cut out the center.</span>
+    eps = maxwell_shape(grid, eps, eps_val, my_box([0 0 0], [120 width height]-2*delta));
+    <span class="comment">% maxwell_view(grid, eps, [], 'y', [nan nan 0]);</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxopt_case_2wbeam
+% Sets up a frequency-doubling cavity optimization.
+
+function [fun, x0] = maxopt_case_2wbeam(type, varargin)
+
+        %
+        % Parse inputs.
+        %
+
+    validateattributes(type, {'char'}, {'vector'}, 'type', mfilename);
+
+    options = my_parse_options(struct(  'wvlen', [1550, 775], ...
+                                        'eps_val', [3.2^2, 3.5^2], ...
+                                        'delta', 40, ...
+                                        'E', [], ...
+                                        'flatten', false), ...
+                                varargin, mfilename);
+
+
+        %
+        % Return recommended starting parameters.
+        %
+
+    
+    N = 10;
+    beam_height = 220;
+    beam_width = 800;
+    hole_pos = 350 * ([1:N] - 0.5);
+    hole_xlen = 140 * ones(size(hole_pos));
+    hole_ylen = (240 + 20*[1:N]) .* ones(size(hole_pos));
+
+    hole_params = [hole_pos; hole_xlen; hole_ylen];
+    x0 = [beam_height; beam_width; hole_params(:)];
+
+    wvlen = options.wvlen;
+    eps_val = options.eps_val; 
+
+
+        %
+        % Return appropriate function handle.
+        %
+        
+    function [E, H, grid, eps] = get_fields(varargin)
+        [~, ~, E, H, grid, eps] = solve_structure(varargin{:});
+    end
+        
+
+    % Save previously used values.
+    E_cache = options.E;
+
+    function [fval, grad_f, omega, E, H, grid, eps] = cached_solve(varargin)
+    % This is a cached solve which uses the most recent omega and E values
+    % as initial guesses for the eigenmode solve.
+        if isempty(E_cache)
+            error('Need an initial E-field guess.');
+        end
+
+        [fval, grad_f, omega, E, H, grid, eps] = ...
+            solve_eigenmodes(E_cache, varargin{:}); % Solve.
+
+        % Update cached values.
+        E_cache = E;
+    end
+
+    function [omega, E, H, grid, eps] = get_modes(varargin)
+        [~, ~, omega, E, H, grid, eps] = cached_solve(varargin{:});
+    end
+
+    flt = options.flatten;
+    switch type
+        case 'get_fields'
+            fun = @(x) get_fields(wvlen, eps_val, x, ...
+                                    options.delta, flt, false);
+        case 'fval'
+            fun = @(x) solve_structure(wvlen, eps_val, x, ...
+                                        options.delta, flt, false);
+        case 'grad_f'
+            fun = @(x) solve_structure(wvlen, eps_val, x, ...
+                                        options.delta, flt, true);
+        case 'get_fields_eig'
+            fun = @(x) get_modes(wvlen, eps_val, x, ...
+                                    options.delta, flt, false);
+        case 'grad_f_eig'
+            fun = @(x) cached_solve(wvlen, eps_val, x, ...
+                                        options.delta, flt, true);
+        otherwise
+            error('Invalid type.');
+    end
+end
+
+function [Fval, grad_F, omega, E, H, grid, eps] = ...
+                solve_eigenmodes(E, wvlen, eps_val, varargin)
+% Solve all eigenmodes.
+
+    for k = 1 : length(wvlen)
+        subplot(length(wvlen)+1, 1, k);
+        [fval(k), grad_f{k}, omega{k}, E{k}, H{k}, grid{k}, eps{k}] = ...
+                solve_one_eigenmode(E{k}, wvlen(k), eps_val(k), varargin{:});
+    end
+    subplot(length(wvlen)+1, 1, length(wvlen)+1);
+
+    
+    % Optimize the lower-Q mode.
+    [Fval, ind] = max(fval);
+    grad_F = grad_f{ind};
+
+    if length(fval) > 1 && ind == 1 
+        grad_F = grad_F * 1e3; % This is a hack, 1w mode gradient boost.
+    end
+
+    % Pretty print.
+    fprintf('fvals: ');
+    for k = 1 : length(wvlen)
+        if k == ind
+            fprintf('[%e] ', fval(k));
+        else
+            fprintf('%e ', fval(k));
+        end
+    end
+    fprintf('\n');
+end
+
+
+% Solve the resonance modes and return a gradient.
+function [fval, grad_f, omega, E, H, grid, eps] = ...
+                                solve_one_eigenmode(E, wvlen, eps_val, params, ...
+                                                delta, flatten, calc_grad)
+
+
+    [grid, eps, J] = make_structure(wvlen, eps_val, params, delta, flatten);
+
+
+        %
+        % Solve for the eigenmode.
+        %
+
+    [omega, E, H] = maxwell_solve_eigenmode(grid, eps, E, ...
+                        'eig_max_iters', 10, 'vis_progress', 'text');
+    maxwell_view(grid, eps, E, 'y', [nan nan 0], 'field_phase', 0); % Visualize.
+
+
+        % 
+        % Compose and evaluate fitness function (function to minimize).
+        %
+
+    function [fval, grad_w] = fitness(w)
+    % Calculates figure of merit (fitness function) and its derivative.
+        real_w = real(pi^2/wvlen);
+        fval = -real_w / imag(w); % Negative Q-factor.
+        grad_w = 1i * real_w / imag(w)^2;
+    end
+        
+    [fval, grad_w] = fitness(omega);
+
+
+        % 
+        % Calculate structural gradient needed for gradient descent optimization.
+        %
+
+    if ~calc_grad % Skip if not needed.
+        grad_f = nan;
+        return
+    end
+
+    function [eps] = make_eps(params)
+    % Function handle for creating the structure.
+        [~, eps] = make_structure(wvlen, eps_val, params, delta, flatten);
+    end
+
+    function [lambda] = solver(eps)
+    % Function that evaluates the fitness based on eps.
+    % Only used for gradient checking.
+        [omega_fit, E_fit, H_fit] = maxwell_solve_eigenmode(grid, eps, E, 'err_thresh', 1e-2);
+        lambda = omega_fit^2;
+    end
+
+    % Calculate the structural gradient.
+    grad_f = maxopt_freq_gradient(grid, E, omega, @fitness, params, @make_eps, ...
+                'solver', @solver, ...
+                'check_gradients', false);
+end
+
+
+function [Fval, grad_F, E, H, grid, eps] = ...
+                solve_structure(wvlen, eps_val, varargin)
+% Simulate all structures.
+    % wvlen = wvlen(2);
+    for k = 1 : length(wvlen)
+        subplot(length(wvlen)+1, 1, k);
+        [fval(k), grad_f{k}, E{k}, H{k}, grid{k}, eps{k}] = ...
+                    solve_one_structure(wvlen(k), eps_val(k), varargin{:});
+    end
+    subplot(length(wvlen)+1, 1, length(wvlen)+1);
+
+    % Find the worst one.
+    [Fval, ind] = max(fval);
+    grad_F = grad_f{ind};
+
+    % Pretty print.
+    fprintf('fvals: ');
+    for k = 1 : length(wvlen)
+        if k == ind
+            fprintf('[%e] ', fval(k));
+        else
+            fprintf('%e ', fval(k));
+        end
+    end
+    fprintf('\n');
+end
+
+function [fval, grad_f, E, H, grid, eps] = ...
+                solve_one_structure(wvlen, eps_val, params, ...
+                                    delta, flatten, calc_grad)
+% Simulate a nanobeam structure.
+
+
+    [grid, eps, J] = make_structure(wvlen, eps_val, params, delta, flatten);
+
+        %
+        % Use central point source as the excitation.
+        %
+
+    [x, y, z] = maxwell_pos2ind(grid, 'Ey', [0 0 0]);
+    J{2}(x, y, z) = 1;
+    J{2}(x-1, y, z) = 1;
+
+        
+        %
+        % Solve.
+        %
+
+    [E, H] = maxwell_solve(grid, eps, J, 'vis_progress', 'text');
+    maxwell_view(grid, eps, E, 'y', [nan nan 0], 'field_phase', 0); 
+
+
+        %
+        % Measure power reflected back to the center (figure of merit).
+        %
+
+    function [fval, grad_E] = fitness(E)
+    % Calculates figure of merit and its derivative.
+        % Figure of merit.
+        E_meas = [E{2}(x, y, z); E{2}(x-1, y, z)];
+        fval = mean((real(E_meas))); % This is the figure of merit.
+
+        % Field gradient.
+        grad_E = my_default_field(grid.shape, 0); 
+        grad_E{2}(x, y, z) = 1/2;
+        grad_E{2}(x-1, y, z) = 1/2;
+    end
+        
+    [fval, grad_E] = fitness(E);
+
+
+        % 
+        % Calculate structural gradient.
+        %
+
+    if ~calc_grad % Skip if not needed.
+        grad_f = nan;
+        return
+    end
+
+    function [eps] = make_eps(params)
+    % Function handle for creating the structure.
+        [~, eps] = make_structure(wvlen, eps_val, params, delta, flatten);
+    end
+
+    % Calculate the structural gradient.
+    grad_f = maxopt_field_gradient(grid, E, @fitness, params, @make_eps, ...
+                'solver_fun', @(eps) maxwell_solve(grid, eps, J), ...
+                'check_gradients', false, ...
+                'solver_args', {'vis_progress', 'text'});
+end
+
+
+function [grid, eps, J] = make_structure(wvlen, eps_val, params, delta, flatten)
+
+    height = params(1);
+    width = params(2);
+    hole_xpos = abs(params(3:3:end)); 
+    hole_xlen = abs(params(4:3:end));
+    hole_ylen = abs(params(5:3:end));
+
+
+        %
+        % Create grid.
+        %
+
+    % Make a grid for a wavelength of 1550 nm.
+    omega = 2*pi / wvlen;
+    x = -4200 : delta : 4200;
+    y = -1200 : delta : 1200;
+    z = -1000 : delta : 1000;
+
+    if flatten
+        z = 0;
+    end
+
+    [grid, eps, ~, J] = maxwell_grid(omega, x, y, z);
+
+
+        %
+        % Setup the structure.
+        %
+
+    % Structure constants.
+    air_eps = 1;
+
+    my_box = @(pos, siz) maxwell_box_smooth(pos, siz, 'smooth_dist', delta);
+    
+    % Draw the beam.
+    eps = maxwell_shape(grid, eps, eps_val, ...
+                        my_box([0 0 0], [1e9 width height]));
+
+    % Draw rectangular holes.
+    for k = 1 : length(hole_xpos)
+        for l = [-1, 1]
+            hole_pos = [l*hole_xpos(k) 0 0];
+            hole_size = [hole_xlen(k) hole_ylen(k) 2*height];
+            hole = my_box(hole_pos, hole_size);
+            eps = maxwell_shape(grid, eps, air_eps, hole); 
+        end
+    end
+
+    % Draw a central non-hole to make sure we don't cut out the center.
+    eps = maxwell_shape(grid, eps, eps_val, my_box([0 0 0], [120 width height]-2*delta)); 
+    % maxwell_view(grid, eps, [], 'y', [nan nan 0]);
+end
+
+##### SOURCE END #####
+--></body></html>

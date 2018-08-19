@@ -1,0 +1,558 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxwell_wgmode</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxwell_wgmode.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxwell_wgmode</h1><!--introduction--><p>Excite a waveguide mode. Can also used to filter for a particular mode.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Source code</a></li><li><a href="#5">Make the source uni-directional</a></li></ul></div><h2>Syntax<a name="1"></a></h2><div><ul><li><tt>[J, E, H, beta] = maxwell_wgmode(grid, eps, plane_pos, plane_size)</tt>   computes the fundamental waveguide mode   at the finite plane located at <tt>plane_pos</tt>,   and of size <tt>plane_size</tt>.   One of the elements of <tt>plane_size</tt> must be either <tt>+inf</tt> or <tt>-inf</tt>   in order to denote the directionality of the desired waveguide mode.   The E- and H-fields of the mode are returned,   as well as the current excitation needed to excite the mode (<tt>J</tt>).   These field values actually consist of the entire vector-field.   Lastly, the wave-vector (<tt>beta</tt>) of the mode is also returned.   The fundamental mode is assumed.</li></ul></div><div><ul><li><tt>... = maxwell_wgmode(grid, [eps mu], ...)</tt>   allows for <tt>mu</tt> not equal to 1.</li></ul></div><div><ul><li><tt>... = maxwell_wgmode(..., 'mode_number', m)</tt>   returns the <tt>m</tt>-th order mode, where <tt>m = 1</tt> denotes the fundamental mode.   Defaults to 1.</li></ul></div><div><ul><li><tt>... = maxwell_wgmode(..., 'view', true)</tt>   plots the fields of the waveguide mode.</li></ul></div><h2>Description<a name="2"></a></h2><p><tt>maxwell_wgmode</tt> computes the propagation mode for a nanophotonic waveguide structure including the wave-vector, E- and H-fields, as well as the current excitation needed for uni-directional excitation. The current excitation can be used for near-perfect excitation of a waveguide, while the mode fields can be used for filtering out powers at output waveguides.</p><h2>Source code<a name="3"></a></h2><pre class="codeinput"><span class="keyword">function</span> [J, E, H, beta] = solve_wgmode(grid, eps_mu, plane_pos, plane_size, varargin)
+</pre><pre class="codeinput">        <span class="comment">%</span>
+        <span class="comment">% Validate and parse inputs.</span>
+        <span class="comment">%</span>
+
+    my_validate_grid(grid, mfilename);
+
+    [eps, mu] = my_split(eps_mu, grid.shape, {<span class="string">'eps'</span>, <span class="string">'mu'</span>}, mfilename);
+    <span class="keyword">if</span> isempty(mu)
+        mu = my_default_field(grid.shape, 1);
+    <span class="keyword">end</span>
+    my_validate_field(eps, grid.shape, <span class="string">'eps'</span>, mfilename);
+    my_validate_field(mu, grid.shape, <span class="string">'mu'</span>, mfilename);
+
+    validateattributes(plane_pos, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                {<span class="string">'nonnan'</span>, <span class="string">'finite'</span>, <span class="string">'numel'</span>, 3}, mfilename, <span class="string">'plane_pos'</span>);
+    validateattributes(plane_size, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                {<span class="string">'nonnan'</span>, <span class="string">'numel'</span>, 3}, mfilename, <span class="string">'plane_size'</span>);
+    <span class="keyword">if</span> length(find(isinf(plane_size))) ~= 1
+        error(<span class="string">'plane_size must have exactly 1 element equal to either +inf or -inf.'</span>);
+    <span class="keyword">end</span>
+
+    <span class="comment">% Optional arguments.</span>
+    options = my_parse_options(struct(  <span class="string">'mode_number'</span>, 1, <span class="keyword">...</span>
+                                        <span class="string">'view'</span>, false), <span class="keyword">...</span>
+                                varargin, mfilename);
+    validateattributes(options.mode_number, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                        {<span class="string">'positive'</span>, <span class="string">'integer'</span>}, mfilename, <span class="string">'mode_number'</span>);
+    validateattributes(options.view, {<span class="string">'logical'</span>}, <span class="keyword">...</span>
+                        {<span class="string">'binary'</span>}, mfilename, <span class="string">'view'</span>);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Find plane (sub-grid) on which to solve for the eigenmode.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Determine desired direction of propagation.</span>
+    [p0, p1, prop_dir, prop_in_pos_dir] = <span class="keyword">...</span>
+                                    my_find_plane(grid, plane_pos, plane_size);
+
+    <span class="comment">% Cut out the bounded plane.</span>
+    sub_shape = p1 - p0 + 1;
+    <span class="keyword">for</span> k = 1 : 3
+        sp{k} = grid.s_prim{k}(p0(k):p1(k));
+        sd{k} = grid.s_dual{k}(p0(k):p1(k));
+        e{k} = eps{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+        m{k} = mu{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+    <span class="keyword">end</span>
+
+        <span class="comment">%</span>
+        <span class="comment">% Build both real-only and full-complex versions of the operator</span>
+        <span class="comment">% for the waveguide mode within the plane.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Step size in propagation direction.</span>
+    prop_step = real(grid.s_dual{prop_dir}(p0(prop_dir)));
+
+    <span class="comment">% Full complex operator.</span>
+    [A, get_wg_fields] = my_wgoperator(grid.omega, sp, sd, e, m, <span class="keyword">...</span>
+                                        prop_dir, prop_step, sub_shape);
+
+    <span class="keyword">for</span> k = 1 : 3
+        sp_r{k} = real(sp{k});
+        sd_r{k} = real(sd{k});
+        e_r{k} = real(e{k});
+        m_r{k} = real(m{k});
+    <span class="keyword">end</span>
+
+    <span class="comment">% Real-only operator.</span>
+    A_r = my_wgoperator(real(grid.omega), sp_r, sd_r, e_r, m_r, <span class="keyword">...</span>
+                                        prop_dir, prop_step, sub_shape);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Solve for largest-magnitude eigenvalue of the real operator</span>
+        <span class="comment">% This is done in order to obtain the appropriate shift,</span>
+        <span class="comment">% from which we can calculate the most negative eigenvalues.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Use the power iteration algorithm.</span>
+    n = size(A_r, 1);
+    v = randn(n, 1);
+    <span class="keyword">for</span> k = 1 : 20 <span class="comment">% 20 iterations should always be enough for an estimate.</span>
+        v = A_r * v;
+    <span class="keyword">end</span>
+    ev_max = (v' * A_r * v) / norm(v)^2; <span class="comment">% Rayleigh quotient.</span>
+    shift = abs(ev_max); <span class="comment">% Shift works for both positive and negative ev_max.</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Solve for the desired eigenvector of the real operator</span>
+        <span class="comment">% Taking the real operator, we a few of the most negative eigenmodes,</span>
+        <span class="comment">% and then choose the one we are interested in.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Shift the matrix and find the appropriate eigenmode.</span>
+    <span class="comment">% Find a few extra modes just to be sure we found the correct one.</span>
+    [V, D] = eigs(A_r - shift * speye(n), options.mode_number + 2);
+
+
+    gamma = diag(D);
+    [temp, ind] = sort(gamma); <span class="comment">% Sort most negative first.</span>
+    v = V(:,ind(options.mode_number)); <span class="comment">% Choose the appropriate eigenmode.</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Solve for the eigenvector of the full operator</span>
+        <span class="comment">% We use the selected eigenvector from the real operator as an initial</span>
+        <span class="comment">% guess.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Perform Rayleigh quotient iteration to get the mode of the full operator.</span>
+    v_norqi = v;
+    lambda = v' * A * v;
+    rqi_done = false;
+    <span class="keyword">for</span> k = 1 : 40
+        err(k) = norm(A*v - lambda*v) / norm(lambda*v);
+        <span class="keyword">if</span> (err(k) &lt; 1e-13)
+            rqi_done = true;
+            <span class="keyword">break</span>
+        <span class="keyword">end</span>
+        w = (A - lambda*speye(n)) \ v;
+        v = w / norm(w);
+        lambda = v' * A * v;
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> ~rqi_done
+        warning(<span class="string">'Did not converge to mode, rqi error: %e.'</span>, err(end));
+        v = v_norqi;
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Calculate output parameters.</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Compute the wave-vector.</span>
+    beta = i * sqrt(lambda);
+    beta = sign(real(beta)) * beta; <span class="comment">% Force real part of beta to be positive.</span>
+
+    <span class="comment">% Perform correction on beta to account for numerical dispersion.</span>
+    <span class="comment">% Inspiration: Taflove's FDTD book, under Numerical Dispersion.</span>
+    <span class="comment">% This correction term brings the error in emitted power to within 1 percent.</span>
+    <span class="comment">% At the same time, additional error is introduced into the E_err and H_err terms.</span>
+    <span class="comment">% This effect becomes more pronounced as beta increases.</span>
+    beta_corr = 2*sin(real(beta/2)) - real(beta);
+    beta = beta + 0 * beta_corr; <span class="comment">% Turn off correction.</span>
+
+    <span class="comment">% Fields.</span>
+    [E_small, H_small, J_small, E_err, H_err] = get_wg_fields(beta, v);
+
+    <span class="keyword">if</span> prop_in_pos_dir
+        coeff = -1;
+    <span class="keyword">else</span>
+        coeff = +1;
+    <span class="keyword">end</span>
+
+    <span class="comment">% Make the components of the E and H fields match the propagation</span>
+    <span class="comment">% direction.</span>
+    <span class="keyword">for</span> k = 1 : 3
+        <span class="keyword">if</span> k ~= prop_dir
+            H_small{k} = coeff * H_small{k};
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% Expand the fields to span the entire simulation space.</span>
+    <span class="keyword">for</span> k = 1 : 3
+        E{k} = zeros(grid.shape);
+        H{k} = zeros(grid.shape);
+        J{k} = zeros(grid.shape);
+
+        E{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3)) = E_small{k};
+        H{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3)) = H_small{k};
+        J{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3)) = J_small{k};
+    <span class="keyword">end</span>
+</pre><h2>Make the source uni-directional<a name="5"></a></h2><p>This is done by creating an adjacent source which cancels the propagation of the mode in one direction.</p><pre class="codeinput">    dl = real(sp{prop_dir}); <span class="comment">% Distance separating J and J_adj planes.</span>
+
+
+    <span class="comment">% Shift indices for the propagation direction.</span>
+    ps0 = p0;
+    ps1 = p1;
+    ps0(prop_dir) = p0(prop_dir) + coeff;
+    ps1(prop_dir) = p1(prop_dir) + coeff;
+
+    <span class="comment">% Form the adjacent J-field.</span>
+    <span class="keyword">for</span> k = 1 : 3
+        J{k}(ps0(1):ps1(1), ps0(2):ps1(2), ps0(3):ps1(3)) = <span class="keyword">...</span>
+            -1 * J{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3)) * <span class="keyword">...</span>
+            exp(-1i * beta * dl);
+    <span class="keyword">end</span>
+
+    <span class="comment">% Re-normalize so power flow is maintained at 1.</span>
+    <span class="keyword">for</span> k = 1 : 3
+        J{k} = J{k} ./ abs(1 - exp(coeff * 2i * beta * dl));
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Plot fields, if desired.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">if</span> options.view
+        f = {E_small{:}, H_small{:}};
+        title_text = {<span class="string">'Ex'</span>, <span class="string">'Ey'</span>, <span class="string">'Ez'</span>, <span class="string">'Hx'</span>, <span class="string">'Hy'</span>, <span class="string">'Hz'</span>};
+        <span class="keyword">for</span> k = 1 : 6
+            subplot(2, 3, k);
+            my_plot(reshape(real(f{k}), sub_shape));
+            title(title_text{k});
+        <span class="keyword">end</span>
+        drawnow;
+    <span class="keyword">end</span>
+</pre><pre class="codeinput"><span class="keyword">function</span> my_plot(x)
+<span class="comment">% Helps with plotting.</span>
+    <span class="keyword">if</span> numel(find(size(x) ~= 1)) == 1 <span class="comment">% Detect 1D data.</span>
+        plot([real(x(:)), imag(x(:))], <span class="string">'.-'</span>);
+    <span class="keyword">else</span>
+        imagesc(squeeze(x).', (max(abs(x(:))) + eps) * [-1 1]);
+        colorbar
+        axis <span class="string">equal</span> <span class="string">tight</span>;
+        set(gca, <span class="string">'YDir'</span>, <span class="string">'normal'</span>);
+    <span class="keyword">end</span>
+    colormap(<span class="string">'jet'</span>);
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxwell_wgmode
+% Excite a waveguide mode. Can also used to filter for a particular mode.
+
+%%% Syntax
+%
+% * |[J, E, H, beta] = maxwell_wgmode(grid, eps, plane_pos, plane_size)|
+%   computes the fundamental waveguide mode 
+%   at the finite plane located at |plane_pos|, 
+%   and of size |plane_size|.
+%   One of the elements of |plane_size| must be either |+inf| or |-inf|
+%   in order to denote the directionality of the desired waveguide mode.
+%   The E- and H-fields of the mode are returned,
+%   as well as the current excitation needed to excite the mode (|J|).
+%   These field values actually consist of the entire vector-field.
+%   Lastly, the wave-vector (|beta|) of the mode is also returned.
+%   The fundamental mode is assumed.
+%
+% * |... = maxwell_wgmode(grid, [eps mu], ...)|
+%   allows for |mu| not equal to 1.
+%
+% * |... = maxwell_wgmode(..., 'mode_number', m)|
+%   returns the |m|-th order mode, where |m = 1| denotes the fundamental mode.
+%   Defaults to 1.
+%
+% * |... = maxwell_wgmode(..., 'view', true)|
+%   plots the fields of the waveguide mode.
+
+%%% Description
+% |maxwell_wgmode| computes the propagation mode for a nanophotonic waveguide structure
+% including the wave-vector, E- and H-fields, as well as the current excitation
+% needed for uni-directional excitation.
+% The current excitation can be used for near-perfect excitation of a waveguide,
+% while the mode fields can be used for filtering out powers at output waveguides.
+%
+
+%%% Source code
+function [J, E, H, beta] = solve_wgmode(grid, eps_mu, plane_pos, plane_size, varargin)
+
+        %
+        % Validate and parse inputs.
+        %
+
+    my_validate_grid(grid, mfilename);
+
+    [eps, mu] = my_split(eps_mu, grid.shape, {'eps', 'mu'}, mfilename);
+    if isempty(mu)
+        mu = my_default_field(grid.shape, 1); 
+    end
+    my_validate_field(eps, grid.shape, 'eps', mfilename);
+    my_validate_field(mu, grid.shape, 'mu', mfilename);
+
+    validateattributes(plane_pos, {'numeric'}, ...
+                {'nonnan', 'finite', 'numel', 3}, mfilename, 'plane_pos');
+    validateattributes(plane_size, {'numeric'}, ...
+                {'nonnan', 'numel', 3}, mfilename, 'plane_size');
+    if length(find(isinf(plane_size))) ~= 1
+        error('plane_size must have exactly 1 element equal to either +inf or -inf.');
+    end
+
+    % Optional arguments.
+    options = my_parse_options(struct(  'mode_number', 1, ...
+                                        'view', false), ...
+                                varargin, mfilename);
+    validateattributes(options.mode_number, {'numeric'}, ...
+                        {'positive', 'integer'}, mfilename, 'mode_number');
+    validateattributes(options.view, {'logical'}, ...
+                        {'binary'}, mfilename, 'view');
+
+
+        %
+        % Find plane (sub-grid) on which to solve for the eigenmode.
+        %
+
+    % Determine desired direction of propagation.
+    [p0, p1, prop_dir, prop_in_pos_dir] = ...
+                                    my_find_plane(grid, plane_pos, plane_size);
+
+    % Cut out the bounded plane.
+    sub_shape = p1 - p0 + 1;
+    for k = 1 : 3
+        sp{k} = grid.s_prim{k}(p0(k):p1(k));
+        sd{k} = grid.s_dual{k}(p0(k):p1(k));
+        e{k} = eps{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+        m{k} = mu{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3));
+    end
+    
+        %
+        % Build both real-only and full-complex versions of the operator
+        % for the waveguide mode within the plane.
+        %
+
+    % Step size in propagation direction.
+    prop_step = real(grid.s_dual{prop_dir}(p0(prop_dir))); 
+
+    % Full complex operator.
+    [A, get_wg_fields] = my_wgoperator(grid.omega, sp, sd, e, m, ...
+                                        prop_dir, prop_step, sub_shape);
+
+    for k = 1 : 3
+        sp_r{k} = real(sp{k});
+        sd_r{k} = real(sd{k});
+        e_r{k} = real(e{k});
+        m_r{k} = real(m{k});
+    end
+
+    % Real-only operator.
+    A_r = my_wgoperator(real(grid.omega), sp_r, sd_r, e_r, m_r, ...
+                                        prop_dir, prop_step, sub_shape);
+
+
+        %
+        % Solve for largest-magnitude eigenvalue of the real operator 
+        % This is done in order to obtain the appropriate shift, 
+        % from which we can calculate the most negative eigenvalues.
+        %
+
+    % Use the power iteration algorithm.
+    n = size(A_r, 1);
+    v = randn(n, 1);
+    for k = 1 : 20 % 20 iterations should always be enough for an estimate.
+        v = A_r * v;
+    end
+    ev_max = (v' * A_r * v) / norm(v)^2; % Rayleigh quotient.
+    shift = abs(ev_max); % Shift works for both positive and negative ev_max.
+
+
+        %
+        % Solve for the desired eigenvector of the real operator
+        % Taking the real operator, we a few of the most negative eigenmodes,
+        % and then choose the one we are interested in.
+        %
+
+    % Shift the matrix and find the appropriate eigenmode.
+    % Find a few extra modes just to be sure we found the correct one.
+    [V, D] = eigs(A_r - shift * speye(n), options.mode_number + 2); 
+
+    
+    gamma = diag(D);
+    [temp, ind] = sort(gamma); % Sort most negative first.
+    v = V(:,ind(options.mode_number)); % Choose the appropriate eigenmode.
+
+
+        %
+        % Solve for the eigenvector of the full operator
+        % We use the selected eigenvector from the real operator as an initial
+        % guess.
+        %
+
+    % Perform Rayleigh quotient iteration to get the mode of the full operator.
+    v_norqi = v;
+    lambda = v' * A * v;
+    rqi_done = false;
+    for k = 1 : 40 
+        err(k) = norm(A*v - lambda*v) / norm(lambda*v);
+        if (err(k) < 1e-13)
+            rqi_done = true;
+            break
+        end
+        w = (A - lambda*speye(n)) \ v; 
+        v = w / norm(w);
+        lambda = v' * A * v;
+    end
+    if ~rqi_done 
+        warning('Did not converge to mode, rqi error: %e.', err(end));
+        v = v_norqi;
+    end
+
+
+        %
+        % Calculate output parameters.
+        %
+
+    % Compute the wave-vector.
+    beta = i * sqrt(lambda);
+    beta = sign(real(beta)) * beta; % Force real part of beta to be positive.
+
+    % Perform correction on beta to account for numerical dispersion.
+    % Inspiration: Taflove's FDTD book, under Numerical Dispersion.
+    % This correction term brings the error in emitted power to within 1 percent.
+    % At the same time, additional error is introduced into the E_err and H_err terms.
+    % This effect becomes more pronounced as beta increases.
+    beta_corr = 2*sin(real(beta/2)) - real(beta);
+    beta = beta + 0 * beta_corr; % Turn off correction.
+
+    % Fields.
+    [E_small, H_small, J_small, E_err, H_err] = get_wg_fields(beta, v);
+
+    if prop_in_pos_dir
+        coeff = -1;
+    else
+        coeff = +1;
+    end
+
+    % Make the components of the E and H fields match the propagation
+    % direction.
+    for k = 1 : 3
+        if k ~= prop_dir
+            H_small{k} = coeff * H_small{k};
+        end
+    end
+
+    % Expand the fields to span the entire simulation space.
+    for k = 1 : 3
+        E{k} = zeros(grid.shape);
+        H{k} = zeros(grid.shape);
+        J{k} = zeros(grid.shape);
+
+        E{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3)) = E_small{k};
+        H{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3)) = H_small{k};
+        J{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3)) = J_small{k};
+    end
+
+    %% Make the source uni-directional
+    % This is done by creating an adjacent source which cancels the propagation
+    % of the mode in one direction.
+
+    dl = real(sp{prop_dir}); % Distance separating J and J_adj planes.
+
+
+    % Shift indices for the propagation direction.
+    ps0 = p0;
+    ps1 = p1;
+    ps0(prop_dir) = p0(prop_dir) + coeff;
+    ps1(prop_dir) = p1(prop_dir) + coeff;
+
+    % Form the adjacent J-field. 
+    for k = 1 : 3  
+        J{k}(ps0(1):ps1(1), ps0(2):ps1(2), ps0(3):ps1(3)) = ...
+            -1 * J{k}(p0(1):p1(1), p0(2):p1(2), p0(3):p1(3)) * ...
+            exp(-1i * beta * dl);
+    end
+
+    % Re-normalize so power flow is maintained at 1.
+    for k = 1 : 3
+        J{k} = J{k} ./ abs(1 - exp(coeff * 2i * beta * dl));
+    end
+
+
+        %
+        % Plot fields, if desired.
+        %
+
+    if options.view
+        f = {E_small{:}, H_small{:}};
+        title_text = {'Ex', 'Ey', 'Ez', 'Hx', 'Hy', 'Hz'};
+        for k = 1 : 6
+            subplot(2, 3, k);
+            my_plot(reshape(real(f{k}), sub_shape));
+            title(title_text{k});
+        end
+        drawnow;
+    end
+
+
+function my_plot(x)
+% Helps with plotting.
+    if numel(find(size(x) ~= 1)) == 1 % Detect 1D data.
+        plot([real(x(:)), imag(x(:))], '.-');
+    else
+        imagesc(squeeze(x).', (max(abs(x(:))) + eps) * [-1 1]);
+        colorbar 
+        axis equal tight;
+        set(gca, 'YDir', 'normal');
+    end
+    colormap('jet');
+
+##### SOURCE END #####
+--></body></html>

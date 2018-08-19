@@ -1,0 +1,26 @@
+#! /bin/sh
+# matlab -nosplash -nodesktop -r "setup_lumos; run_design_recipe('wgc_te2D', 'r1')"
+
+problem_prefix=$1
+problem_suffix=$2
+recipe_name=$3
+
+for f in `(cd problems && ls $problem_prefix*.m)`
+do
+    # Strip the ".m" ending and append the suffix.
+    problem_name=`echo $f | sed 's/\.m//'`$problem_suffix 
+
+    # Get the info for the screen sessions. 
+    session_name=$problem_name'_'$recipe_name
+
+    # Launch the screen sessions.
+    echo Launching $session_name...
+    screen -S $session_name -md matlab -nosplash -nodesktop -r \
+            "setup_lumos; run_design_recipe('$problem_name', '$recipe_name')"
+    sleep 3
+done
+
+
+
+
+

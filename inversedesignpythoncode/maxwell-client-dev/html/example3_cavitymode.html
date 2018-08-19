@@ -1,0 +1,310 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>example3_cavitymode</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="example3_cavitymode.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>example3_cavitymode</h1><!--introduction--><p>Solve for the eigenmodes of dielectric resonators.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Source code</a></li></ul></div><h2>Syntax<a name="1"></a></h2><div><ul><li><tt>[omega, E, H, grid, eps] = example3_cavitymode('L3')</tt>   finds the cavity mode of an L3 photonic crystal resonator.</li></ul></div><div><ul><li><tt>... = example3_cavitymode('beam')</tt>   finds the cavity mode of a nanophotonic beam resonator.</li></ul></div><div><ul><li><tt>... = example3_cavitymode(..., 'flatten', true)</tt>   runs the example in 2D.   This is very useful for quick tests.</li></ul></div><div><ul><li><tt>... = example3_cavitymode(..., 'sim_only', true)</tt>   Only performs the initial simulation and   does not perform the eigenmode solve.</li></ul></div><h2>Source code<a name="2"></a></h2><pre class="codeinput"><span class="keyword">function</span> [omega, E, H, grid, eps] = example3_cavitymode(cavity_type, varargin)
+
+        <span class="comment">%</span>
+        <span class="comment">% Get optional parameters.</span>
+        <span class="comment">%</span>
+
+    options = my_parse_options(struct(  <span class="string">'flatten'</span>, false, <span class="keyword">...</span>
+                                        <span class="string">'omega_guess'</span>, [], <span class="keyword">...</span>
+                                        <span class="string">'central_Jy'</span>, [], <span class="keyword">...</span>
+                                        <span class="string">'add_imag_eps'</span>, 0, <span class="keyword">...</span>
+                                        <span class="string">'sim_only'</span>, false), <span class="keyword">...</span>
+                                varargin, mfilename);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Load the structure and create grid for it.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">switch</span> cavity_type
+        <span class="keyword">case</span> <span class="string">'L3'</span>
+            filename = <span class="string">'l3.mat'</span>;
+            omega_guess = struct(<span class="string">'D2'</span>, 0.063, <span class="string">'D3'</span>, 0.078);
+        <span class="keyword">case</span> <span class="string">'L3_sic'</span>
+            filename = <span class="string">'l3_sic.mat'</span>;
+            omega_guess = struct(<span class="string">'D2'</span>, 0.0891, <span class="string">'D3'</span>, 0.137);
+        <span class="keyword">case</span> <span class="string">'beam'</span>
+            filename = <span class="string">'beam.mat'</span>;
+            omega_guess = struct(<span class="string">'D2'</span>, 0.062, <span class="string">'D3'</span>, 0.080);
+        <span class="keyword">case</span> <span class="string">'beam2w'</span>
+            filename = <span class="string">'beam.mat'</span>;
+            omega_guess = struct(<span class="string">'D2'</span>, 0.118, <span class="string">'D3'</span>, 0.166);
+        <span class="keyword">otherwise</span>
+            error(<span class="string">'cavity_type must either be ''L3'' or ''beam''.'</span>);
+    <span class="keyword">end</span>
+
+    eps = getfield(load(filename), <span class="string">'eps'</span>);
+    omega = omega_guess.D3; <span class="comment">% Guess frequency for 3D.</span>
+    dims = size(eps{1});
+
+    <span class="comment">% If requested, add an imaginary part to the permittivity.</span>
+    max_eps = max(eps{1}(:));
+    <span class="keyword">for</span> k = 1 : 3
+        eps{k} = eps{k} + 1i * (eps{k}-1)./(max_eps-1) * options.add_imag_eps;
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> options.flatten <span class="comment">% Make 2D, if needed.</span>
+        <span class="keyword">for</span> k = 1 : 3
+            eps{k} = eps{k}(:,:,round(dims(3)/2));
+        <span class="keyword">end</span>
+        omega = omega_guess.D2; <span class="comment">% Guess frequency for 2D.</span>
+        dims(3) = 1;
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> ~isempty(options.omega_guess)
+        omega = options.omega_guess;
+    <span class="keyword">end</span>
+
+
+    <span class="keyword">for</span> k = 1 : 3
+        xyz_pos{k} = [0:dims(k)] - round(dims(k)/2);
+    <span class="keyword">end</span>
+    [grid, ~, ~, J] = maxwell_grid(omega, xyz_pos{:});
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Obtain initial field by doing a simulation!</span>
+        <span class="comment">%</span>
+
+    c = round(dims/2);
+    <span class="keyword">if</span> options.flatten
+        <span class="keyword">if</span> strcmp(cavity_type, <span class="string">'beam2w'</span>)
+            [~, E] = example3_cavitymode(<span class="string">'beam'</span>, <span class="string">'flatten'</span>, true);
+            J{2} = abs(E{2});
+        <span class="keyword">else</span>
+            <span class="comment">% Use point source to excite 2D mode.</span>
+            J{2}(c(1), c(2), c(3)) = 1;
+        <span class="keyword">end</span>
+        fprintf(<span class="string">'=== 2D solve ===\n'</span>);
+    <span class="keyword">else</span>
+        <span class="comment">% To get the current excitation for 3D, use the 2D mode.</span>
+        <span class="comment">% We do this via a recursive call.</span>
+        [~, E] = example3_cavitymode(cavity_type, <span class="string">'flatten'</span>, true, <span class="keyword">...</span>
+                                    <span class="string">'add_imag_eps'</span>, options.add_imag_eps);
+        J{2}(:,:,c(3)) = E{2};
+        fprintf(<span class="string">'=== 3D solve ===\n'</span>);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> ~isempty(options.central_Jy)
+        J{2}(:,:,c(3)) = options.central_Jy;
+    <span class="keyword">end</span>
+
+    fprintf(<span class="string">'Solving for initial field... '</span>);
+    [E, H] =  maxwell_solve(grid, eps, J); <span class="comment">% Use this solution as an initial guess.</span>
+
+    maxwell_view(grid, eps, E, <span class="string">'y'</span>, [nan nan 0]);
+
+    <span class="keyword">if</span> options.sim_only
+        omega = grid.omega;
+        <span class="keyword">return</span>
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Find the eigenmode, using previous result as initial guess field.</span>
+        <span class="comment">%</span>
+
+    [omega, E, H] =  maxwell_solve_eigenmode(grid, eps, E, <span class="string">'err_thresh'</span>, 1e-2);
+    maxwell_view(grid, eps, E, <span class="string">'y'</span>, [nan nan 0]);
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% example3_cavitymode
+% Solve for the eigenmodes of dielectric resonators.
+
+%%% Syntax
+%
+% * |[omega, E, H, grid, eps] = example3_cavitymode('L3')| 
+%   finds the cavity mode of an L3 photonic crystal resonator.
+%
+% * |... = example3_cavitymode('beam')| 
+%   finds the cavity mode of a nanophotonic beam resonator.
+%
+% * |... = example3_cavitymode(..., 'flatten', true)| 
+%   runs the example in 2D.
+%   This is very useful for quick tests.
+%
+% * |... = example3_cavitymode(..., 'sim_only', true)| 
+%   Only performs the initial simulation and 
+%   does not perform the eigenmode solve.
+%
+
+%%% Source code
+function [omega, E, H, grid, eps] = example3_cavitymode(cavity_type, varargin)
+
+        %
+        % Get optional parameters.
+        %
+
+    options = my_parse_options(struct(  'flatten', false, ...
+                                        'omega_guess', [], ...
+                                        'central_Jy', [], ...
+                                        'add_imag_eps', 0, ...
+                                        'sim_only', false), ...
+                                varargin, mfilename);
+
+    
+        %
+        % Load the structure and create grid for it.
+        %
+
+    switch cavity_type
+        case 'L3'
+            filename = 'l3.mat';
+            omega_guess = struct('D2', 0.063, 'D3', 0.078);
+        case 'L3_sic'
+            filename = 'l3_sic.mat';
+            omega_guess = struct('D2', 0.0891, 'D3', 0.137);
+        case 'beam'
+            filename = 'beam.mat';
+            omega_guess = struct('D2', 0.062, 'D3', 0.080);
+        case 'beam2w'
+            filename = 'beam.mat';
+            omega_guess = struct('D2', 0.118, 'D3', 0.166);
+        otherwise
+            error('cavity_type must either be ''L3'' or ''beam''.');
+    end
+
+    eps = getfield(load(filename), 'eps');
+    omega = omega_guess.D3; % Guess frequency for 3D.
+    dims = size(eps{1});
+
+    % If requested, add an imaginary part to the permittivity.
+    max_eps = max(eps{1}(:));
+    for k = 1 : 3
+        eps{k} = eps{k} + 1i * (eps{k}-1)./(max_eps-1) * options.add_imag_eps;
+    end
+
+    if options.flatten % Make 2D, if needed.
+        for k = 1 : 3
+            eps{k} = eps{k}(:,:,round(dims(3)/2));
+        end
+        omega = omega_guess.D2; % Guess frequency for 2D.
+        dims(3) = 1;
+    end
+
+    if ~isempty(options.omega_guess)
+        omega = options.omega_guess;
+    end
+        
+
+    for k = 1 : 3
+        xyz_pos{k} = [0:dims(k)] - round(dims(k)/2);
+    end
+    [grid, ~, ~, J] = maxwell_grid(omega, xyz_pos{:});
+
+    
+        %
+        % Obtain initial field by doing a simulation!
+        %
+
+    c = round(dims/2);
+    if options.flatten 
+        if strcmp(cavity_type, 'beam2w')
+            [~, E] = example3_cavitymode('beam', 'flatten', true);
+            J{2} = abs(E{2});
+        else
+            % Use point source to excite 2D mode.
+            J{2}(c(1), c(2), c(3)) = 1;
+        end
+        fprintf('=== 2D solve ===\n');
+    else
+        % To get the current excitation for 3D, use the 2D mode.
+        % We do this via a recursive call.
+        [~, E] = example3_cavitymode(cavity_type, 'flatten', true, ...
+                                    'add_imag_eps', options.add_imag_eps);
+        J{2}(:,:,c(3)) = E{2};
+        fprintf('=== 3D solve ===\n');
+    end
+
+    if ~isempty(options.central_Jy)
+        J{2}(:,:,c(3)) = options.central_Jy;
+    end
+
+    fprintf('Solving for initial field... ');
+    [E, H] =  maxwell_solve(grid, eps, J); % Use this solution as an initial guess.
+
+    maxwell_view(grid, eps, E, 'y', [nan nan 0]);
+
+    if options.sim_only
+        omega = grid.omega;
+        return
+    end
+
+
+        %
+        % Find the eigenmode, using previous result as initial guess field.
+        %
+    
+    [omega, E, H] =  maxwell_solve_eigenmode(grid, eps, E, 'err_thresh', 1e-2);
+    maxwell_view(grid, eps, E, 'y', [nan nan 0]);
+
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,416 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxwell_axb</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxwell_axb.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxwell_axb</h1><!--introduction--><p>Matrices and vectors associated with the electromagnetic wave equation.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Source code</a></li></ul></div><h2>Syntax<a name="1"></a></h2><div><ul><li><tt>[A, x, b] = maxwell_axb(grid, eps, E, J)</tt> returns the matrix and vectors   for the electromagnetic wave equation for the E-field (see below).</li></ul></div><div><ul><li><tt>[A, x, b] = maxwell_axb(grid, [eps, mu], ...)</tt> does the same for   <tt>mu</tt> not equal to 1.</li></ul></div><div><ul><li><tt>[A, x, b] = maxwell_axb(grid, eps, [E H], J)</tt> returns the matrix and   vectorsfor the electromagnetic wave equation   written for both E- and H-fields.</li></ul></div><div><ul><li><tt>[A, x, b] = maxwell_axb(grid, [eps mu], [E H], J)</tt> does the same for   <tt>mu</tt> not equal to 1.</li></ul></div><div><ul><li><tt>... = maxwell_axb(..., 'functional', true)</tt>   returns an A which is a function, not a matrix.   Specifically, <tt>A(x)</tt> must be used in place of <tt>A*x</tt>.   This may cut down the memory requirements that a full A-matrix requires   for large simulations.</li></ul></div><h2>Description<a name="2"></a></h2><p>The electromagnetic wave equation for the E-field that Maxwell solves is</p><p><img src="maxwell_axb_eq54777.png" alt="$$ \nabla \times \mu^{-1} \nabla \times E - \omega^2 \epsilon E = -i \omega J, $$"></p><p>which is equivalent to the equation which uses both E- and H-fields</p><p><img src="maxwell_axb_eq74199.png" alt="$$ \nabla \times E - i \omega \mu H = 0, \quad \nabla \times H + i \omega \epsilon E = J. $$"></p><p><tt>maxwell_axb</tt> composes systems of equations, in matrix form <img src="maxwell_axb_eq55300.png" alt="$$ Ax = b $$">, to represent either of these equations (depending on the user's input parameters).</p><p>Once the matrix <tt>A</tt>, and vectors <tt>x</tt> and <tt>b</tt> have been obtained, a representative error can be calculated via <tt>norm(A*x-b)/norm(b)</tt>. Note that this error may differ from that calculated displayed during the solve process because of various "tricks" Maxwell uses to speed up the solve process.</p><h2>Source code<a name="3"></a></h2><pre class="codeinput"><span class="keyword">function</span> [A, x, b] = maxwell_axb(grid, eps_mu, E_H, J, varargin)
+
+        <span class="comment">%</span>
+        <span class="comment">% Validate and parse input values.</span>
+        <span class="comment">%</span>
+
+    my_validate_grid(grid, mfilename);
+
+    [eps, mu] = my_split(eps_mu, grid.shape, {<span class="string">'eps'</span>, <span class="string">'mu'</span>}, mfilename);
+    <span class="keyword">if</span> isempty(mu)
+        mu = my_default_field(grid.shape, 1);
+    <span class="keyword">end</span>
+
+    [E, H] = my_split(E_H, grid.shape, {<span class="string">'E'</span>, <span class="string">'H'</span>}, mfilename);
+
+    my_validate_field(J, grid.shape, <span class="string">'J'</span>, mfilename);
+
+    <span class="comment">% Parse optional arguments.</span>
+    options = my_parse_options(struct(  <span class="string">'functional'</span>, false), <span class="keyword">...</span>
+                                varargin, mfilename);
+
+    validateattributes(options.functional, {<span class="string">'logical'</span>}, {<span class="string">'binary'</span>}, <span class="keyword">...</span>
+                        <span class="string">'functional'</span>, mfilename);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Helper variables and functions.</span>
+        <span class="comment">%</span>
+
+    dims = grid.shape;
+    N = prod(dims);
+    my_diag = @(z) spdiags(z(:), 0, numel(z), numel(z));
+    my_blkdiag = @(z) blkdiag(my_diag(z{1}), my_diag(z{2}), my_diag(z{3}));
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Build component matrices.</span>
+        <span class="comment">% (The matrices which will be used to build the large A matrix.)</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">if</span> ~options.functional <span class="comment">% Build the full matrices.</span>
+
+        <span class="comment">% Get the relevant derivative matrices.</span>
+        [spx, spy, spz] = ndgrid(grid.s_prim{1}, grid.s_prim{2}, grid.s_prim{3});
+        [sdx, sdy, sdz] = ndgrid(grid.s_dual{1}, grid.s_dual{2}, grid.s_dual{3});
+
+        <span class="comment">% Derivative in x, y, and z directions.</span>
+        Dx = deriv(<span class="string">'x'</span>, dims);
+        Dy = deriv(<span class="string">'y'</span>, dims);
+        Dz = deriv(<span class="string">'z'</span>, dims);
+        Z = sparse(N, N);
+
+        <span class="comment">% Forward differences (used to compute H from E).</span>
+        Dfx = my_diag(sdx.^-1) * Dx;
+        Dfy = my_diag(sdy.^-1) * Dy;
+        Dfz = my_diag(sdz.^-1) * Dz;
+
+        <span class="comment">% Backward differences (used to compute E from H).</span>
+        Dbx = -my_diag(spx.^-1) * Dx';
+        Dby = -my_diag(spy.^-1) * Dy';
+        Dbz = -my_diag(spz.^-1) * Dz';
+
+        <span class="comment">% Form curl matrices.</span>
+        <span class="comment">% A1 and A2 compute the curls of H- and E-fields respectively.</span>
+        A1 = [  Z, -Dbz, Dby; <span class="keyword">...</span>
+                Dbz, Z, -Dbx; <span class="keyword">...</span>
+                -Dby, Dbx, Z];
+
+        A2 = [  Z, -Dfz, Dfy; <span class="keyword">...</span>
+                Dfz, Z, -Dfx; <span class="keyword">...</span>
+                -Dfy, Dfx, Z];
+
+        <span class="comment">% Dummy functional forms.</span>
+        [A1_fun, A2_fun] = deal(@()[], @()[]);
+
+    <span class="keyword">else</span> <span class="comment">% Build the functional forms.</span>
+        [A1_fun, A2_fun] = my_functional_A(grid);
+    <span class="keyword">end</span>
+
+    <span class="comment">% Form vectors representing the permittivity and permeability.</span>
+    m = [mu{1}(:) ; mu{2}(:) ; mu{3}(:)];
+    e = [eps{1}(:) ; eps{2}(:) ; eps{3}(:)];
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Form final output matrix and vectors..</span>
+        <span class="comment">%</span>
+
+    <span class="comment">% Inline functions in case we need them.</span>
+    <span class="keyword">function</span> [z] = multA_E(x)
+        z = A1_fun((1./m) .* A2_fun(x)) - grid.omega^2 * (e .* x);
+    <span class="keyword">end</span>
+
+    <span class="keyword">function</span> [z] = multA_EH(x)
+        x1 = x(1:3*N);
+        x2 = x(3*N+1:end);
+        z = [   (A1_fun(x2) - 1i * grid.omega * (e .* x1)); <span class="keyword">...</span>
+                (A2_fun(x1) + 1i * grid.omega * (m .* x2))];
+    <span class="keyword">end</span>
+
+    <span class="comment">% Assign A appropriately.</span>
+    <span class="keyword">if</span> ~options.functional
+        <span class="keyword">if</span> isempty(H) <span class="comment">% Wave equation in E.</span>
+            A = A1 * my_diag(1./m) * A2 - grid.omega^2 * my_diag(e);
+        <span class="keyword">else</span> <span class="comment">% Wave equation in E and H.</span>
+            A = [-1i*grid.omega*my_diag(e), A1; A2, +1i*grid.omega*my_diag(m)];
+        <span class="keyword">end</span>
+
+    <span class="keyword">else</span>
+        <span class="keyword">if</span> isempty(H) <span class="comment">% Wave equation in E.</span>
+            A = @multA_E;
+        <span class="keyword">else</span> <span class="comment">% Wave equation in E and H.</span>
+            A = @multA_EH;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% Calculate x and b vectors.</span>
+    <span class="keyword">if</span> isempty(H)
+        x = [E{1}(:) ; E{2}(:) ; E{3}(:)];
+        b = -i * grid.omega * [J{1}(:) ; J{2}(:) ; J{3}(:)];
+    <span class="keyword">else</span>
+        x = [E{1}(:) ; E{2}(:) ; E{3}(:) ; H{1}(:) ; H{2}(:) ; H{3}(:)];
+        b = [J{1}(:) ; J{2}(:) ; J{3}(:); zeros(3*N, 1)];
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+<span class="keyword">function</span> [D] = deriv(dir, shape)
+<span class="comment">% Private function for creating derivative matrices.</span>
+<span class="comment">% Note that we are making the forward derivative only.</span>
+<span class="comment">% Also, we assume periodic boundary conditions.</span>
+
+    shift = (dir == <span class="string">'xyz'</span>); <span class="comment">% Direction of shift.</span>
+
+    <span class="comment">% Get the displaced spatial markers.</span>
+    my_disp = @(n, shift) mod([1:n] + shift - 1, n) + 1;
+    [i, j, k] = ndgrid(my_disp(shape(1), shift(1)), <span class="keyword">...</span>
+                        my_disp(shape(2), shift(2)), <span class="keyword">...</span>
+                        my_disp(shape(3), shift(3)));
+
+    <span class="comment">% Translate spatial indices into matrix indices.</span>
+    N = prod(shape);
+    i_ind = 1 : N;
+    j_ind = i + (j-1) * shape(1) + (k-1) * shape(1) * shape(2);
+
+    <span class="comment">% Create the sparse matrix.</span>
+    D = sparse([i_ind(:); i_ind(:)], [i_ind(:), j_ind(:)], <span class="keyword">...</span>
+                [-ones(N,1); ones(N,1)], N, N);
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxwell_axb
+% Matrices and vectors associated with the electromagnetic wave equation.
+
+%%% Syntax
+%
+% * |[A, x, b] = maxwell_axb(grid, eps, E, J)| returns the matrix and vectors 
+%   for the electromagnetic wave equation for the E-field (see below).
+%
+% * |[A, x, b] = maxwell_axb(grid, [eps, mu], ...)| does the same for
+%   |mu| not equal to 1.
+%
+% * |[A, x, b] = maxwell_axb(grid, eps, [E H], J)| returns the matrix and
+%   vectorsfor the electromagnetic wave equation 
+%   written for both E- and H-fields.
+%
+% * |[A, x, b] = maxwell_axb(grid, [eps mu], [E H], J)| does the same for 
+%   |mu| not equal to 1.
+%
+% * |... = maxwell_axb(..., 'functional', true)|
+%   returns an A which is a function, not a matrix.
+%   Specifically, |A(x)| must be used in place of |A*x|.
+%   This may cut down the memory requirements that a full A-matrix requires
+%   for large simulations.
+%
+
+%%% Description
+% The electromagnetic wave equation for the E-field that Maxwell solves is
+%
+% $$ \nabla \times \mu^{-1} \nabla \times E - \omega^2 \epsilon E = -i \omega J, $$
+%
+% which is equivalent to the equation which uses both E- and H-fields
+%
+% $$ \nabla \times E - i \omega \mu H = 0, \quad \nabla \times H + i \omega \epsilon E = J. $$
+%
+%
+% |maxwell_axb| composes systems of equations, in matrix form $$ Ax = b $$, 
+% to represent either of these equations 
+% (depending on the user's input parameters).
+%
+% Once the matrix |A|, and vectors |x| and |b| have been obtained,
+% a representative error can be calculated via |norm(A*x-b)/norm(b)|.
+% Note that this error may differ from that calculated displayed 
+% during the solve process because of various "tricks" Maxwell uses
+% to speed up the solve process.
+
+%%% Source code
+function [A, x, b] = maxwell_axb(grid, eps_mu, E_H, J, varargin)
+
+        %
+        % Validate and parse input values.
+        %
+
+    my_validate_grid(grid, mfilename);
+
+    [eps, mu] = my_split(eps_mu, grid.shape, {'eps', 'mu'}, mfilename);
+    if isempty(mu)
+        mu = my_default_field(grid.shape, 1); 
+    end
+
+    [E, H] = my_split(E_H, grid.shape, {'E', 'H'}, mfilename);
+
+    my_validate_field(J, grid.shape, 'J', mfilename);
+
+    % Parse optional arguments.
+    options = my_parse_options(struct(  'functional', false), ...
+                                varargin, mfilename);
+
+    validateattributes(options.functional, {'logical'}, {'binary'}, ...
+                        'functional', mfilename);
+
+
+        %
+        % Helper variables and functions.
+        %
+
+    dims = grid.shape;
+    N = prod(dims);
+    my_diag = @(z) spdiags(z(:), 0, numel(z), numel(z));
+    my_blkdiag = @(z) blkdiag(my_diag(z{1}), my_diag(z{2}), my_diag(z{3}));
+
+
+        %
+        % Build component matrices.
+        % (The matrices which will be used to build the large A matrix.)
+        %
+
+    if ~options.functional % Build the full matrices.
+
+        % Get the relevant derivative matrices.
+        [spx, spy, spz] = ndgrid(grid.s_prim{1}, grid.s_prim{2}, grid.s_prim{3});
+        [sdx, sdy, sdz] = ndgrid(grid.s_dual{1}, grid.s_dual{2}, grid.s_dual{3});
+        
+        % Derivative in x, y, and z directions.
+        Dx = deriv('x', dims); 
+        Dy = deriv('y', dims);
+        Dz = deriv('z', dims);
+        Z = sparse(N, N);
+
+        % Forward differences (used to compute H from E).
+        Dfx = my_diag(sdx.^-1) * Dx;
+        Dfy = my_diag(sdy.^-1) * Dy;
+        Dfz = my_diag(sdz.^-1) * Dz;
+
+        % Backward differences (used to compute E from H).
+        Dbx = -my_diag(spx.^-1) * Dx';
+        Dby = -my_diag(spy.^-1) * Dy';
+        Dbz = -my_diag(spz.^-1) * Dz';
+
+        % Form curl matrices.
+        % A1 and A2 compute the curls of H- and E-fields respectively.
+        A1 = [  Z, -Dbz, Dby; ...
+                Dbz, Z, -Dbx; ...
+                -Dby, Dbx, Z];
+
+        A2 = [  Z, -Dfz, Dfy; ...
+                Dfz, Z, -Dfx; ...
+                -Dfy, Dfx, Z];
+
+        % Dummy functional forms.
+        [A1_fun, A2_fun] = deal(@()[], @()[]);
+
+    else % Build the functional forms.
+        [A1_fun, A2_fun] = my_functional_A(grid);
+    end
+
+    % Form vectors representing the permittivity and permeability.
+    m = [mu{1}(:) ; mu{2}(:) ; mu{3}(:)];
+    e = [eps{1}(:) ; eps{2}(:) ; eps{3}(:)];
+
+
+        %
+        % Form final output matrix and vectors..
+        %
+
+    % Inline functions in case we need them.
+    function [z] = multA_E(x)
+        z = A1_fun((1./m) .* A2_fun(x)) - grid.omega^2 * (e .* x);
+    end
+
+    function [z] = multA_EH(x)
+        x1 = x(1:3*N);
+        x2 = x(3*N+1:end);
+        z = [   (A1_fun(x2) - 1i * grid.omega * (e .* x1)); ...
+                (A2_fun(x1) + 1i * grid.omega * (m .* x2))]; 
+    end
+
+    % Assign A appropriately.
+    if ~options.functional
+        if isempty(H) % Wave equation in E.
+            A = A1 * my_diag(1./m) * A2 - grid.omega^2 * my_diag(e);
+        else % Wave equation in E and H.
+            A = [-1i*grid.omega*my_diag(e), A1; A2, +1i*grid.omega*my_diag(m)];
+        end
+
+    else
+        if isempty(H) % Wave equation in E.
+            A = @multA_E;
+        else % Wave equation in E and H.
+            A = @multA_EH;
+        end
+    end
+
+    % Calculate x and b vectors.
+    if isempty(H)
+        x = [E{1}(:) ; E{2}(:) ; E{3}(:)];
+        b = -i * grid.omega * [J{1}(:) ; J{2}(:) ; J{3}(:)];
+    else
+        x = [E{1}(:) ; E{2}(:) ; E{3}(:) ; H{1}(:) ; H{2}(:) ; H{3}(:)];
+        b = [J{1}(:) ; J{2}(:) ; J{3}(:); zeros(3*N, 1)];
+    end
+end
+
+
+function [D] = deriv(dir, shape)
+% Private function for creating derivative matrices.
+% Note that we are making the forward derivative only.
+% Also, we assume periodic boundary conditions.
+
+    shift = (dir == 'xyz'); % Direction of shift.
+
+    % Get the displaced spatial markers.
+    my_disp = @(n, shift) mod([1:n] + shift - 1, n) + 1;
+    [i, j, k] = ndgrid(my_disp(shape(1), shift(1)), ...
+                        my_disp(shape(2), shift(2)), ...
+                        my_disp(shape(3), shift(3)));
+
+    % Translate spatial indices into matrix indices.
+    N = prod(shape);
+    i_ind = 1 : N;
+    j_ind = i + (j-1) * shape(1) + (k-1) * shape(1) * shape(2);
+
+    % Create the sparse matrix.
+    D = sparse([i_ind(:); i_ind(:)], [i_ind(:), j_ind(:)], ...
+                [-ones(N,1); ones(N,1)], N, N);
+end
+
+##### SOURCE END #####
+--></body></html>

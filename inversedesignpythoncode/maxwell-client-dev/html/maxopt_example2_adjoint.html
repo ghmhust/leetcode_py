@@ -1,0 +1,262 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxopt_example2_adjoint</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxopt_example2_adjoint.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxopt_example2_adjoint</h1><p>Form a cavity out of a square lattice using gradient optimization.</p><pre class="codeinput"><span class="keyword">function</span> [x, fval, f_vis] = maxopt_example2_adjoint(case_name, varargin)
+
+    <span class="comment">% case_name = 'squarepc';</span>
+
+        <span class="comment">%</span>
+        <span class="comment">% Parse inputs.</span>
+        <span class="comment">%</span>
+
+    options = my_parse_options(struct(  <span class="string">'iters'</span>, 100, <span class="keyword">...</span>
+                                        <span class="string">'case_args'</span>, {{}}, <span class="keyword">...</span>
+                                        <span class="string">'max_delta'</span>, [], <span class="keyword">...</span>
+                                        <span class="string">'init_step'</span>, [], <span class="keyword">...</span>
+                                        <span class="string">'x0'</span>, [], <span class="keyword">...</span>
+                                        <span class="string">'flatten'</span>, false), <span class="keyword">...</span>
+                                varargin, mfilename);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Set up the optimization problem.</span>
+        <span class="comment">%</span>
+
+    flt = options.flatten;
+    <span class="keyword">switch</span> case_name
+        <span class="keyword">case</span> <span class="string">'squarepc'</span>
+            [f, x0] = maxopt_case_squarepc(<span class="string">'grad_f'</span>, <span class="string">'flatten'</span>, flt);
+            [f_vis] = maxopt_case_squarepc(<span class="string">'get_fields'</span>, <span class="string">'flatten'</span>, flt);
+            init_step = 0.1;
+            max_delta = 0.1;
+        <span class="keyword">case</span> <span class="string">'2wbeam'</span>
+            [f, x0] = maxopt_case_2wbeam(<span class="string">'grad_f'</span>, <span class="string">'flatten'</span>, flt, options.case_args{:});
+            [f_vis] = maxopt_case_2wbeam(<span class="string">'get_fields'</span>, <span class="string">'flatten'</span>, flt, options.case_args{:});
+            init_step = 1e2;
+            max_delta = 10;
+        <span class="keyword">case</span> <span class="string">'2wbeam_eig'</span>
+            [f, x0] = maxopt_case_2wbeam(<span class="string">'grad_f_eig'</span>, <span class="string">'flatten'</span>, flt, options.case_args{:});
+            [f_vis] = maxopt_case_2wbeam(<span class="string">'get_fields_eig'</span>, <span class="string">'flatten'</span>, flt, options.case_args{:});
+            init_step = 1e-1;
+            max_delta = 10;
+        <span class="keyword">case</span> <span class="string">'wdmgrating'</span>
+            [f, x0] = maxopt_case_wdmgrating(<span class="string">'grad_f'</span>, <span class="string">'flatten'</span>, flt);
+            [f_vis] = maxopt_case_wdmgrating(<span class="string">'get_fields'</span>, <span class="string">'flatten'</span>, flt);
+            init_step = 1e5;
+            max_delta = 40;
+        <span class="keyword">otherwise</span>
+            error(<span class="string">'Invalid case_name.'</span>);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> ~isempty(options.init_step)
+        init_step = options.init_step;
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> ~isempty(options.max_delta)
+        max_delta = options.max_delta;
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> ~isempty(options.x0)
+        x0 = options.x0;
+    <span class="keyword">end</span>
+
+    <span class="comment">% Visualization function for optimization progress.</span>
+    <span class="keyword">try</span>
+        mkdir(tempdir, case_name);
+    <span class="keyword">end</span>
+    x_hist = [];
+    <span class="keyword">function</span> vis_progress(hist, step_size, x)
+        fprintf(<span class="string">'%d: %e [ss: %1.2e]\n'</span>, length(hist), hist(end), step_size);
+        plot(hist, <span class="string">'.-'</span>);
+        xlabel(<span class="string">'optimization iterations'</span>);
+        ylabel(<span class="string">'fval'</span>);
+        title(<span class="string">'structure optimization progress'</span>);
+        saveas(gcf, [tempdir, case_name, filesep, <span class="keyword">...</span>
+                    case_name, <span class="string">'_'</span>, sprintf(<span class="string">'%04d'</span>, length(hist))], <span class="string">'png'</span>);
+        x_hist(:,length(hist)) = x(:);
+        save([tempdir, case_name, filesep, <span class="string">'x_hist.mat'</span>], <span class="string">'hist'</span>, <span class="string">'x_hist'</span>);
+    <span class="keyword">end</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Perform the optimization.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">if</span> options.iters &gt; 0
+        [x, fval, hist] = maxopt_gradient_descent(f, x0(:), <span class="keyword">...</span>
+                                                    <span class="string">'init_step'</span>, init_step, <span class="keyword">...</span>
+                                                    <span class="string">'max_delta'</span>, max_delta, <span class="keyword">...</span>
+                                                    <span class="string">'max_iters'</span>, options.iters, <span class="keyword">...</span>
+                                                    <span class="string">'vis_progress'</span>, @vis_progress);
+    <span class="keyword">else</span>
+        x = x0;
+        fval = nan;
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxopt_example2_adjoint
+% Form a cavity out of a square lattice using gradient optimization.
+
+
+function [x, fval, f_vis] = maxopt_example2_adjoint(case_name, varargin)
+
+    % case_name = 'squarepc';
+
+        %
+        % Parse inputs.
+        %
+
+    options = my_parse_options(struct(  'iters', 100, ...
+                                        'case_args', {{}}, ...
+                                        'max_delta', [], ...
+                                        'init_step', [], ...
+                                        'x0', [], ...
+                                        'flatten', false), ...
+                                varargin, mfilename);
+
+
+        %
+        % Set up the optimization problem.
+        %
+
+    flt = options.flatten;
+    switch case_name
+        case 'squarepc'
+            [f, x0] = maxopt_case_squarepc('grad_f', 'flatten', flt);
+            [f_vis] = maxopt_case_squarepc('get_fields', 'flatten', flt);
+            init_step = 0.1;
+            max_delta = 0.1;
+        case '2wbeam'
+            [f, x0] = maxopt_case_2wbeam('grad_f', 'flatten', flt, options.case_args{:});
+            [f_vis] = maxopt_case_2wbeam('get_fields', 'flatten', flt, options.case_args{:});
+            init_step = 1e2;
+            max_delta = 10;
+        case '2wbeam_eig'
+            [f, x0] = maxopt_case_2wbeam('grad_f_eig', 'flatten', flt, options.case_args{:});
+            [f_vis] = maxopt_case_2wbeam('get_fields_eig', 'flatten', flt, options.case_args{:});
+            init_step = 1e-1;
+            max_delta = 10;
+        case 'wdmgrating'
+            [f, x0] = maxopt_case_wdmgrating('grad_f', 'flatten', flt);
+            [f_vis] = maxopt_case_wdmgrating('get_fields', 'flatten', flt);
+            init_step = 1e5;
+            max_delta = 40;
+        otherwise
+            error('Invalid case_name.');
+    end
+
+    if ~isempty(options.init_step)
+        init_step = options.init_step;
+    end
+
+    if ~isempty(options.max_delta)
+        max_delta = options.max_delta;
+    end
+
+    if ~isempty(options.x0)
+        x0 = options.x0;
+    end
+
+    % Visualization function for optimization progress.
+    try
+        mkdir(tempdir, case_name);
+    end
+    x_hist = [];
+    function vis_progress(hist, step_size, x)
+        fprintf('%d: %e [ss: %1.2e]\n', length(hist), hist(end), step_size); 
+        plot(hist, '.-');
+        xlabel('optimization iterations');
+        ylabel('fval');
+        title('structure optimization progress');
+        saveas(gcf, [tempdir, case_name, filesep, ...
+                    case_name, '_', sprintf('%04d', length(hist))], 'png');
+        x_hist(:,length(hist)) = x(:);
+        save([tempdir, case_name, filesep, 'x_hist.mat'], 'hist', 'x_hist');
+    end
+
+        
+        %
+        % Perform the optimization.
+        %
+        
+    if options.iters > 0
+        [x, fval, hist] = maxopt_gradient_descent(f, x0(:), ...
+                                                    'init_step', init_step, ...
+                                                    'max_delta', max_delta, ...
+                                                    'max_iters', options.iters, ...
+                                                    'vis_progress', @vis_progress);
+    else
+        x = x0;
+        fval = nan;
+    end
+
+end
+
+##### SOURCE END #####
+--></body></html>

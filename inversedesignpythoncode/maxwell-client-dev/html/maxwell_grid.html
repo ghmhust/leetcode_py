@@ -1,0 +1,335 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>maxwell_grid</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-08-29"><meta name="DC.source" content="maxwell_grid.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>maxwell_grid</h1><!--introduction--><p>Initialize a simulation domain.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Source code</a></li></ul></div><h2>Syntax<a name="1"></a></h2><div><ul><li><tt>[grid, eps] = maxwell_grid(omega, x, y, z)</tt>   produces a grid for a specific angular frequency with   grid points located at the points specified at <tt>x</tt>, <tt>y</tt>, and <tt>z</tt>.   An initial variable for the permittivity <tt>eps</tt> is returned.   Perfectly matched layer (PML) absorbing boundaries   are automatically included in the grid.   Use the <tt>'nopml'</tt> option (below) to create grids without PMLs.</li></ul></div><div><ul><li><tt>... = maxwell_grid(2*pi/wavelength, ...)</tt>   allows the user to define the angular frequency using a wavelength   parameter instead of an angular frequency parameter.</li></ul></div><div><ul><li><tt>[grid, eps, mu, J] = maxwell_grid(...)</tt>   also returns initial variables for the permeability, <tt>mu</tt>,   and the excitation current, <tt>J</tt>.</li></ul></div><div><ul><li><tt>... = maxwell_grid(..., 'nopml', xyz, 'num_pml_cells', n_pml)   allows for grids without PMLs in one or many directions of the grid.   |xyz</tt> can be any combination of <tt>'x'</tt>, <tt>'y'</tt>, or <tt>'z'</tt>,   in order to not include PMLs in the x-, y-, or z-directions.   Additionally, the <tt>'num_pml_cells'</tt> option can be used to   change the number of grid points used for the PML layer   (defaults to 10).</li></ul></div><div><ul><li><tt>... = maxwell_grid(..., 'hires_box', {center, box_size, delta})</tt>   allows for a high resolution grid at location <tt>center</tt> of size <tt>box_size</tt>   with a grid resolution of <tt>delta</tt>   (which must be 3-elements for resolution in x-, y- and z-directions).   Note that although <tt>maxwell_grid</tt> supports variable grid resolutions   directly via the <tt>maxwell_grid(omega, x, y, z)</tt> interface,   using the <tt>'hires_box'</tt> option is often easier.</li></ul></div><div><ul><li><tt>... = maxwell_grid(..., 'growth_rate', rate)</tt>   determines the growth rate of the grid, when using the <tt>'hires_box'</tt> option.   In other words, it determines how fast the resolution changes.   Defaults to 1.05.</li></ul></div><h2>Description<a name="2"></a></h2><p><tt>maxwell_grid</tt> returns the <tt>grid</tt> variable along with initial values for certain field vectors. <tt>grid</tt> defines the position and spacing of the simulation domain, and has the following important properties:</p><div><ul><li>Periodic, wrap-around boundaries.   This is very important in the case where PML has been removed   (via the <tt>'nopml'</tt> option).</li></ul></div><div><ul><li>The number of unique grid points is one less than the length   of the position arguments.   In other words, the number of unique grid points in the x-direction   is <tt>length(x) - 1</tt>.   This is a natural result of wrap-around boundaries.</li></ul></div><h2>Source code<a name="3"></a></h2><pre class="codeinput"><span class="keyword">function</span> [grid, eps, mu, J] = maxwell_grid(omega, x, y, z, varargin)
+
+        <span class="comment">%</span>
+        <span class="comment">% Validate and parse inputs.</span>
+        <span class="comment">%</span>
+
+    my_simple_check = @(var, var_name) <span class="keyword">...</span>
+        validateattributes(var, {<span class="string">'double'</span>}, {<span class="string">'nonnan'</span>, <span class="string">'finite'</span>, <span class="string">'vector'</span>}, <span class="keyword">...</span>
+                            mfilename, var_name);
+
+    my_simple_check(omega, <span class="string">'omega'</span>);
+    validateattributes(omega, {<span class="string">'double'</span>}, {<span class="string">'scalar'</span>}, mfilename, <span class="string">'omega'</span>);
+
+    my_simple_check(x, <span class="string">'x'</span>);
+    my_simple_check(y, <span class="string">'y'</span>);
+    my_simple_check(z, <span class="string">'z'</span>);
+
+    <span class="comment">% Optional arguments</span>
+    options = my_parse_options(struct(  <span class="string">'nopml'</span>, <span class="string">''</span>, <span class="keyword">...</span>
+                                        <span class="string">'num_pml_cells'</span>, 10, <span class="keyword">...</span>
+                                        <span class="string">'hires_box'</span>, [], <span class="keyword">...</span>
+                                        <span class="string">'growth_rate'</span>, 1.05), <span class="keyword">...</span>
+                                varargin, mfilename);
+
+    validateattributes(options.nopml, {<span class="string">'char'</span>}, {}, mfilename, <span class="string">'nopml'</span>);
+
+    <span class="keyword">if</span> length(options.num_pml_cells) == 1
+        options.num_pml_cells = options.num_pml_cells * ones(3, 1);
+    <span class="keyword">end</span>
+    validateattributes(options.num_pml_cells, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                        {<span class="string">'positive'</span>, <span class="string">'integer'</span>, <span class="string">'vector'</span>}, mfilename, <span class="string">'num_pml_cells'</span>);
+
+    <span class="keyword">if</span> ~isempty(options.hires_box)
+        validateattributes(options.hires_box, {<span class="string">'cell'</span>}, {<span class="string">'numel'</span>, 3}, <span class="keyword">...</span>
+                            mfilename, <span class="string">'hires_box'</span>);
+
+        validateattributes(options.hires_box{1}, {<span class="string">'numeric'</span>}, {<span class="string">'numel'</span>, 3, <span class="string">'real'</span>}, <span class="keyword">...</span>
+                            mfilename, <span class="string">'center (hires_box param #1)'</span>);
+        validateattributes(options.hires_box{2}, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                            {<span class="string">'numel'</span>, 3, <span class="string">'real'</span>, <span class="string">'positive'</span>}, mfilename, <span class="keyword">...</span>
+                            <span class="string">'box_size (hires_box param #2)'</span>);
+        validateattributes(options.hires_box{3}, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                            {<span class="string">'numel'</span>, 3, <span class="string">'real'</span>, <span class="string">'positive'</span>}, mfilename, <span class="keyword">...</span>
+                            <span class="string">'delta (hires_box param #3)'</span>);
+    <span class="keyword">end</span>
+
+    validateattributes(options.growth_rate, {<span class="string">'numeric'</span>}, <span class="keyword">...</span>
+                    {<span class="string">'scalar'</span>, <span class="string">'positive'</span>, <span class="string">'real'</span>}, mfilename, <span class="string">'growth_rate'</span>);
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Initialize the grid structure.</span>
+        <span class="comment">%</span>
+
+    <span class="keyword">if</span> ~isempty(options.hires_box) <span class="comment">% Take care of the high-resolution grid.</span>
+        pos = {x(:), y(:), z(:)};
+        <span class="keyword">for</span> k = 1 : 3
+            pos{k} = my_insert_hires(pos{k},    options.hires_box{1}(k), <span class="keyword">...</span>
+                                                options.hires_box{2}(k), <span class="keyword">...</span>
+                                                options.hires_box{3}(k), <span class="keyword">...</span>
+                                                options.growth_rate);
+        <span class="keyword">end</span>
+        [x, y, z] = deal(pos{:});
+    <span class="keyword">end</span>
+
+    grid = struct(  <span class="string">'omega'</span>, omega, <span class="keyword">...</span>
+                    <span class="string">'origin'</span>, [x(1), y(1), z(1)], <span class="keyword">...</span>
+                    <span class="string">'shape'</span>, [length(x), length(y), length(z)] - 1);
+    grid.shape = grid.shape + (grid.shape == 0); <span class="comment">% Correct for 2D case.</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Compute the s-parameters for the grid (spacing between grid points).</span>
+        <span class="comment">%</span>
+
+
+    <span class="comment">% Obtain the s-parameters (real parts).</span>
+    [grid.s_prim, grid.s_dual] = my_pos2s({x(:), y(:), z(:)});
+
+    <span class="comment">% Add pml if needed.</span>
+    xyz = <span class="string">'xyz'</span>;
+    <span class="keyword">for</span> k = 1 : 3
+        <span class="keyword">if</span> ~any(options.nopml == xyz(k)) &amp;&amp; grid.shape(k) &gt; 1
+            [grid.s_prim{k}, grid.s_dual{k}] = <span class="keyword">...</span>
+                my_stretched_coordinates(grid.omega, grid.origin(k), <span class="keyword">...</span>
+                grid.s_prim{k}, grid.s_dual{k}, options.num_pml_cells(k));
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    my_validate_grid(grid, mfilename); <span class="comment">% Sanity check.</span>
+
+
+        <span class="comment">%</span>
+        <span class="comment">% Form the initial field vectors.</span>
+        <span class="comment">%</span>
+
+    dims = grid.shape;
+    eps = {ones(dims), ones(dims), ones(dims)};
+    mu = {ones(dims), ones(dims), ones(dims)};
+    J = {zeros(dims), zeros(dims), zeros(dims)};
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% maxwell_grid
+% Initialize a simulation domain.
+
+%%% Syntax
+%
+% * |[grid, eps] = maxwell_grid(omega, x, y, z)|
+%   produces a grid for a specific angular frequency with
+%   grid points located at the points specified at |x|, |y|, and |z|.
+%   An initial variable for the permittivity |eps| is returned.
+%   Perfectly matched layer (PML) absorbing boundaries
+%   are automatically included in the grid.
+%   Use the |'nopml'| option (below) to create grids without PMLs.
+%
+% * |... = maxwell_grid(2*pi/wavelength, ...)|
+%   allows the user to define the angular frequency using a wavelength
+%   parameter instead of an angular frequency parameter.
+%
+% * |[grid, eps, mu, J] = maxwell_grid(...)|
+%   also returns initial variables for the permeability, |mu|,
+%   and the excitation current, |J|.
+%
+% * |... = maxwell_grid(..., 'nopml', xyz, 'num_pml_cells', n_pml)
+%   allows for grids without PMLs in one or many directions of the grid.
+%   |xyz| can be any combination of |'x'|, |'y'|, or |'z'|,
+%   in order to not include PMLs in the x-, y-, or z-directions.
+%   Additionally, the |'num_pml_cells'| option can be used to 
+%   change the number of grid points used for the PML layer
+%   (defaults to 10). 
+%
+% * |... = maxwell_grid(..., 'hires_box', {center, box_size, delta})|
+%   allows for a high resolution grid at location |center| of size |box_size|
+%   with a grid resolution of |delta| 
+%   (which must be 3-elements for resolution in x-, y- and z-directions).
+%   Note that although |maxwell_grid| supports variable grid resolutions 
+%   directly via the |maxwell_grid(omega, x, y, z)| interface,
+%   using the |'hires_box'| option is often easier.
+%
+% * |... = maxwell_grid(..., 'growth_rate', rate)|
+%   determines the growth rate of the grid, when using the |'hires_box'| option.
+%   In other words, it determines how fast the resolution changes.
+%   Defaults to 1.05.
+%
+
+%%% Description
+% |maxwell_grid| returns the |grid| variable along with initial values 
+% for certain field vectors.
+% |grid| defines the position and spacing of the simulation domain,
+% and has the following important properties:
+%
+% * Periodic, wrap-around boundaries. 
+%   This is very important in the case where PML has been removed 
+%   (via the |'nopml'| option).
+%
+% * The number of unique grid points is one less than the length 
+%   of the position arguments.
+%   In other words, the number of unique grid points in the x-direction
+%   is |length(x) - 1|.
+%   This is a natural result of wrap-around boundaries.
+%   
+
+%%% Source code
+function [grid, eps, mu, J] = maxwell_grid(omega, x, y, z, varargin)
+
+        %
+        % Validate and parse inputs.
+        %
+
+    my_simple_check = @(var, var_name) ...
+        validateattributes(var, {'double'}, {'nonnan', 'finite', 'vector'}, ...
+                            mfilename, var_name);
+
+    my_simple_check(omega, 'omega');
+    validateattributes(omega, {'double'}, {'scalar'}, mfilename, 'omega');
+
+    my_simple_check(x, 'x');
+    my_simple_check(y, 'y');
+    my_simple_check(z, 'z');
+
+    % Optional arguments
+    options = my_parse_options(struct(  'nopml', '', ...
+                                        'num_pml_cells', 10, ...
+                                        'hires_box', [], ...
+                                        'growth_rate', 1.05), ...
+                                varargin, mfilename);
+
+    validateattributes(options.nopml, {'char'}, {}, mfilename, 'nopml');
+
+    if length(options.num_pml_cells) == 1
+        options.num_pml_cells = options.num_pml_cells * ones(3, 1);
+    end
+    validateattributes(options.num_pml_cells, {'numeric'}, ...
+                        {'positive', 'integer', 'vector'}, mfilename, 'num_pml_cells');
+
+    if ~isempty(options.hires_box)
+        validateattributes(options.hires_box, {'cell'}, {'numel', 3}, ...
+                            mfilename, 'hires_box');
+
+        validateattributes(options.hires_box{1}, {'numeric'}, {'numel', 3, 'real'}, ...
+                            mfilename, 'center (hires_box param #1)');
+        validateattributes(options.hires_box{2}, {'numeric'}, ...
+                            {'numel', 3, 'real', 'positive'}, mfilename, ...
+                            'box_size (hires_box param #2)');
+        validateattributes(options.hires_box{3}, {'numeric'}, ...
+                            {'numel', 3, 'real', 'positive'}, mfilename, ...
+                            'delta (hires_box param #3)');
+    end
+
+    validateattributes(options.growth_rate, {'numeric'}, ...
+                    {'scalar', 'positive', 'real'}, mfilename, 'growth_rate');
+
+ 
+        %
+        % Initialize the grid structure.
+        %
+
+    if ~isempty(options.hires_box) % Take care of the high-resolution grid.
+        pos = {x(:), y(:), z(:)};
+        for k = 1 : 3
+            pos{k} = my_insert_hires(pos{k},    options.hires_box{1}(k), ...
+                                                options.hires_box{2}(k), ...
+                                                options.hires_box{3}(k), ...
+                                                options.growth_rate);
+        end
+        [x, y, z] = deal(pos{:});
+    end
+
+    grid = struct(  'omega', omega, ...
+                    'origin', [x(1), y(1), z(1)], ...
+                    'shape', [length(x), length(y), length(z)] - 1);
+    grid.shape = grid.shape + (grid.shape == 0); % Correct for 2D case.
+                    
+
+        %
+        % Compute the s-parameters for the grid (spacing between grid points).
+        %
+
+
+    % Obtain the s-parameters (real parts).
+    [grid.s_prim, grid.s_dual] = my_pos2s({x(:), y(:), z(:)});
+
+    % Add pml if needed.
+    xyz = 'xyz';
+    for k = 1 : 3
+        if ~any(options.nopml == xyz(k)) && grid.shape(k) > 1
+            [grid.s_prim{k}, grid.s_dual{k}] = ...
+                my_stretched_coordinates(grid.omega, grid.origin(k), ...
+                grid.s_prim{k}, grid.s_dual{k}, options.num_pml_cells(k));
+        end
+    end
+
+    my_validate_grid(grid, mfilename); % Sanity check.
+
+    
+        %
+        % Form the initial field vectors.
+        %
+
+    dims = grid.shape;
+    eps = {ones(dims), ones(dims), ones(dims)};
+    mu = {ones(dims), ones(dims), ones(dims)};
+    J = {zeros(dims), zeros(dims), zeros(dims)};
+
+
+
+##### SOURCE END #####
+--></body></html>
